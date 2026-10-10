@@ -1,0 +1,34 @@
+{
+  "name": "oira",
+  "owner": {
+    "name": "Oira-Oira",
+    "email": "nikita@oira-oira.com",
+    "url": "https://oira-oira.com"
+  },
+  "description": "Oira plugins for Claude Code: keep Oira current with your coding work.",
+  "plugins": [
+    {
+      "name": "oira",
+      "displayName": "Oira",
+      "source": "./claude/oira",
+      "description": "Keep Oira current with your coding work. One prompt signs you in, turns on automatic updates for the project you approve, and imports its recent history; you can also send progress updates and handoffs on request.",
+      "author": {
+        "name": "Oira-Oira",
+        "email": "nikita@oira-oira.com",
+        "url": "https://oira-oira.com"
+      },
+      "homepage": "https://oira-oira.com/coding-agent-help",
+      "repository": "https://github.com/oira-ai/plugins",
+      "license": "MIT",
+      "keywords": [
+        "oira",
+        "work-updates",
+        "handoff",
+        "project-tracking",
+        "automation",
+        "mcp"
+      ],
+      "category": "productivity"
+    }
+  ]
+}

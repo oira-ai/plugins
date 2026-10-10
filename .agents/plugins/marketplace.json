@@ -1,0 +1,20 @@
+{
+  "name": "oira",
+  "interface": {
+    "displayName": "Oira"
+  },
+  "plugins": [
+    {
+      "name": "oira",
+      "source": {
+        "source": "local",
+        "path": "./codex/oira"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

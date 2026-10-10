@@ -1,0 +1,49 @@
+{
+  "name": "oira",
+  "version": "0.6.1",
+  "description": "Keep Oira current with your coding work. One prompt signs you in, turns on automatic updates for the project you approve, and imports its recent history; you can also send progress updates and handoffs on request.",
+  "author": {
+    "name": "Oira-Oira",
+    "email": "nikita@oira-oira.com",
+    "url": "https://oira-oira.com"
+  },
+  "homepage": "https://oira-oira.com/coding-agent-help",
+  "repository": "https://github.com/oira-ai/plugins",
+  "license": "MIT",
+  "keywords": [
+    "oira",
+    "product",
+    "handoff",
+    "work-update",
+    "project-tracking",
+    "automation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oira",
+    "shortDescription": "Keep Oira current as you code",
+    "longDescription": "Oira turns your coding sessions into up-to-date work your team can follow. Say “Set up Oira for this project” once: Codex signs you in, turns on automatic updates for the project you approve, and imports its recent history. Automatic updates send only your prompts and Codex's final replies in that project, through a visible project-local hook you approve; Oira never reads your files, tool calls or other projects, and does not recover activity from times Codex was closed. You can also share progress updates and handoffs on request.",
+    "developerName": "Oira-Oira",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write",
+      "Automation"
+    ],
+    "websiteURL": "https://oira-oira.com",
+    "supportURL": "https://oira-oira.com/coding-agent-help",
+    "privacyPolicyURL": "https://oira-oira.com/privacy",
+    "termsOfServiceURL": "https://oira-oira.com/terms",
+    "defaultPrompt": [
+      "Set up Oira for this project.",
+      "Share a progress update with Oira.",
+      "Prepare and share a handoff with Oira."
+    ],
+    "brandColor": "#8C4439",
+    "brandColorDark": "#BA8E81",
+    "composerIcon": "./assets/composer-icon.png",
+    "logo": "./assets/logo.png",
+    "screenshots": []
+  },
+  "mcpServers": "./.mcp.json"
+}

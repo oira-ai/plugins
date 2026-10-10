@@ -1,0 +1,77 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact|fork",
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:oira:oira",
+            "tool": "oira_capture_session_event",
+            "input": {
+              "event": {
+                "schema": "plugin_hook_event.v1",
+                "binding_handle": "REPLACE_WITH_PROJECT_BINDING_HANDLE",
+                "client_session_key": "${session_id}",
+                "event_type": "session_start",
+                "identity_strength": "receive_time_only",
+                "coverage": "forward_only_possible_gaps"
+              }
+            },
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:oira:oira",
+            "tool": "oira_capture_session_event",
+            "input": {
+              "event": {
+                "schema": "plugin_hook_event.v1",
+                "binding_handle": "REPLACE_WITH_PROJECT_BINDING_HANDLE",
+                "client_session_key": "${session_id}",
+                "event_type": "user_prompt",
+                "client_event_id": "${prompt_id}:user_prompt",
+                "identity_strength": "stable_host_id",
+                "content": "${prompt}",
+                "host_prompt_id": "${prompt_id}",
+                "coverage": "forward_only_possible_gaps"
+              }
+            },
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "plugin:oira:oira",
+            "tool": "oira_capture_session_event",
+            "input": {
+              "event": {
+                "schema": "plugin_hook_event.v1",
+                "binding_handle": "REPLACE_WITH_PROJECT_BINDING_HANDLE",
+                "client_session_key": "${session_id}",
+                "event_type": "assistant_stop",
+                "client_event_id": "${prompt_id}:assistant_stop",
+                "identity_strength": "stable_host_id",
+                "content": "${last_assistant_message}",
+                "host_prompt_id": "${prompt_id}",
+                "coverage": "forward_only_possible_gaps"
+              }
+            },
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}
