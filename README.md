@@ -6,11 +6,11 @@
 already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code and Codex.
 
-Version **0.6.1** is prepared for release. Installation, public publication,
-and host-directory submission remain paused. No plugin credentials are embedded;
+The **0.6.1** package source is public. Host-directory submission and
+installed-client acceptance remain pending. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 
-## Install after release
+## Install
 
 ### Claude Code
 
@@ -38,8 +38,7 @@ Then run each command in order:
     claude plugin install oira@oira --scope user
     claude plugin list --json
 
-The repository is currently private. These commands are prepared for release;
-until publication, GitHub access to `oira-ai/plugins` is required. Wait for
+The source is public: no GitHub invitation is required. Wait for
 `Successfully added marketplace: oira`, then `Successfully installed plugin:
 oira@oira (scope: user)`. The final command must list `oira@oira`, user scope,
 `enabled: true` and MCP URL `https://oira-oira.com/mcp`.
