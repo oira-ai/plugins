@@ -6,9 +6,14 @@
 already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code and Codex.
 
-The **0.6.1** package source is public. Host-directory submission and
+The **0.7.0** package source is public. Host-directory submission and
 installed-client acceptance remain pending. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
+
+Reporting needs **Python 3.11 or later** on the machine where the coding app
+runs: before every update the plugin runs a small local check
+(`scripts/prepare_work_update.py`, standard library only, no network) on the
+exact update it is about to send.
 
 ## Install
 
@@ -80,25 +85,36 @@ Start a new chat in your project folder and send:
 > Set up Oira for this project.
 
 Your coding agent asks you to sign in to Oira once. In the browser, choose the
-projects this app may update and approve. The agent then checks the
-connection, turns on automatic updates for that project (you approve the hook
-it adds) and imports its recent history if you kept that option on.
+projects this app may update and, if you want, turn on the import of your
+recent work. The agent then checks the connection and the local preflight,
+tells you what Oira will receive, and runs the import if you turned it on.
 
-Later you can ask it to "Share a progress update with Oira" or "Prepare and
-share a handoff with Oira".
+Then ask it to "Keep Oira updated on this task", "Share a progress update with
+Oira" or "Prepare and share a handoff with Oira". It sends an update only when
+you ask, at milestones and meaningful changes, never per prompt.
+
+Earlier versions of this plugin could forward your prompts and replies through
+project hooks and send past conversations. Oira no longer accepts either. If
+your project still has old Oira hooks, ask your agent to remove them; it
+removes only the Oira entries after you agree.
 
 ## What Oira receives
 
-- Progress updates and handoffs your agent writes when you ask for them.
-- With automatic updates on for an approved project: your prompts and the
-  agent's final replies in that project, sent by a project-local hook you can
-  inspect and remove.
-- With the history import on: your prompts and the agent's final replies from
-  that project's recent sessions, within the period you chose.
+Oira receives only work updates you authorize, including decisions, progress,
+blockers and deferred work. If you turn on the history import, your coding
+agent reads your recent sessions in that project on your computer and sends
+the same kind of updates about them. It does not collect your session
+transcripts, tool output or source files, and you do not need to provide API
+keys. The reporting workflow excludes credentials and filters recognized
+secret patterns before sending an update.
 
-Oira never receives your files, tool calls, command output, credentials or
-other projects, and it does not recover activity from times the app was
-closed. Disconnect in Oira at any time to stop future updates.
+Each update states facts about your work in an approved project: what you
+decided, built, checked, are blocked on or put off for later, with the
+repository, branch, commits and pull requests it involves. Updates from an
+import are dated, and only work inside the period you chose is accepted. Oira checks
+updates again before storing them. Pattern checks cannot prove that free text
+never contains a secret, so keep secrets out of what you ask your agent to
+report. Disconnect in Oira at any time to stop future updates.
 
 Read the [privacy policy](https://oira-oira.com/privacy), the
 [terms](https://oira-oira.com/terms) and the

@@ -1,7 +1,7 @@
 {
   "name": "oira",
-  "version": "0.6.1",
-  "description": "Keep Oira current with your coding work. One prompt signs you in, turns on automatic updates for the project you approve, and imports its recent history; you can also send progress updates and handoffs on request.",
+  "version": "0.7.0",
+  "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
   "author": {
     "name": "Oira-Oira",
     "email": "nikita@oira-oira.com",
@@ -16,19 +16,18 @@
     "handoff",
     "work-update",
     "project-tracking",
-    "automation"
+    "deferred-work"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Oira",
-    "shortDescription": "Keep Oira current as you code",
-    "longDescription": "Oira turns your coding sessions into up-to-date work your team can follow. Say “Set up Oira for this project” once: Codex signs you in, turns on automatic updates for the project you approve, and imports its recent history. Automatic updates send only your prompts and Codex's final replies in that project, through a visible project-local hook you approve; Oira never reads your files, tool calls or other projects, and does not recover activity from times Codex was closed. You can also share progress updates and handoffs on request.",
+    "shortDescription": "Share work updates with Oira",
+    "longDescription": "Ask Codex to keep Oira updated and it sends structured work updates for the project you approve: decisions, progress, checks, blockers, questions and the work you put off for later, so Oira can keep your team's work connected and ready. It never sends your prompts, Codex's replies, session transcripts, tool output or source files. A local check runs before every update and refuses recognized credentials. Requires Python 3.11 or later.",
     "developerName": "Oira-Oira",
     "category": "Productivity",
     "capabilities": [
       "Interactive",
-      "Write",
-      "Automation"
+      "Write"
     ],
     "websiteURL": "https://oira-oira.com",
     "supportURL": "https://oira-oira.com/coding-agent-help",
@@ -36,7 +35,7 @@
     "termsOfServiceURL": "https://oira-oira.com/terms",
     "defaultPrompt": [
       "Set up Oira for this project.",
-      "Share a progress update with Oira.",
+      "Keep Oira updated on this task.",
       "Prepare and share a handoff with Oira."
     ],
     "brandColor": "#8C4439",
@@ -45,5 +44,71 @@
     "logo": "./assets/logo.png",
     "screenshots": []
   },
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/oira-work-reporting/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Set up Oira for the current project in one prompt: check the sign-in and the local preflight, and pick the approved project.",
+              "prompt": "Set up Oira for this project.",
+              "tools_triggered": "oira_connection_status",
+              "expected_behavior": "Names the approved project, confirms the local preflight runs, and says what Oira receives: only work updates the user asks for, never transcripts, tool output or files. Asks whether Oira should hear about this repository's work only when asked or at milestones in every chat; only for the second, and with the user's agreement, adds a short reporting instruction to their personal instructions file. Sends no update and adds no hook; runs an import of recent work only when the status shows one the user approved."
+            },
+            {
+              "description": "Keep Oira updated on the current task, including work the user put off.",
+              "prompt": "Keep Oira updated on this task. We just finished the 401 retry; leave the 429 backoff for later.",
+              "tools_triggered": "oira_connection_status, oira_submit_work_update",
+              "expected_behavior": "Runs the preflight, then sends one update that declares the retry work with its implementation fact and declares the 429 backoff as separate deferred work; returns the receipt with a status per work."
+            },
+            {
+              "description": "Prepare and share a handoff.",
+              "prompt": "Prepare and share a handoff with Oira.",
+              "tools_triggered": "oira_connection_status, oira_submit_work_update",
+              "expected_behavior": "Sends the current state of the work as facts (decisions, what is implemented and verified, blockers, open questions and the accepted next step) and returns the receipt."
+            },
+            {
+              "description": "Check an update whose send outcome was uncertain before retrying it.",
+              "prompt": "The Oira update timed out. Did it arrive?",
+              "tools_triggered": "oira_work_update_status",
+              "expected_behavior": "Checks the update by its reference first, then either confirms it arrived with each work's processing state or resends the unchanged update with the same reference."
+            },
+            {
+              "description": "Import the recent work of past sessions the user approved for this project.",
+              "prompt": "Import my recent history into Oira.",
+              "tools_triggered": "oira_connection_status, oira_work_update_status, oira_submit_work_update, oira_finish_history_import",
+              "expected_behavior": "Checks that the import was approved for the project and reads only that project's sessions inside the returned window on this computer. Checks each session's stream first: skips a session Oira already has whole and resumes one an earlier import left partway. Sends one dated stream of structured updates per past session (origin history_import), the last marked complete, never the conversations, then finishes the import and reports how many sessions and updates Oira received and whether any is still incomplete."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Do not trigger for general coding questions.",
+              "prompt": "Explain the difference between a Python list and a tuple.",
+              "tools_triggered": "",
+              "expected_behavior": "The model should not call Oira's tools because the user did not ask to share work with Oira."
+            },
+            {
+              "description": "Do not trigger for posting to chat tools.",
+              "prompt": "Post a summary of today's changes to our team's Slack channel.",
+              "tools_triggered": "",
+              "expected_behavior": "The app should not be invoked because Oira's tools only report to the user's approved Oira project and cannot post to Slack."
+            },
+            {
+              "description": "Do not trigger for exporting the conversation.",
+              "prompt": "Send our whole conversation so far to Oira.",
+              "tools_triggered": "",
+              "expected_behavior": "The app should not send the conversation: Oira accepts structured work updates only, never transcripts, prompts or replies. The agent can offer to send a work update instead."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Oira does not sell products or process payments through this plugin."
+      },
+      "publication": {
+        "release_notes": "Oira 0.7.0 replaces prompt-forwarding hooks and transcript submission with bounded structured work updates. Agents extract work facts locally and run a local preflight. Deferred work, corrections, cross-chat continuation and an explicitly approved import of dated past work use the same shared Oira processing pipeline. No prompts, replies, transcripts, tool outputs or files are submitted."
+      }
+    }
+  }
 }

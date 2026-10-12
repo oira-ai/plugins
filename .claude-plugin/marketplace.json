@@ -5,13 +5,13 @@
     "email": "nikita@oira-oira.com",
     "url": "https://oira-oira.com"
   },
-  "description": "Oira plugins for Claude Code: keep Oira current with your coding work.",
+  "description": "Oira plugins for Claude Code: share structured work updates with Oira.",
   "plugins": [
     {
       "name": "oira",
       "displayName": "Oira",
       "source": "./claude/oira",
-      "description": "Keep Oira current with your coding work. One prompt signs you in, turns on automatic updates for the project you approve, and imports its recent history; you can also send progress updates and handoffs on request.",
+      "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
       "author": {
         "name": "Oira-Oira",
         "email": "nikita@oira-oira.com",
@@ -25,7 +25,7 @@
         "work-updates",
         "handoff",
         "project-tracking",
-        "automation",
+        "deferred-work",
         "mcp"
       ],
       "category": "productivity"
