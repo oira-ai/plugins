@@ -91,7 +91,8 @@ Start a new Kiro chat in your project folder (restart Kiro if it was open).
 In the CLI, type `/mcp`: `oira` shows a pending sign-in; press Enter on it
 or run `/mcp auth oira` and finish in the browser. In the IDE, choose
 Authenticate next to `oira` in the MCP panel. Your Kiro login and your Oira
-sign-in are separate. Then send:
+sign-in are separate. `/mcp` commands are for the CLI; in the IDE use the
+panel. This package needs no Kiro Power. Then send:
 
 > Set up Oira for this project.
 
@@ -125,6 +126,10 @@ release notes say so. Start a new chat afterwards.
   also block the server.
 - Sign-in keeps repeating or used the wrong account: `/mcp cancel-auth oira`,
   then `/mcp logout oira`, then sign in again.
+- Registration fails with "Oira registers PKCE public clients only": keep
+  `oauthScopes` and reconnect after the server fix. This is a registration
+  compatibility error before consent; removing scopes or installing a
+  Power will not fix it.
 - "Reporting is unavailable": the preflight needs Python 3.11 or later;
   `references/local-runtime.md` in the skill explains the shell details.
 - More in the [setup and troubleshooting guide](https://oira-oira.com/coding-agent-help).

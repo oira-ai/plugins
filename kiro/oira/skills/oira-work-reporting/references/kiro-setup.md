@@ -5,6 +5,10 @@ up (sign-in, the selected agent, the personal steering file, removal). Kiro
 installs Oira by hand: the skill folder plus one MCP server entry. Nothing
 here changes the user's model, permissions, hooks or other servers.
 
+This installation uses a skill and a remote MCP server; it does not install
+a Kiro Power. Do not use Power discovery or activation to check whether
+Oira is connected. Check the MCP server and its tools instead.
+
 ## Kiro login versus Oira sign-in
 
 Kiro's own login (`kiro-cli login`, or the IDE account) is not an Oira
@@ -13,6 +17,14 @@ lists `oira` and shows a pending sign-in URL; selecting it (or
 `/mcp auth oira`) opens the browser. In the IDE, the MCP panel shows
 Authenticate next to `oira`. `/mcp logout oira` removes only the stored Oira
 sign-in; it does not revoke the connection in Oira (see "Removal").
+
+The `/mcp` commands above belong to Kiro CLI. In the IDE use the MCP panel;
+typing those commands into IDE chat may only ask the agent to discuss them.
+Keep the two `oauthScopes` in the server entry. Removing them does not bypass
+Dynamic Client Registration. If the log says registration was rejected
+with `Oira registers PKCE public clients only`, sign-in failed at the server
+before consent; reconnect after the Oira server fix instead of adding a
+client secret, changing the URL or removing scopes.
 
 An administrator's MCP registry or governance policy can block the server;
 if `oira` is absent from `/mcp` although `mcp.json` names it, say so and
