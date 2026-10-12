@@ -49,6 +49,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/oira-work-reporting/SKILL.md",
       "review": {
+        "demo_recording_url": "https://youtu.be/cxZJlVSfOTg",
         "test_cases": {
           "positive": [
             {
