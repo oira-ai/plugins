@@ -72,6 +72,11 @@ The `oauthScopes` are required; without them Kiro requests its default
 OpenID scopes, which Oira refuses. Add no headers or credentials. The Kiro
 IDE's MCP Servers panel edits the same file.
 
+Keep `"timeout": 300000` in the entry. It allows five minutes for browser
+sign-in; the IDE's 60-second default can stop its local callback before
+you finish approval. A workspace or custom-agent server entry takes
+precedence, so include the timeout there too when it defines `oira`.
+
 Custom agents load neither shared servers nor skills by themselves, and
 selecting a server's tools does not load the server. Merge all three
 entries of `agent.example.json` into your agent: the `oira` server under
@@ -115,8 +120,10 @@ reported when you ask.
 ## Update
 
 Repeat step 1 (it pulls the latest published package and copies it over the
-installed skill). The MCP entry does not change between versions unless the
-release notes say so. Start a new chat afterwards.
+installed skill). If you installed before the 12 October timeout fix, add
+`"timeout": 300000` inside your active `oira` MCP entry as in step 2;
+updating the skill alone does not update that setting. Start a new chat
+afterwards.
 
 ## If something is off
 
@@ -124,7 +131,14 @@ release notes say so. Start a new chat afterwards.
   (`/agent list`); a custom agent needs the server entry, `@oira` and the
   `skill://` resource as in step 2. An administrator's MCP registry can
   also block the server.
-- Sign-in keeps repeating or used the wrong account: `/mcp cancel-auth oira`,
+- Sign-in times out after 60000ms, then the browser cannot open the callback:
+  check `"timeout": 300000` in the active `oira` entry (including workspace
+  or custom-agent overrides). In the IDE, reconnect in the MCP panel and
+  choose Authenticate again; finish approval in the new tab within five
+  minutes. In the CLI, use `/mcp cancel-auth oira`, then `/mcp auth oira`.
+  Reloading the old callback tab cannot restart its stopped listener.
+- Sign-in keeps repeating or used the wrong account: in the IDE reconnect
+  and Authenticate in the MCP panel; in the CLI use `/mcp cancel-auth oira`,
   then `/mcp logout oira`, then sign in again.
 - Registration fails with "Oira registers PKCE public clients only": keep
   `oauthScopes` and reconnect after the server fix. This is a registration

@@ -26,6 +26,25 @@ with `Oira registers PKCE public clients only`, sign-in failed at the server
 before consent; reconnect after the Oira server fix instead of adding a
 client secret, changing the URL or removing scopes.
 
+### Browser returns to a closed local callback
+
+Kiro IDE 1.2.56 gives the whole connection, including browser sign-in,
+60 seconds by default. If that time expires, it stops the local callback
+server. A browser returning afterwards shows "Can't connect to the server"
+even when Oira approval succeeded. The packaged server entry sets
+`"timeout": 300000` (milliseconds) to allow five minutes.
+
+If the log says `connection timed out after 60000ms`, add or update that
+property inside the active `oira` entry. Check workspace settings and
+the selected custom agent too: their server entry can override the user
+settings. Keep the URL, scopes and other servers as they are. In the IDE,
+reconnect `oira` in the MCP panel, choose Authenticate, and finish the
+new browser flow within five minutes. In the CLI, cancel the pending auth
+with `/mcp cancel-auth oira`, then use `/mcp auth oira` again.
+Use the new sign-in tab; reloading the old local callback cannot
+restart Kiro's listener. If the new flow still fails, check its new log
+before changing other settings. Do not share callback URLs, codes or tokens.
+
 An administrator's MCP registry or governance policy can block the server;
 if `oira` is absent from `/mcp` although `mcp.json` names it, say so and
 stop. Do not work around it.
@@ -35,7 +54,7 @@ stop. Do not work around it.
 | Piece | Location |
 | --- | --- |
 | Skill (this folder) | `~/.kiro/skills/oira-work-reporting/` (user) or `.kiro/skills/oira-work-reporting/` (workspace); workspace wins on a name clash |
-| MCP server entry | `~/.kiro/settings/mcp.json` (user) or `.kiro/settings/mcp.json` (workspace), key `oira`, `url` plus `oauthScopes` `connection_status:read` and `work_updates:write`; or inside the selected agent's own `mcpServers` |
+| MCP server entry | `~/.kiro/settings/mcp.json` (user) or `.kiro/settings/mcp.json` (workspace), key `oira`, `url` plus `oauthScopes` `connection_status:read` and `work_updates:write`, and `timeout: 300000` (milliseconds); or inside the selected agent's own `mcpServers` |
 | Personal reporting instruction | `~/.kiro/steering/oira-reporting.md` |
 | Custom agents | `~/.kiro/agents/` (global) and `.kiro/agents/` (workspace), JSON or Markdown with YAML front matter |
 

@@ -5,7 +5,8 @@
       "oauthScopes": [
         "connection_status:read",
         "work_updates:write"
-      ]
+      ],
+      "timeout": 300000
     }
   }
 }

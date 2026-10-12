@@ -34,7 +34,7 @@ before retrying.
 1. Call `oira_connection_status`. Continue only when `reporting.available` is
    true, `reporting.contract` is `oira_work_update.v2` and
    `reporting.structured_only` is true. If the Oira tools are missing or ask
-   for sign-in, ask the user to sign in and wait: in the Kiro CLI, type `/mcp`, select `oira` and press Enter (or run `/mcp auth oira`); in the Kiro IDE, choose Authenticate next to `oira` in the MCP panel. They finish in the browser; then call `oira_connection_status` again. If `oira` is not listed at all, `references/kiro-setup.md` says what to check. If the status lacks these values, this Oira server
+   for sign-in, ask the user to sign in and wait: in the Kiro CLI, type `/mcp`, select `oira` and press Enter (or run `/mcp auth oira`); in the Kiro IDE, choose Authenticate next to `oira` in the MCP panel. They finish in the browser; then call `oira_connection_status` again. If sign-in times out or the browser cannot open the local callback, check `timeout: 300000` in the active server entry and start a fresh authentication; `references/kiro-setup.md` explains recovery. If `oira` is not listed at all, `references/kiro-setup.md` says what to check. If the status lacks these values, this Oira server
    still runs an earlier, transcript-based edition: tell the user that
    structured reporting is not available there and send nothing. Never fall
    back to another tool or format.
