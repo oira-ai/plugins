@@ -10,8 +10,10 @@ Four Oira tools: `oira_connection_status`, `oira_submit_work_update`,
 the user asks you to keep Oira updated, for the current task or for the
 approved project (their own instruction from "Set up Oira" is that ask, for
 the repository it names), or asks for a progress update or a handoff;
-import past work only as "Import recent work" says. Nothing is sent in the
-background, and no hook or transcript upload is involved.
+import past work only as "Import recent work" says. Codex and Claude can also
+use explicitly enabled local hooks to remind you
+to report new work facts automatically. Hook input and transcripts are never
+uploaded. Other apps keep their instruction-based reporting.
 
 For the user's authorized current work, declare each distinct intended outcome
 once and report only material new facts afterward. Keep work references
@@ -244,10 +246,13 @@ work; not session transcripts, tool output or source files; no API keys are
 needed; and the reporting workflow excludes credentials and filters
 recognized secret patterns before each update is sent.
 
-Then ask how Oira should hear about this repository's work: only when they
+If the user already asked for automatic reporting, apply that choice without
+asking again. Otherwise ask how Oira should hear about this repository's
+work: only when they
 ask (nothing more to do), or at milestones in every chat. Approving the
 connection alone is not that choice. For every chat, and only once they
-agree, add this block to their personal Codex instructions, `AGENTS.md` in the Codex home folder (`~/.codex` unless `CODEX_HOME` is set; `AGENTS.override.md` there instead when that file exists), which every new session reads, keeping everything already there (create the file if it is missing), and show them the block:
+agree, Codex and Claude use "Automatic reporting hooks" below; other apps
+add this block to their personal Codex instructions, `AGENTS.md` in the Codex home folder (`~/.codex` unless `CODEX_HOME` is set; `AGENTS.override.md` there instead when that file exists), which every new session reads, keeping everything already there (create the file if it is missing), and show them the block:
 
 ```
 ## Oira reporting (added at my request)
@@ -264,6 +269,42 @@ or approval. To stop, delete this block.
 personal to them, so teammates' agents never report because of it. If the
 status shows a requested history import for the project, run it as "Import
 recent work" says. Send no test update unless they ask for one.
+
+## Automatic reporting hooks
+
+For local Codex and Claude sessions on macOS/Linux, the plugin bundles
+`hooks/hooks.json`. The commands only emit reporting reminders; the host
+still owns OAuth and sends facts with the four tools above. They neither read
+transcripts nor send hook input. Python 3.8+ runs the reminder; the outbound
+preflight still needs Python 3.11+. Other hosts keep the personal instruction
+above until their lifecycle hooks are qualified.
+
+After the user explicitly enables automatic reporting for this repository,
+check the connection and validate the exact approved project label, then run:
+
+```
+python3 "<this plugin's folder>/hooks/reporting_hook.py" --app codex --environment production enable --project-root "<this repository's absolute root>" --project-label "<exact approved project_label>"
+```
+
+Do not enable another project or infer its label from its folder. This saves
+only a personal repository binding under `~/.oira/reporting/`, shared by that
+repository's Git worktrees, separate for each app and environment. It never
+edits the repository or another user's settings. To stop, use the same command
+with `disable --project-root "<root>"` and omit `--project-label`.
+
+In Codex, new or changed hooks require the user's native hook review before
+running: open `/hooks` to inspect and trust the Oira definitions. Never write
+trust hashes or bypass that review. Start a new local chat after installing or
+updating either plugin. Do not restart an active coding session yourself.
+A saved binding alone does not prove the host loaded or trusted the hooks.
+
+Session start and user-turn hooks remind you to report at meaningful milestones.
+A Stop hook asks for one bounded final reporting check and then lets the host
+finish; a reminder alone is never a reason to send an update. On missing tools,
+paused capture, failed preflight or unavailable authentication, say what is
+blocked once and finish. Keep sequence and retry identities stable; verify a
+receipt before claiming delivery. Never turn on work-tracking responsibility
+just to report: `processing.state: parked` still accepts and stores updates.
 
 ## Moving from an earlier Oira plugin
 

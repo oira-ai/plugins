@@ -6,7 +6,7 @@ CLI or the Kiro IDE: when you ask, the agent sends structured work updates
 work you explicitly put off) for the project you approve. It never sends
 prompts, replies, transcripts, tool output or files, and it needs no API key.
 
-This folder is the Kiro package, version **0.8.0**. Kiro has no plugin
+This folder is the Kiro package, version **0.9.0**. Kiro has no plugin
 directory for Oira, so it is installed by hand: one skill folder and one MCP
 server entry. The same skill, preflight and contract are used by the Claude
 Code and Codex packages in this repository.
