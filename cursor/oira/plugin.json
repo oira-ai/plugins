@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "oira",
+  "version": "0.8.0",
+  "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
+  "author": {
+    "name": "Oira-Oira",
+    "email": "nikita@oira-oira.com",
+    "url": "https://oira-oira.com"
+  },
+  "homepage": "https://oira-oira.com/coding-agent-help",
+  "repository": "https://github.com/oira-ai/plugins",
+  "license": "MIT",
+  "keywords": [
+    "oira",
+    "work-updates",
+    "handoff",
+    "project-tracking",
+    "deferred-work",
+    "mcp"
+  ]
+}

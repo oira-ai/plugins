@@ -1,0 +1,39 @@
+{
+  "schema": "oira_work_update.v2",
+  "project_label": "platform",
+  "update_ref": "3f1c2b9e-8a4d-4c1e-9b7a-2d5e6f7a8b9c",
+  "stream_ref": "7a2b3c4d-5e6f-4a1b-8c2d-3e4f5a6b7c8d",
+  "sequence": 1,
+  "reporter_version": "0.7.0",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [
+    {
+      "work_ref": "token-refresh",
+      "operation": "declare",
+      "title": "Retry expired OAuth tokens in the sync worker",
+      "intended_outcome": "The sync worker refreshes an expired access token once and retries the failed request instead of failing the whole sync.",
+      "activity": "execution",
+      "boundaries": ["Does not change how tokens are stored."],
+      "facts": [
+        {"fact_ref": "goal", "kind": "commitment", "status": "accepted", "statement": "Implement one refresh-and-retry when a provider call returns 401.", "basis": "user_statement_paraphrase", "confidence": "0.9"},
+        {"fact_ref": "impl", "kind": "implemented_change", "status": "tested", "statement": "Added refresh-and-retry to SyncWorker.fetch_page; unit tests for the 401 path pass.", "basis": "agent_report", "confidence": "0.85"},
+        {"fact_ref": "split", "kind": "decision", "status": "accepted", "statement": "Backoff for repeated 429 responses is split off as separate future work.", "basis": "user_statement_paraphrase", "confidence": "0.9"}
+      ],
+      "details": [
+        {"detail_ref": "retry", "kind": "behavior", "description": "A 401 triggers exactly one token refresh and one retry; a second 401 fails the page.", "temporal_status": "current", "supporting_fact_refs": ["impl"]}
+      ],
+      "code": {"repository_url": "github.com:oira-ai/platform.git", "branch": "feature/token-refresh", "commits": ["4b521e0"]}
+    },
+    {
+      "work_ref": "rate-limit-backoff",
+      "operation": "declare",
+      "title": "Back off on repeated 429 responses",
+      "intended_outcome": "The sync worker waits with exponential backoff when a provider keeps returning 429.",
+      "activity": "planning",
+      "facts": [
+        {"fact_ref": "deferred", "kind": "explicit_deferral", "status": "deferred", "statement": "The user postponed rate-limit backoff until the token refresh lands.", "basis": "user_statement_paraphrase", "confidence": "0.9"}
+      ],
+      "deferral": {"reason": "Postponed until the token refresh work lands.", "resume_condition": "After the token refresh change is merged.", "origin_work_ref": "token-refresh", "supporting_fact_refs": ["deferred"]}
+    }
+  ]
+}

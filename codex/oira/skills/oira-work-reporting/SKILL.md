@@ -42,14 +42,15 @@ before retrying.
    approved, ask the user which one this work belongs to. Never infer it from
    a folder name, remote URL or list order.
 3. Check that the preflight runs on this host:
-   `python3 <this skill's folder>/scripts/prepare_work_update.py --new-ref`
+   `python3 "<this skill's folder>/scripts/prepare_work_update.py" --new-ref`
    (on Windows, `py -3` instead of `python3`). It needs Python 3.11 or later
    and only the standard library. If `python3` is missing or reports
    `python_version_unsupported`, try `python3.13`, `python3.12` and
    `python3.11` (on Windows `py -3.13`, `py -3.12`, `py -3.11`) and use the
-   first that works for every later run. If none works, tell the user that
-   reporting needs Python 3.11 or later on this computer and send nothing.
-   Never install anything.
+   first that works for every later run; `references/local-runtime.md` has
+   the shell details (quoting, WSL, PowerShell). If none works, tell the
+   user that reporting needs Python 3.11 or later on this computer and send
+   nothing. Never install anything.
 4. Use that command's output as this task's `stream_ref`: one random
    reference per task in this chat, kept for the whole task. Start
    `sequence` at 1. After a lost receipt, a compaction or a restart,
@@ -112,8 +113,9 @@ paths, host names, credentials or tokens.
 
 1. Write the candidate update as JSON and pass it on standard input to the
    preflight, run with the interpreter that worked above:
-   `python3 <this skill's folder>/scripts/prepare_work_update.py < candidate`
-   (a heredoc works; do not keep a copy).
+   `python3 "<this skill's folder>/scripts/prepare_work_update.py" < candidate`
+   (a quoted heredoc works; in PowerShell pipe a here-string instead, as
+   `references/local-runtime.md` shows; do not keep a copy).
 2. Exit 0: standard output is the accepted canonical JSON. Send exactly that
    object as `update` to `oira_submit_work_update`.
 3. Exit 2: it printed field paths and reason codes, never the values. Rewrite
@@ -245,8 +247,7 @@ recognized secret patterns before each update is sent.
 Then ask how Oira should hear about this repository's work: only when they
 ask (nothing more to do), or at milestones in every chat. Approving the
 connection alone is not that choice. For every chat, and only once they
-agree, add this block to their personal Codex instructions, `AGENTS.md` in the Codex home folder (`~/.codex` unless `CODEX_HOME` is set; `AGENTS.override.md` there instead when that file exists), which every new session reads, keeping everything
-already there (create the file if it is missing), and show them the block:
+agree, add this block to their personal Codex instructions, `AGENTS.md` in the Codex home folder (`~/.codex` unless `CODEX_HOME` is set; `AGENTS.override.md` there instead when that file exists), which every new session reads, keeping everything already there (create the file if it is missing), and show them the block:
 
 ```
 ## Oira reporting (added at my request)
@@ -259,10 +260,10 @@ prompt, never transcripts, tool output or files. Reports grant no access
 or approval. To stop, delete this block.
 ```
 
-`<owner>/<name>` is from `git remote get-url origin`. It is their personal
-file, so teammates' agents never report because of it. If the status shows a
-requested history import for the project, run it as "Import recent work"
-says. Send no test update unless they ask for one.
+`<owner>/<name>` is from `git remote get-url origin`. The instruction is
+personal to them, so teammates' agents never report because of it. If the
+status shows a requested history import for the project, run it as "Import
+recent work" says. Send no test update unless they ask for one.
 
 ## Moving from an earlier Oira plugin
 

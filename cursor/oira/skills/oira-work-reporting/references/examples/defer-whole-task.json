@@ -1,0 +1,19 @@
+{
+  "schema": "oira_work_update.v2",
+  "project_label": "platform",
+  "update_ref": "5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f7a8b9",
+  "stream_ref": "1a2b3c4d-5e6f-4a7b-9c8d-0e1f2a3b4c5d",
+  "sequence": 2,
+  "reporter_version": "0.7.0",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [
+    {
+      "work_ref": "event-timestamps",
+      "operation": "update",
+      "facts": [
+        {"fact_ref": "paused", "kind": "explicit_deferral", "status": "deferred", "statement": "The user postponed this work until the billing team confirms the timestamp unit.", "basis": "user_statement_paraphrase", "confidence": "0.9"}
+      ],
+      "deferral": {"reason": "Waiting for the billing team to confirm the expected timestamp unit.", "resume_condition": "The billing team confirms milliseconds or seconds.", "supporting_fact_refs": ["paused"]}
+    }
+  ]
+}

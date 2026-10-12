@@ -1,0 +1,212 @@
+{
+  "schema": "oira_work_update.v2",
+  "project_label": "platform",
+  "update_ref": "6c5d4e3f-2a1b-4c0d-9e8f-7a6b5c4d3e2f",
+  "stream_ref": "2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e",
+  "sequence": 1,
+  "reporter_version": "0.7.0",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [
+    {
+      "work_ref": "token-refresh",
+      "operation": "declare",
+      "title": "Retry expired OAuth tokens in the sync worker",
+      "intended_outcome": "The sync worker refreshes an expired access token once and retries the failed request instead of failing the whole sync.",
+      "activity": "execution",
+      "facts": [
+        {
+          "fact_ref": "goal",
+          "kind": "commitment",
+          "status": "accepted",
+          "statement": "Implement one refresh-and-retry when a provider call returns 401.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        },
+        {
+          "fact_ref": "impl",
+          "kind": "implemented_change",
+          "status": "tested",
+          "statement": "Added refresh-and-retry to SyncWorker.fetch_page; its unit tests pass.",
+          "basis": "agent_report",
+          "confidence": "0.85"
+        },
+        {
+          "fact_ref": "split",
+          "kind": "decision",
+          "status": "accepted",
+          "statement": "Seven related improvements were postponed by the user and declared as separate deferred work.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ]
+    },
+    {
+      "work_ref": "retry-jitter",
+      "operation": "declare",
+      "title": "Add jitter to sync retries",
+      "intended_outcome": "Retries of a failed sync page wait a randomized delay so workers do not retry in lockstep.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: add jitter to sync retries.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    },
+    {
+      "work_ref": "rate-limit-backoff",
+      "operation": "declare",
+      "title": "Back off on repeated 429 responses",
+      "intended_outcome": "The sync worker waits with exponential backoff when a provider keeps returning 429.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: back off on repeated 429 responses.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    },
+    {
+      "work_ref": "token-metrics",
+      "operation": "declare",
+      "title": "Count token refreshes",
+      "intended_outcome": "Operators can see how often access tokens are refreshed per provider.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: count token refreshes.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    },
+    {
+      "work_ref": "refresh-alerts",
+      "operation": "declare",
+      "title": "Alert on refresh failures",
+      "intended_outcome": "An alert fires when token refresh fails repeatedly for one connection.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: alert on refresh failures.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    },
+    {
+      "work_ref": "provider-docs",
+      "operation": "declare",
+      "title": "Document refresh behaviour",
+      "intended_outcome": "The connector guide explains how expired tokens are refreshed and retried.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: document refresh behaviour.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    },
+    {
+      "work_ref": "cache-tokens",
+      "operation": "declare",
+      "title": "Cache refreshed tokens across workers",
+      "intended_outcome": "Workers share a refreshed token instead of each refreshing it.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: cache refreshed tokens across workers.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    },
+    {
+      "work_ref": "legacy-cleanup",
+      "operation": "declare",
+      "title": "Remove the legacy token fetcher",
+      "intended_outcome": "The unused legacy token fetcher module is deleted.",
+      "activity": "planning",
+      "facts": [
+        {
+          "fact_ref": "deferred",
+          "kind": "explicit_deferral",
+          "status": "deferred",
+          "statement": "The user postponed this until the token refresh work lands: remove the legacy token fetcher.",
+          "basis": "user_statement_paraphrase",
+          "confidence": "0.9"
+        }
+      ],
+      "deferral": {
+        "reason": "Postponed by the user until the token refresh work lands.",
+        "origin_work_ref": "token-refresh",
+        "supporting_fact_refs": [
+          "deferred"
+        ]
+      }
+    }
+  ]
+}

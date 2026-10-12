@@ -1,12 +1,13 @@
 <p align="center"><img src="codex/oira/assets/logo.png" width="96" alt="Oira"></p>
 
-# Oira for Claude Code and Codex
+# Oira for Claude Code, Codex, Kiro, GitHub Copilot and Cursor
 
 [Oira](https://oira-oira.com) keeps your team's work current from the coding you
 already do. This repository is the plugin marketplace for the Oira plugin in
-Claude Code and Codex.
+Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
+Cursor.
 
-The **0.7.0** package source is public. Host-directory submission and
+The **0.8.0** package source is public. Host-directory submission and
 installed-client acceptance remain pending. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 
@@ -84,6 +85,39 @@ same user account as the desktop app. Install Git if cloning is unavailable.
 Registration adds the source; install and enable **Oira** in Plugins, then
 start a new chat. Existing sources can be refreshed with
 `codex plugin marketplace upgrade oira`.
+
+### Kiro
+
+Kiro (CLI or IDE) installs Oira by hand: one skill folder and one MCP entry.
+Follow [kiro/oira/README.md](kiro/oira/README.md): copy
+`kiro/oira/skills/oira-work-reporting` into `~/.kiro/skills/` (or import that
+folder's GitHub URL from the Kiro IDE), merge `kiro/oira/mcp.json` into
+`~/.kiro/settings/mcp.json` (the OAuth scopes in it are required), give a
+custom agent `@oira` and the skill resource if you use one, then sign in with
+`/mcp auth oira`. The import of recent work is not available for Kiro yet.
+
+### GitHub Copilot
+
+In the Copilot CLI or any terminal:
+
+    copilot plugin marketplace add oira-ai/plugins
+    copilot plugin install oira@oira
+
+VS Code discovers the plugin installed by the CLI. JetBrains IDEs and
+Visual Studio 2026 18.5+ install the skill folder and one MCP entry by hand;
+[copilot/oira/README.md](copilot/oira/README.md) has every route. Sign in
+with `/mcp auth oira` (CLI) or the server's Authenticate action (IDE); your
+GitHub login is not an Oira sign-in. The import of recent work is not
+available for Copilot yet.
+
+### Cursor
+
+Copy `cursor/oira` into `~/.cursor/plugins/local/oira` and reload Cursor, or
+install the skill folder and one `mcp.json` entry by hand for the CLI and
+for Cursor inside JetBrains; [cursor/oira/README.md](cursor/oira/README.md)
+has the steps. Sign in from Cursor Settings → MCP or with
+`agent mcp login oira`. The import of recent work is not available for
+Cursor yet.
 
 ## Set up with one prompt
 

@@ -1,0 +1,38 @@
+{
+  "schema": "oira_work_update.v2",
+  "origin": "history_import",
+  "session_complete": true,
+  "project_label": "platform",
+  "update_ref": "5d8e2f41-6b3a-4c7d-8e9f-0a1b2c3d4e5f",
+  "stream_ref": "2e4c6a8b-1d3f-4b5a-9c7e-8f0a2b4c6d8e",
+  "sequence": 1,
+  "reporter_version": "0.7.0",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [
+    {
+      "work_ref": "csv-export",
+      "operation": "declare",
+      "title": "Export reports as CSV",
+      "intended_outcome": "Members can download any report as a CSV file with the same columns as the screen.",
+      "activity": "execution",
+      "facts": [
+        {"fact_ref": "goal", "kind": "commitment", "status": "accepted", "statement": "Add a CSV download to the reports page.", "basis": "user_statement_paraphrase", "confidence": "0.9", "occurred_at": "2026-10-02T09:14:00Z"},
+        {"fact_ref": "quoting", "kind": "decision", "status": "accepted", "statement": "Quote every field and use the RFC 4180 line ending, so spreadsheets open the file unchanged.", "basis": "user_statement_paraphrase", "confidence": "0.85", "occurred_at": "2026-10-02T09:40:00Z"},
+        {"fact_ref": "built", "kind": "implemented_change", "status": "committed", "statement": "Added the CSV writer and the download button; the change is committed on the branch.", "basis": "agent_report", "confidence": "0.9", "occurred_at": "2026-10-02T11:05:00Z"},
+        {"fact_ref": "split", "kind": "decision", "status": "accepted", "statement": "Excel-specific formatting is split off as separate future work.", "basis": "user_statement_paraphrase", "confidence": "0.85", "occurred_at": "2026-10-02T11:20:00Z"}
+      ],
+      "code": {"repository_url": "github.com:oira-ai/platform.git", "branch": "feature/csv-export", "pull_requests": [388]}
+    },
+    {
+      "work_ref": "excel-formatting",
+      "operation": "declare",
+      "title": "Format exported reports for Excel",
+      "intended_outcome": "Exported reports open in Excel with typed dates and numbers.",
+      "activity": "planning",
+      "facts": [
+        {"fact_ref": "later", "kind": "explicit_deferral", "status": "deferred", "statement": "The user put Excel formatting off until the CSV export is in use.", "basis": "user_statement_paraphrase", "confidence": "0.85", "occurred_at": "2026-10-02T11:20:00Z"}
+      ],
+      "deferral": {"reason": "Wait until the plain CSV export is in use.", "origin_work_ref": "csv-export", "supporting_fact_refs": ["later"]}
+    }
+  ]
+}

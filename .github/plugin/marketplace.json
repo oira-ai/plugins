@@ -1,0 +1,36 @@
+{
+  "name": "oira",
+  "owner": {
+    "name": "Oira-Oira",
+    "email": "nikita@oira-oira.com"
+  },
+  "metadata": {
+    "description": "Oira plugin for GitHub Copilot: share structured work updates with Oira.",
+    "version": "0.8.0"
+  },
+  "plugins": [
+    {
+      "name": "oira",
+      "source": "./copilot/oira",
+      "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
+      "version": "0.8.0",
+      "author": {
+        "name": "Oira-Oira",
+        "email": "nikita@oira-oira.com",
+        "url": "https://oira-oira.com"
+      },
+      "homepage": "https://oira-oira.com/coding-agent-help",
+      "repository": "https://github.com/oira-ai/plugins",
+      "license": "MIT",
+      "keywords": [
+        "oira",
+        "work-updates",
+        "handoff",
+        "project-tracking",
+        "deferred-work",
+        "mcp"
+      ],
+      "category": "productivity"
+    }
+  ]
+}

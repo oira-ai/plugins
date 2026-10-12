@@ -1,0 +1,18 @@
+{
+  "$comment": "Merge fragment for an EXISTING Kiro custom agent (IDE 1.x / CLI V3). A custom agent needs all three: the Oira server itself (this mcpServers entry, or includeMcpJson: true when the agent already takes servers from mcp.json), the tool selector, and the skill resource. Add them to your agent's own mcpServers, tools and resources; keep its name, prompt, model, permissions, hooks and other servers exactly as they are. Do not replace your agent file with this one.",
+  "mcpServers": {
+    "oira": {
+      "url": "https://oira-oira.com/mcp",
+      "oauthScopes": [
+        "connection_status:read",
+        "work_updates:write"
+      ]
+    }
+  },
+  "tools": [
+    "@oira"
+  ],
+  "resources": [
+    "skill://~/.kiro/skills/oira-work-reporting/SKILL.md"
+  ]
+}

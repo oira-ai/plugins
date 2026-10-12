@@ -1,0 +1,1100 @@
+{
+  "$defs": {
+    "VersionRefV2": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "description": "No whitespace.",
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Ref",
+          "type": "string"
+        },
+        "ref_kind": {
+          "enum": [
+            "git_commit",
+            "pull_request",
+            "branch",
+            "model",
+            "prompt",
+            "retrieval_index",
+            "dataset",
+            "schema",
+            "mobile_build",
+            "api",
+            "sdk",
+            "mcp_server",
+            "artifact_version"
+          ],
+          "title": "Ref Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref_kind",
+        "ref"
+      ],
+      "title": "VersionRefV2",
+      "type": "object"
+    },
+    "WorkCodeV2": {
+      "additionalProperties": false,
+      "description": "Where the work lives in git. commits are ones this work created.",
+      "properties": {
+        "branch": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Branch"
+        },
+        "commits": {
+          "anyOf": [
+            {
+              "items": {
+                "maxLength": 40,
+                "minLength": 7,
+                "pattern": "^[0-9a-f]{7,40}$",
+                "type": "string"
+              },
+              "maxItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Commits"
+        },
+        "pull_requests": {
+          "anyOf": [
+            {
+              "items": {
+                "maximum": 99999999,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "maxItems": 10,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pull Requests"
+        },
+        "repository_url": {
+          "anyOf": [
+            {
+              "description": "Canonical remote without credentials, e.g. github.com:org/repo.git or https://github.com/org/repo.",
+              "maxLength": 300,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repository Url"
+        }
+      },
+      "title": "WorkCodeV2",
+      "type": "object"
+    },
+    "WorkContinuityV2": {
+      "additionalProperties": false,
+      "description": "How this work relates to earlier work, by returned handle or work_ref.",
+      "properties": {
+        "relationship": {
+          "enum": [
+            "continues_prior",
+            "returns_to_prior",
+            "new_work",
+            "corrects_prior",
+            "reviews_completed",
+            "resumes_completed",
+            "follow_up"
+          ],
+          "title": "Relationship",
+          "type": "string"
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkTargetV2"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "relationship",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkContinuityV2",
+      "type": "object"
+    },
+    "WorkDeferralV2": {
+      "additionalProperties": false,
+      "description": "Why this outcome was explicitly postponed. No date means unscheduled.",
+      "properties": {
+        "origin_work_ref": {
+          "anyOf": [
+            {
+              "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Origin Work Ref"
+        },
+        "reason": {
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string",
+          "x-oira-max-utf8-bytes": 600
+        },
+        "resume_after": {
+          "anyOf": [
+            {
+              "description": "Timezone-aware RFC 3339, for example 2026-10-11T09:30:00Z.",
+              "maxLength": 35,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume After"
+        },
+        "resume_condition": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "minLength": 1,
+              "type": "string",
+              "x-oira-max-utf8-bytes": 600
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume Condition"
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reason",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkDeferralV2",
+      "type": "object"
+    },
+    "WorkDetailV2": {
+      "additionalProperties": false,
+      "description": "A cited technical detail: interface, data meaning, timing, path, version.",
+      "properties": {
+        "description": {
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string",
+          "x-oira-max-utf8-bytes": 600
+        },
+        "detail_ref": {
+          "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Detail Ref",
+          "type": "string"
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment"
+        },
+        "function_labels": {
+          "anyOf": [
+            {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 4,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Function Labels"
+        },
+        "kind": {
+          "enum": [
+            "surface",
+            "input_output",
+            "assumption",
+            "behavior",
+            "transform",
+            "verification",
+            "decision",
+            "open_point",
+            "contribution"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "subject_labels": {
+          "anyOf": [
+            {
+              "items": {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 6,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subject Labels"
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        },
+        "temporal_status": {
+          "enum": [
+            "proposed",
+            "current",
+            "superseded",
+            "unknown"
+          ],
+          "title": "Temporal Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "minLength": 1,
+              "type": "string",
+              "x-oira-max-utf8-bytes": 600
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty"
+        },
+        "version_refs": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/VersionRefV2"
+              },
+              "maxItems": 6,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version Refs"
+        }
+      },
+      "required": [
+        "detail_ref",
+        "kind",
+        "description",
+        "temporal_status",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkDetailV2",
+      "type": "object"
+    },
+    "WorkFactV2": {
+      "additionalProperties": false,
+      "description": "One new, material fact about this work, in the agent's own words.",
+      "properties": {
+        "basis": {
+          "description": "agent_report: what you did or observed; user_statement_paraphrase: what the user said; agent_inference: your own conclusion; relayed_report: repeated from another agent's handoff or report, not observed by you (never independent support).",
+          "enum": [
+            "agent_report",
+            "user_statement_paraphrase",
+            "agent_inference",
+            "relayed_report"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "confidence": {
+          "description": "The reporting agent's own estimate from 0 to 1 with at most four decimals, for example \"0.8\". Not a measurement or a proof.",
+          "maxLength": 6,
+          "minLength": 1,
+          "pattern": "^(?:0(?:\\.[0-9]{1,4})?|1(?:\\.0{1,4})?)$",
+          "title": "Confidence",
+          "type": "string"
+        },
+        "fact_ref": {
+          "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Fact Ref",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "decision",
+            "alternative",
+            "attempted_change",
+            "implemented_change",
+            "commitment",
+            "assignment",
+            "explicit_deferral",
+            "verification",
+            "blocker",
+            "question",
+            "next_step",
+            "limitation"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "occurred_at": {
+          "anyOf": [
+            {
+              "description": "Timezone-aware RFC 3339, for example 2026-10-11T09:30:00Z.",
+              "maxLength": 35,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurred At"
+        },
+        "repeats": {
+          "anyOf": [
+            {
+              "maxLength": 94,
+              "minLength": 31,
+              "pattern": "^uh_[a-z2-7]{26}\\.[a-z][a-z0-9_-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A fact handle Oira returned for an earlier report of this work that this fact repeats, for example a fact a past session already sent live. A repeated fact is never independent support.",
+          "title": "Repeats"
+        },
+        "statement": {
+          "description": "One trimmed line. A work fact, never a log, quote or transcript.",
+          "maxLength": 1200,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string",
+          "x-oira-max-utf8-bytes": 1200
+        },
+        "status": {
+          "description": "Allowed per kind: decision proposed|accepted; alternative proposed|unresolved; attempted_change attempted; implemented_change accepted|tested|committed|merged|released; commitment, assignment and next_step proposed|accepted; explicit_deferral deferred; verification tested|unresolved|unknown; blocker and question unresolved; limitation unknown. agent_inference never asserts tested, committed, merged or released.",
+          "enum": [
+            "proposed",
+            "accepted",
+            "attempted",
+            "tested",
+            "committed",
+            "merged",
+            "released",
+            "unresolved",
+            "deferred",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "minLength": 1,
+              "type": "string",
+              "x-oira-max-utf8-bytes": 600
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty"
+        }
+      },
+      "required": [
+        "fact_ref",
+        "kind",
+        "status",
+        "statement",
+        "basis",
+        "confidence"
+      ],
+      "title": "WorkFactV2",
+      "type": "object"
+    },
+    "WorkMentionV2": {
+      "additionalProperties": false,
+      "description": "A relevant entity by name only; never membership or a recipient.",
+      "properties": {
+        "entity_kind": {
+          "enum": [
+            "person",
+            "team_agent",
+            "function",
+            "project",
+            "repository",
+            "file",
+            "symbol",
+            "task",
+            "discussion",
+            "artifact"
+          ],
+          "title": "Entity Kind",
+          "type": "string"
+        },
+        "mention_ref": {
+          "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Mention Ref",
+          "type": "string"
+        },
+        "safe_label": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Safe Label",
+          "type": "string",
+          "x-oira-max-utf8-bytes": 160
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "mention_ref",
+        "entity_kind",
+        "safe_label",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkMentionV2",
+      "type": "object"
+    },
+    "WorkRecordV2": {
+      "additionalProperties": false,
+      "description": "One distinct piece of work: declared once, then updated with new facts.",
+      "properties": {
+        "activity": {
+          "anyOf": [
+            {
+              "enum": [
+                "planning",
+                "execution",
+                "validation",
+                "mixed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Activity"
+        },
+        "boundaries": {
+          "anyOf": [
+            {
+              "items": {
+                "maxLength": 600,
+                "minLength": 1,
+                "type": "string",
+                "x-oira-max-utf8-bytes": 600
+              },
+              "maxItems": 6,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Scope and non-goal statements. On update, a supplied list replaces the earlier one; omit it to keep the earlier one.",
+          "title": "Boundaries"
+        },
+        "code": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkCodeV2"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "continuity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkContinuityV2"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "deferral": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkDeferralV2"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "details": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/WorkDetailV2"
+              },
+              "maxItems": 12,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Details"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/WorkFactV2"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Facts",
+          "type": "array"
+        },
+        "intended_outcome": {
+          "anyOf": [
+            {
+              "description": "The specific desired result. Required on declare.",
+              "maxLength": 1200,
+              "minLength": 1,
+              "type": "string",
+              "x-oira-max-utf8-bytes": 1200
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intended Outcome"
+        },
+        "mentions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/WorkMentionV2"
+              },
+              "maxItems": 16,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mentions"
+        },
+        "operation": {
+          "enum": [
+            "declare",
+            "update"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "references": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/WorkReferenceV2"
+              },
+              "maxItems": 12,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "References"
+        },
+        "relation_hints": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/WorkRelationHintV2"
+              },
+              "maxItems": 12,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Relation Hints"
+        },
+        "revisions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/WorkRevisionV2"
+              },
+              "maxItems": 8,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revisions"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "description": "Required on declare.",
+              "maxLength": 160,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "work_ref": {
+          "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Work Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "work_ref",
+        "operation",
+        "facts"
+      ],
+      "title": "WorkRecordV2",
+      "type": "object"
+    },
+    "WorkReferenceV2": {
+      "additionalProperties": false,
+      "properties": {
+        "reference_kind": {
+          "enum": [
+            "work_item",
+            "artifact",
+            "discussion",
+            "external_task",
+            "pull_request",
+            "issue",
+            "repository",
+            "source_object"
+          ],
+          "title": "Reference Kind",
+          "type": "string"
+        },
+        "reference_ref": {
+          "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Reference Ref",
+          "type": "string"
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        },
+        "target": {
+          "$ref": "#/$defs/WorkTargetV2"
+        }
+      },
+      "required": [
+        "reference_ref",
+        "reference_kind",
+        "target",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkReferenceV2",
+      "type": "object"
+    },
+    "WorkRelationHintV2": {
+      "additionalProperties": false,
+      "description": "A candidate relation; Oira decides whether it holds.",
+      "properties": {
+        "direction": {
+          "enum": [
+            "primary_to_target",
+            "target_to_primary",
+            "symmetric",
+            "not_applicable"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "relation_kind": {
+          "enum": [
+            "same_work",
+            "new_work",
+            "related",
+            "depends_on",
+            "blocks",
+            "conflicts_with",
+            "duplicate",
+            "possibly_same_as"
+          ],
+          "title": "Relation Kind",
+          "type": "string"
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        },
+        "target_reference_ref": {
+          "anyOf": [
+            {
+              "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Reference Ref"
+        }
+      },
+      "required": [
+        "relation_kind",
+        "direction",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkRelationHintV2",
+      "type": "object"
+    },
+    "WorkRevisionV2": {
+      "additionalProperties": false,
+      "description": "A new fact corrects, supersedes or reaffirms an exact earlier fact.",
+      "properties": {
+        "fact_handle": {
+          "description": "A fact handle Oira returned for an earlier update of this work.",
+          "maxLength": 94,
+          "minLength": 31,
+          "pattern": "^uh_[a-z2-7]{26}\\.[a-z][a-z0-9_-]{0,63}$",
+          "title": "Fact Handle",
+          "type": "string"
+        },
+        "revision_kind": {
+          "enum": [
+            "corrects",
+            "supersedes",
+            "reaffirms"
+          ],
+          "title": "Revision Kind",
+          "type": "string"
+        },
+        "supporting_fact_refs": {
+          "description": "fact_ref labels of facts in this same work record.",
+          "items": {
+            "description": "A short local label: lowercase letter first, then a-z, 0-9, _ or -.",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Supporting Fact Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "fact_handle",
+        "revision_kind",
+        "supporting_fact_refs"
+      ],
+      "title": "WorkRevisionV2",
+      "type": "object"
+    },
+    "WorkTargetV2": {
+      "additionalProperties": false,
+      "description": "A returned Oira handle, a work_ref of this stream, or an HTTPS link.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "returned_handle",
+            "work_ref",
+            "safe_url"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "description": "returned_handle: a work handle Oira returned for this stream; work_ref: another work of this update or stream; safe_url: a task-related https URL without credentials (at most 255 bytes).",
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "title": "WorkTargetV2",
+      "type": "object"
+    }
+  },
+  "$id": "urn:oira:schema:oira_work_update.v2",
+  "additionalProperties": false,
+  "description": "Declarations of, and new facts about, the user's authorized current work.",
+  "properties": {
+    "origin": {
+      "anyOf": [
+        {
+          "const": "history_import",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Leave out for the current work. history_import: work from a past session of a history import Oira requested; every fact needs occurred_at inside the window oira_connection_status gave.",
+      "title": "Origin"
+    },
+    "privacy_policy_version": {
+      "maxLength": 40,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,39}$",
+      "title": "Privacy Policy Version",
+      "type": "string"
+    },
+    "project_label": {
+      "description": "Exactly one project label from oira_connection_status.",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Project Label",
+      "type": "string"
+    },
+    "reporter_version": {
+      "maxLength": 40,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,39}$",
+      "title": "Reporter Version",
+      "type": "string"
+    },
+    "schema": {
+      "const": "oira_work_update.v2",
+      "title": "Schema",
+      "type": "string"
+    },
+    "sequence": {
+      "description": "Increases by one with each update in this stream.",
+      "maximum": 1000000000,
+      "minimum": 1,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "session_complete": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "History import only: true on the last update of a past session, so Oira knows the session arrived whole.",
+      "title": "Session Complete"
+    },
+    "stream_ref": {
+      "description": "One random reference per reporting stream (this task in this chat). Never a native session ID or path.",
+      "maxLength": 36,
+      "minLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "title": "Stream Ref",
+      "type": "string"
+    },
+    "update_ref": {
+      "description": "New for every changed payload; reuse it only to retry this exact payload.",
+      "maxLength": 36,
+      "minLength": 36,
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "title": "Update Ref",
+      "type": "string"
+    },
+    "works": {
+      "items": {
+        "$ref": "#/$defs/WorkRecordV2"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Works",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "project_label",
+    "update_ref",
+    "stream_ref",
+    "sequence",
+    "works",
+    "reporter_version",
+    "privacy_policy_version"
+  ],
+  "title": "OiraWorkUpdateV2",
+  "type": "object",
+  "x-oira-max-canonical-bytes": 32768,
+  "x-oira-rules": "Cross-field rules and the credential scan are implemented by scripts/prepare_work_update.py; send only its accepted output."
+}

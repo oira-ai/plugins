@@ -1243,9 +1243,21 @@ _LOCAL_PATH = (
     re.compile(
         r'(?<![A-Za-z0-9_.-])/(?:Users|home|root)/[^\s"\'`/]+'
         r'|(?<![A-Za-z0-9_.-])/(?:private/var|var/folders|private/tmp)/'
+        # Windows homes mounted inside WSL.
+        r'|(?<![A-Za-z0-9_.-])/mnt/[a-z]/(?:Users|home)/[^\s"\'`/]+'
     ),
     re.compile(r'(?i)(?<![A-Za-z0-9])[a-z]:\\(?:users|documents and settings)\\'),
-    re.compile(r'~[/\\]\.(?:claude|codex)(?:[/\\]|\b)'),
+    # WSL distributions reached from Windows (\\wsl$\ and \\wsl.<host>\),
+    # and other UNC shares that expose a user's home folders.
+    re.compile(r'(?i)\\\\wsl(?:\$|\.[a-z]+)\\'),
+    re.compile(r'(?i)\\\\[a-z0-9._-]+\\(?:users|home)\\'),
+    # The coding apps' own home folders: Claude Code, Codex, Kiro, GitHub
+    # Copilot and Cursor.
+    re.compile(
+        r'(?i)(?:~|%userprofile%|\$home|\$env:userprofile)'
+        r'[/\\]\.(?:claude|codex|kiro|copilot|cursor)(?:[/\\]|\b)'
+    ),
+    re.compile(r'(?i)(?:\$(?:env:)?copilot_home|%copilot_home%)[/\\]'),
 )
 
 
@@ -1395,8 +1407,28 @@ def _session_id(value: str) -> bool:
     return 0 < len(value) <= 255 and value.isprintable() and value == value.strip()
 
 
+def _emit(text: str) -> None:
+    """Write one line of UTF-8 to standard output, whatever the console is.
+
+    The canonical update keeps non-ASCII text as it is. On Windows a
+    redirected standard output uses the ANSI code page unless the caller
+    set UTF-8 mode, which would re-encode accented text and fail on text
+    the code page cannot represent; writing the bytes directly makes the
+    output the same on every host and shell.
+    """
+
+    data = (text + '\n').encode('utf-8')
+    stream = getattr(sys.stdout, 'buffer', None)
+    if stream is None:
+        sys.stdout.write(data.decode('utf-8'))
+        sys.stdout.flush()
+        return
+    stream.write(data)
+    stream.flush()
+
+
 def _write(payload: dict) -> None:
-    sys.stdout.write(json.dumps(payload, separators=(',', ':')) + '\n')
+    _emit(json.dumps(payload, separators=(',', ':')))
 
 
 def main(argv=None) -> int:
@@ -1408,13 +1440,13 @@ def main(argv=None) -> int:
             ]})
             return 3
         if arguments == ['--new-ref']:
-            sys.stdout.write(str(uuid.uuid4()) + '\n')
+            _emit(str(uuid.uuid4()))
             return 0
         if (
             len(arguments) == 2 and arguments[0] == '--history-stream'
             and _session_id(arguments[1])
         ):
-            sys.stdout.write(history_stream_ref(arguments[1]) + '\n')
+            _emit(history_stream_ref(arguments[1]))
             return 0
         if arguments:
             _write({'ok': False, 'errors': [{'path': '$', 'code': 'not_allowed'}]})
@@ -1422,7 +1454,7 @@ def main(argv=None) -> int:
         raw = sys.stdin.buffer.read(MAX_RAW_INPUT_BYTES + 1)
         result = prepare(raw)
         if result['ok']:
-            sys.stdout.write(result['canonical'] + '\n')
+            _emit(result['canonical'])
             return 0
         _write(result)
         return 2

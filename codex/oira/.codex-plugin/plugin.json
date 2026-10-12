@@ -1,6 +1,6 @@
 {
   "name": "oira",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
   "author": {
     "name": "Oira-Oira",

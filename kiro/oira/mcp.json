@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "oira": {
+      "url": "https://oira-oira.com/mcp",
+      "oauthScopes": [
+        "connection_status:read",
+        "work_updates:write"
+      ]
+    }
+  }
+}

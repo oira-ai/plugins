@@ -1,0 +1,31 @@
+{
+  "schema": "oira_work_update.v2",
+  "project_label": "platform",
+  "update_ref": "0f1e2d3c-4b5a-4968-8776-655443322110",
+  "stream_ref": "1a2b3c4d-5e6f-4a7b-9c8d-0e1f2a3b4c5d",
+  "sequence": 1,
+  "reporter_version": "0.7.0",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [
+    {
+      "work_ref": "event-timestamps",
+      "operation": "declare",
+      "title": "Emit event timestamps from the ingest producer",
+      "intended_outcome": "The ingest producer adds an event timestamp to every message so the billing consumer can order events.",
+      "activity": "execution",
+      "boundaries": ["The billing consumer is owned by another team and is not changed here."],
+      "facts": [
+        {"fact_ref": "goal", "kind": "commitment", "status": "accepted", "statement": "Add an event timestamp field to every ingest message.", "basis": "user_statement_paraphrase", "confidence": "0.9"},
+        {"fact_ref": "emits-ms", "kind": "implemented_change", "status": "tested", "statement": "The producer now writes event_ts as integer milliseconds since the Unix epoch.", "basis": "agent_report", "confidence": "0.9"},
+        {"fact_ref": "units", "kind": "question", "status": "unresolved", "statement": "The billing consumer may expect event_ts in seconds; the conversion is not known.", "basis": "agent_inference", "confidence": "0.6"}
+      ],
+      "details": [
+        {"detail_ref": "field", "kind": "input_output", "description": "event_ts: integer milliseconds since the Unix epoch, never null, set when the producer receives the event.", "subject_labels": ["event_ts"], "function_labels": ["IngestProducer.publish"], "temporal_status": "current", "supporting_fact_refs": ["emits-ms"]},
+        {"detail_ref": "consumer", "kind": "assumption", "description": "The billing consumer reads event_ts; its expected unit is unknown.", "subject_labels": ["billing consumer"], "temporal_status": "unknown", "uncertainty": "No consumer code or contract was available in this task.", "supporting_fact_refs": ["units"]}
+      ],
+      "mentions": [
+        {"mention_ref": "billing", "entity_kind": "function", "safe_label": "Billing consumer", "supporting_fact_refs": ["units"]}
+      ]
+    }
+  ]
+}
