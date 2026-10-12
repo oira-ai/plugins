@@ -7,7 +7,7 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-The **0.8.0** package source is public. Host-directory submission and
+The **0.9.0** package source is public. Host-directory submission and
 installed-client acceptance remain pending. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 
@@ -131,8 +131,18 @@ recent work. The agent then checks the connection and the local preflight,
 tells you what Oira will receive, and runs the import if you turned it on.
 
 Then ask it to "Keep Oira updated on this task", "Share a progress update with
-Oira" or "Prepare and share a handoff with Oira". It sends an update only when
-you ask, at milestones and meaningful changes, never per prompt.
+Oira" or "Prepare and share a handoff with Oira". You can also ask to enable automatic reporting for this repository in local
+Codex or Claude sessions on macOS/Linux. The plugin saves a personal repository
+binding and uses bundled lifecycle hooks to remind the agent to report new
+work facts at milestones and before finishing. Codex requires native hook
+review (`/hooks`); start a new chat after a plugin update. Hooks never send
+their input or read transcripts, and a reminder without new facts sends nothing.
+The final check permits one continuation, then lets the coding session finish.
+Other apps retain reporting through the skill and personal instructions.
+
+When work tracking is disabled in Oira, received updates stay parked until it
+is enabled. Disabling processing does not disable capture. A connection marked
+active alone does not prove delivery; check the latest receipt.
 
 Earlier versions of this plugin could forward your prompts and replies through
 project hooks and send past conversations. Oira no longer accepts either. If

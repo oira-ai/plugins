@@ -1,8 +1,8 @@
 {
   "name": "oira",
   "displayName": "Oira",
-  "version": "0.8.0",
-  "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
+  "version": "0.9.0",
+  "description": "Report structured work updates to approved Oira projects, with optional automatic milestone reminders for local Codex and Claude sessions. No transcripts, tool output or files are sent.",
   "author": {
     "name": "Oira-Oira",
     "email": "nikita@oira-oira.com",

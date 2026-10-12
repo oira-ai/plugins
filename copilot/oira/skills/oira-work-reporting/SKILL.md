@@ -10,8 +10,10 @@ Four Oira tools: `oira_connection_status`, `oira_submit_work_update`,
 the user asks you to keep Oira updated, for the current task or for the
 approved project (their own instruction from "Set up Oira" is that ask, for
 the repository it names), or asks for a progress update or a handoff;
-import past work only as "Import recent work" says. Nothing is sent in the
-background, and no hook or transcript upload is involved.
+import past work only as "Import recent work" says. Codex and Claude can also
+use explicitly enabled local hooks to remind you
+to report new work facts automatically. Hook input and transcripts are never
+uploaded. Other apps keep their instruction-based reporting.
 
 For the user's authorized current work, declare each distinct intended outcome
 once and report only material new facts afterward. Keep work references
@@ -244,10 +246,13 @@ work; not session transcripts, tool output or source files; no API keys are
 needed; and the reporting workflow excludes credentials and filters
 recognized secret patterns before each update is sent.
 
-Then ask how Oira should hear about this repository's work: only when they
+If the user already asked for automatic reporting, apply that choice without
+asking again. Otherwise ask how Oira should hear about this repository's
+work: only when they
 ask (nothing more to do), or at milestones in every chat. Approving the
 connection alone is not that choice. For every chat, and only once they
-agree, add this block to their personal Copilot instructions, `~/.copilot/copilot-instructions.md` (under `$COPILOT_HOME` when that variable is set), which the Copilot CLI reads in every chat, keeping everything already there (create the file if it is missing), and show them the block; `references/setup-and-sign-in.md` says how to confirm that the IDE surface they use loads it:
+agree, Codex and Claude use "Automatic reporting hooks" below; other apps
+add this block to their personal Copilot instructions, `~/.copilot/copilot-instructions.md` (under `$COPILOT_HOME` when that variable is set), which the Copilot CLI reads in every chat, keeping everything already there (create the file if it is missing), and show them the block; `references/setup-and-sign-in.md` says how to confirm that the IDE surface they use loads it:
 
 ```
 ## Oira reporting (added at my request)

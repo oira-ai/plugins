@@ -1,7 +1,7 @@
 {
   "name": "oira",
-  "version": "0.8.0",
-  "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
+  "version": "0.9.0",
+  "description": "Report structured work updates to approved Oira projects, with optional automatic milestone reminders for local Codex and Claude sessions. No transcripts, tool output or files are sent.",
   "author": {
     "name": "Oira-Oira",
     "email": "nikita@oira-oira.com",
@@ -56,7 +56,7 @@
               "description": "Set up Oira for the current project in one prompt: check the sign-in and the local preflight, and pick the approved project.",
               "prompt": "Set up Oira for this project.",
               "tools_triggered": "oira_connection_status",
-              "expected_behavior": "Names the approved project, confirms the local preflight runs, and says what Oira receives: only work updates the user asks for, never transcripts, tool output or files. Asks whether Oira should hear about this repository's work only when asked or at milestones in every chat; only for the second, and with the user's agreement, adds a short reporting instruction to their personal instructions file. Sends no update and adds no hook; runs an import of recent work only when the status shows one the user approved."
+              "expected_behavior": "Checks the connection and local preflight, chooses the approved project and explains structured reporting. Only after explicit approval, enables a personal repository binding for automatic lifecycle reminders and asks the user to review the native hook definitions. No test update is invented; history import requires its separate approval."
             },
             {
               "description": "Keep Oira updated on the current task, including work the user put off.",
@@ -108,7 +108,7 @@
         "commerce_description": "Oira does not sell products or process payments through this plugin."
       },
       "publication": {
-        "release_notes": "Oira 0.7.0 replaces prompt-forwarding hooks and transcript submission with bounded structured work updates. Agents extract work facts locally and run a local preflight. Deferred work, corrections, cross-chat continuation and an explicitly approved import of dated past work use the same shared Oira processing pipeline. No prompts, replies, transcripts, tool outputs or files are submitted."
+        "release_notes": "Oira 0.9.0 adds opt-in local lifecycle reminders for structured milestone reporting. Hooks never send prompt or reply content; they prompt the current coding agent to use the existing preflight and OAuth MCP connection. Native hook review and a fresh local chat are required."
       }
     }
   }
