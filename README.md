@@ -15,6 +15,13 @@ runs: before every update the plugin runs a small local check
 (`scripts/prepare_work_update.py`, standard library only, no network) on the
 exact update it is about to send.
 
+This check reads only the candidate JSON on standard input (or the explicit
+reference-generation arguments). It does not read environment variables,
+credential files or authentication tokens. Secret names and URL patterns in
+its source are used to reject sensitive update text, never to fetch or send
+credentials. The coding app manages the separate Oira MCP OAuth connection;
+the plugin does not ask for an API key.
+
 ## Install
 
 ### Claude Code

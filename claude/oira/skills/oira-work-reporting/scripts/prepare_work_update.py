@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Local outbound preflight for Oira work updates (``oira_work_update.v2``).
 
 Usage::
@@ -15,6 +14,13 @@ reference for ``update_ref`` or ``stream_ref``. The third prints the
 ``stream_ref`` of one past session in a history import: derived one way from
 the coding app's own session id, so the same session always gets the same
 reference while the id itself never leaves this computer.
+
+Invoke this module with Python, as shown above; it is not a shell command.
+Its only update input is standard input. It never reads environment variables,
+credential files or authentication tokens. Credential names and remote URL
+patterns below are rejection rules for the candidate, not data sources or
+network destinations. Authentication belongs to the host's Oira MCP OAuth
+connection and is not handled by this module.
 
 The script uses the Python standard library only. It opens no network
 connection, writes no files, keeps no logs and sends no telemetry. Exit codes:

@@ -9,6 +9,7 @@
     "url": "https://oira-oira.com"
   },
   "homepage": "https://oira-oira.com/coding-agent-help",
+  "privacyPolicyUrl": "https://oira-oira.com/privacy",
   "repository": "https://github.com/oira-ai/plugins",
   "license": "MIT",
   "keywords": [
