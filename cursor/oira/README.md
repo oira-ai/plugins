@@ -9,7 +9,7 @@ sends prompts, replies, transcripts, tool output or files, and it needs no
 API key. Oira is a remote MCP server; this package is the Oira skill plus
 its address.
 
-This is the Cursor package, version **0.9.0**, in the Agent Plugins 1.0
+This is the Cursor package, version **0.11.0**, in the Agent Plugins 1.0
 layout: `plugin.json`, `mcp.json` (the remote server) and
 `skills/oira-work-reporting/` (`SKILL.md`, `references/` including
 `setup-and-sign-in.md` and `client-surfaces.md`, and

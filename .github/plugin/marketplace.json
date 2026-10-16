@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Oira plugin for GitHub Copilot: share structured work updates with Oira.",
-    "version": "0.9.0"
+    "version": "0.11.0"
   },
   "plugins": [
     {
       "name": "oira",
       "source": "./copilot/oira",
       "description": "Keep Oira updated on your coding work when you ask: structured updates of decisions, progress, blockers and deferred work for the project you approve. No transcripts, tool output or files are sent.",
-      "version": "0.9.0",
+      "version": "0.11.0",
       "author": {
         "name": "Oira-Oira",
         "email": "nikita@oira-oira.com",

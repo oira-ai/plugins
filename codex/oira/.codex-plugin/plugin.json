@@ -1,6 +1,6 @@
 {
   "name": "oira",
-  "version": "0.9.0",
+  "version": "0.11.0",
   "description": "Report structured work updates to approved Oira projects, with optional automatic milestone reminders for local Codex and Claude sessions. No transcripts, tool output or files are sent.",
   "author": {
     "name": "Oira-Oira",
@@ -108,7 +108,7 @@
         "commerce_description": "Oira does not sell products or process payments through this plugin."
       },
       "publication": {
-        "release_notes": "Oira 0.9.0 adds opt-in local lifecycle reminders for structured milestone reporting. Hooks never send prompt or reply content; they prompt the current coding agent to use the existing preflight and OAuth MCP connection. Native hook review and a fresh local chat are required."
+        "release_notes": "Oira 0.11.0 adds exact company/project target envelopes, account-level host authentication with separate company grants, and explicit folder/worktree/session bindings. Hooks only remind the coding agent; they send no content. Review native hooks and start a fresh chat after a target changes."
       }
     }
   }

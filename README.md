@@ -7,8 +7,8 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-The **0.9.0** package source is public. Host-directory submission and
-installed-client acceptance remain pending. No plugin credentials are embedded;
+Package version **0.11.0** is a production verification candidate. Host-directory submission and
+installed-client acceptance remain pending. The bundled CLI is still release gated; use the manual plugin instructions below. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 
 Reporting needs **Python 3.11 or later** on the machine where the coding app
@@ -155,8 +155,9 @@ Oira receives only work updates you authorize, including decisions, progress,
 blockers and deferred work. If you turn on the history import, your coding
 agent reads your recent sessions in that project on your computer and sends
 the same kind of updates about them. It does not collect your session
-transcripts, tool output or source files, and you do not need to provide API
-keys. The reporting workflow excludes credentials and filters recognized
+transcripts, tool output or source files. Native OAuth needs no API key; a
+dedicated CLI installation may use an optional Oira key, never a third-party
+model key. The reporting workflow excludes credentials and filters recognized
 secret patterns before sending an update.
 
 Each update states facts about your work in an approved project: what you
