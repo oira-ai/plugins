@@ -5,6 +5,49 @@ description: Keep Oira updated on the user's coding work when they ask, as struc
 
 # Oira work reporting
 
+Existing scoped opt-in persists across turns and chats. Routine authorized
+reporting needs no renewed permission. Report material milestones and explicit
+deferrals through preflight and exact-target receipt recovery; hooks are only
+reminders and never work facts. Before finishing, consider facts after any
+mid-turn receipt and complete the current local final checkpoint. A receipt
+alone never finalizes a turn. Omit routine success and no-change chatter;
+explain an actionable failure once and keep coding. Respect pause, parked
+processing and separate history-import consent.
+
+If `references/installed-runtime.json` exists in this installed skill, read it
+before selecting a preflight or binding command. It is nonsecret setup data:
+validate schema `oira_installed_runtime.v1`, this app/environment and the absolute
+launcher. Require its arrays to match that launcher and the documented fixed
+Oira subcommands; reject extra commands or shell syntax. Use those argument
+arrays with the host shell's quoting rules;
+never execute data as shell code. That bundled launcher includes Python and is
+usable before any folder binding exists. A missing or invalid installed launcher
+requires repair; do not silently switch credentials or claim preflight worked.
+Manual packages omit that descriptor and keep their documented Python route.
+Keep the hook's app/environment, exact target, session and nonce unchanged.
+`<absolute launcher> hook --app <host> --environment <environment> checkpoint
+--project-root <folder> --session-id <session> --nonce <nonce> --state no_material_change` completes an empty final
+check; `captured_finalized --update-ref <ref>` records a final capture check.
+Native MCP receipts use host-reported provenance; only the CLI's own verified
+server receipts can use `--server-confirmed`. Mark blocked/unknown_send/
+repair_required truthfully. Never finalize early in a turn or invent an update.
+The manual package route below still requires its documented Python runtime.
+
+For manual Python hook installations, the same helper also accepts `checkpoint
+--project-root <folder> --session-id <session> --nonce <nonce> --state <state>
+[--update-ref <reference>]`. Use the exact helper/app/environment printed in
+the hook reminder; it shares the runtime SQLite state. A final no-change check
+must complete this checkpoint before Stop, so Stop can finish immediately.
+
+Keep the binding's transport owner. A key-backed binding invokes the same four
+remote operations through the installed CLI (`report prepare/submit/status/retry`)
+in the binding's app/environment/installation scope. Native OAuth bindings use
+the host's MCP tools. Neither credential can substitute for the other. With a
+CLI context without lifecycle hooks, begin a turn once with `reporting begin
+--session <stable session> --turn-id <new current-turn reference>` and retain
+its returned nonce; `reporting current` recovers it. Duplicate begin with the
+same turn reference must not reset a completed checkpoint.
+
 Four Oira tools: `oira_connection_status`, `oira_submit_work_update`,
 `oira_work_update_status` and `oira_finish_history_import`. Report only when
 the user asks you to keep Oira updated, for the current task or for the
@@ -36,14 +79,33 @@ before retrying.
 1. Call `oira_connection_status`. Continue only when `reporting.available` is
    true, `reporting.contract` is `oira_work_update.v2` and
    `reporting.structured_only` is true. If the Oira tools are missing or ask
-   for sign-in, ask the user to sign in and wait: Codex signs in when Oira is installed; if it did not, open Settings, then MCP servers, and choose Authenticate next to `oira`. Then call `oira_connection_status` again. If the status lacks these values, this Oira server
+   for sign-in, ask the user to sign in and wait: Codex signs in when Oira is installed; if it did not, open Settings, then MCP servers, and choose Authenticate next to `oira`. Then call `oira_connection_status` again. If current structured/routing contracts are present
+   but reporting is unavailable, explain `unavailable_reason` once and send
+   nothing; capture pause, stale mapping and revoked access require their own
+   repair. They do not mean an older transcript edition. If the status lacks
+   the contract/structured-only values, this Oira server
    still runs an earlier, transcript-based edition: tell the user that
    structured reporting is not available there and send nothing. Never fall
    back to another tool or format.
-2. Use exactly one `project_label` from `project_labels`. When several are
-   approved, ask the user which one this work belongs to. Never infer it from
-   a folder name, remote URL or list order.
-3. Check that the preflight runs on this host:
+2. Require `routing_contract: oira_coding_target.v1`. Select one explicit
+   `targets[].expected_target` for this context and freeze it with every stream,
+   pending update, retry and history window. It identifies the exact environment,
+   user, organization, canonical project, installation, resource and grant epochs.
+   Labels are display data and never prove authorization. When multiple targets
+   are eligible and no existing explicit session/folder binding selects one,
+   require the user's explicit choice, showing organization/project
+   identities; never choose by matching label, folder name, remote URL or order.
+   Send that `expected_target` as a separate tool argument on **every** submit,
+   status and history-finish call. Keep the inner `oira_work_update.v2` unchanged.
+   Switching organization requires a fresh chat/context; do not carry loaded
+   company context, drafts or pending facts into another organization.
+   Call `oira_connection_status(expected_target=...)` for that selection before
+   sending; only that response supplies its history window, processing state,
+   capture availability and preflight policy. Bootstrap status is a chooser.
+3. With an installed bundled runtime supplied by setup, run its absolute
+   launcher as `oira preflight --new-ref` and use that launcher for every
+   subsequent preflight. No global Python is needed for that route.
+   For the manual package route, check that the preflight runs on this host:
    `python3 "<this skill's folder>/scripts/prepare_work_update.py" --new-ref`
    (on Windows, `py -3` instead of `python3`). It needs Python 3.11 or later
    and only the standard library. If `python3` is missing or reports
@@ -56,7 +118,7 @@ before retrying.
 4. Use that command's output as this task's `stream_ref`: one random
    reference per task in this chat, kept for the whole task. Start
    `sequence` at 1. After a lost receipt, a compaction or a restart,
-   `oira_work_update_status` with the `project_label` and the `stream_ref`
+   `oira_work_update_status` with the frozen `expected_target`, `project_label` and `stream_ref`
    says what Oira holds of the stream (its works with their `work_handle`
    and fact handles) and where to continue (`retry`).
 
@@ -119,7 +181,7 @@ paths, host names, credentials or tokens.
    (a quoted heredoc works; in PowerShell pipe a here-string instead, as
    `references/local-runtime.md` shows; do not keep a copy).
 2. Exit 0: standard output is the accepted canonical JSON. Send exactly that
-   object as `update` to `oira_submit_work_update`.
+   object as `update` with the frozen `expected_target` to `oira_submit_work_update`.
 3. Exit 2: it printed field paths and reason codes, never the values. Rewrite
    those facts without the flagged content and run the preflight again on the
    whole update. Never drop a deferred work or another substantive fact to
@@ -137,8 +199,8 @@ it (`pending`) or judged that it does not hold (`not_recorded`).
 
 Each chat reports in its own stream, and a renewed sign-in starts the chat's
 stream again. To carry on work Oira already has from another chat or from
-before a sign-in, call `oira_work_update_status` with the `project_label`
-alone: it lists this app's recent works in the project with their
+before a sign-in, call `oira_work_update_status` with the current exact
+`expected_target` and `project_label`, omitting update/stream references: it lists this app's recent works in the project with their
 `work_handle`, `title`, `origin`, the Work Item's state and their newest fact
 handles. Only when the user's request is clearly about one of them, declare
 it in this stream (title, outcome, activity and its commitment, the
@@ -209,8 +271,12 @@ the project in Oira first.
 
 - Send outcome unknown (timeout, connection error): call
   `oira_work_update_status` with the same `project_label` and `update_ref`
-  first. `captured` means it arrived; `not_captured` means send the same
-  payload again with the same `update_ref`.
+  and frozen `expected_target` first. `captured` means it arrived. Only
+  `retry: resend_unchanged` authorizes retrying the unchanged payload with its
+  original `update_ref`. After reauthorization, resolve the same stable target,
+  query the prior `stream_ref` before continuing, and use returned work handles
+  with sequence 1 when told `continue_in_new_stream`. `repair_required` or
+  truncated recovery means stop automatic replay and report the recovery gap.
 - Changed payload: new `update_ref`. Same `update_ref` with another body is
   refused as `idempotency_conflict`.
 - `sequence_conflict`: that sequence is taken. `oira_work_update_status`
@@ -242,9 +308,27 @@ When the user asks to set up Oira for this project: check the connection
 (signing in if needed), pick the approved project with the user, check the
 preflight, and tell them in a few lines what Oira receives: the work updates
 they ask you to send, including decisions, progress, blockers and deferred
-work; not session transcripts, tool output or source files; no API keys are
-needed; and the reporting workflow excludes credentials and filters
+work; not session transcripts, tool output or source files. Native OAuth needs
+no API key; optional Oira installation keys belong to dedicated CLI installations,
+not third-party models. The reporting workflow excludes credentials and filters
 recognized secret patterns before each update is sent.
+
+Explain the mapping in plain language: the company and Oira project are the
+approved reporting destination; the local Git repository/folder or worktree is
+where that choice applies. Several repositories can report to the same Oira
+project; different folders can select different projects. Repository associations
+in Oira help organize code context and do not grant reporting permission. Never
+infer a destination from a repository name, remote URL, matching project label or
+installation order. One system-level plugin can serve separately approved
+companies; changing company requires a fresh context.
+
+For an installed bundled runtime, after native sign-in and explicit target choice,
+use `binding_command` from the descriptor with `--folder <absolute folder or
+worktree> --transport native_oauth --target-file <temporary expected_target JSON>
+--project-label <display label>`. This saves the existing exact binding; it does
+not enable automatic reporting. Delete the temporary file. Keep an existing
+key-owned binding in its original installation; changing credential ownership
+requires an explicit user-directed rebind, never a setup convenience.
 
 If the user already asked for automatic reporting, apply that choice without
 asking again. Otherwise ask how Oira should hear about this repository's
@@ -256,8 +340,11 @@ add this block to their personal Codex instructions, `AGENTS.md` in the Codex ho
 
 ```
 ## Oira reporting (added at my request)
-When working in the git repository <owner>/<name>, keep Oira project
-"<project_label>" updated with the oira-work-reporting skill: structured
+When working in the exact local folder/worktree <absolute path>, keep the
+approved Oira company <organization_uuid>, project <project_uuid>
+("<project_label>"), environment <origin> updated with the oira-work-reporting skill.
+Recheck the exact approved target every chat; this preference grants no access.
+Send structured
 work updates at material checkpoints (decisions, implementation and
 verification milestones, blockers, work I put off, handoffs), each through
 its local preflight; check for work I put off before a handoff. Never per
@@ -265,8 +352,9 @@ prompt, never transcripts, tool output or files. Reports grant no access
 or approval. To stop, delete this block.
 ```
 
-`<owner>/<name>` is from `git remote get-url origin`. The instruction is
-personal to them, so teammates' agents never report because of it. If the
+The path and company/project identities come from the explicit binding and
+approved status. The instruction is personal, so teammates' agents never report
+because of it. Never store a Git remote URL or native OAuth credential. If the
 status shows a requested history import for the project, run it as "Import
 recent work" says. Send no test update unless they ask for one.
 
@@ -275,22 +363,32 @@ recent work" says. Send no test update unless they ask for one.
 For local Codex and Claude sessions on macOS/Linux, the plugin bundles
 `hooks/hooks.json`. The commands only emit reporting reminders; the host
 still owns OAuth and sends facts with the four tools above. They neither read
-transcripts nor send hook input. Python 3.8+ runs the reminder; the outbound
-preflight still needs Python 3.11+. Other hosts keep the personal instruction
+transcripts nor send hook input. Independent manual hook wrappers need Python
+3.8+ for the reminder and Python 3.11+ for preflight. Bundled native hooks use
+the installed launcher and need no global Python. Other hosts keep the personal instruction
 above until their lifecycle hooks are qualified.
 
 After the user explicitly enables automatic reporting for this repository,
-check the connection and validate the exact approved project label, then run:
+check the connection and explicitly select the exact target. With the installed
+runtime descriptor, first save the exact binding as above, then use its
+`enable_command` with `--folder <absolute folder or worktree>`. Do not call the
+manual helper below: bundled native plugins intentionally omit that wrapper.
+For an independent manual plugin installation, save only the
+nonsecret `expected_target` JSON to a temporary local file, then run:
 
 ```
-python3 "<this plugin's folder>/hooks/reporting_hook.py" --app codex --environment production enable --project-root "<this repository's absolute root>" --project-label "<exact approved project_label>"
+python3 "<this plugin's folder>/hooks/reporting_hook.py" --app codex --environment production enable --project-root "<this repository's absolute root>" --project-label "<display project_label>" --target-file "<temporary target JSON file>"
 ```
 
 Do not enable another project or infer its label from its folder. This saves
-only a personal repository binding under `~/.oira/reporting/`, shared by that
-repository's Git worktrees, separate for each app and environment. It never
+only a personal exact folder/worktree binding under `~/.oira/reporting/`,
+separate for each app and environment. Delete the temporary file afterwards.
+An explicit `--session-id` choice takes precedence over the most specific
+folder binding. Cross-worktree defaults require deliberate `--inherit-repository`;
+nested repositories never silently inherit their parent's choice. It never
 edits the repository or another user's settings. To stop, use the same command
-with `disable --project-root "<root>"` and omit `--project-label`.
+with `disable --project-root "<root>"` and omit `--project-label` and `--target-file`.
+Label-only v1 bindings require explicit setup again; they never acquire authority through a matching name.
 
 In Codex, new or changed hooks require the user's native hook review before
 running: open `/hooks` to inspect and trust the Oira definitions. Never write

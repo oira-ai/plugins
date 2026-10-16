@@ -119,6 +119,7 @@ and never claim the list of work is complete.
   that material; never turn it into user approval or an accepted commitment.
   During history import, follow the host guide's exclusion of compact
   summaries and injected messages rather than importing their contents.
+- Activity is exactly one of `planning`, `execution`, `validation` or `mixed`.
 - Declarations. A `declare` needs `title`, `intended_outcome`, `activity` and
   a `commitment` (or, for postponed work, an `explicit_deferral`) fact. A
   work declared again in a new stream needs them again, with `continuity`

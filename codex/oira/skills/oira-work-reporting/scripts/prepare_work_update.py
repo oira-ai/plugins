@@ -1187,6 +1187,7 @@ _PROVIDER_KEYS = tuple(re.compile(pattern) for pattern in (
     r'\b(?:lin|linear)_(?:api|oauth)_[A-Za-z0-9]{20,}',
     r'\bsecret_[A-Za-z0-9]{40,}',
     r'\bntn_[A-Za-z0-9]{40,}',
+    r'\boira_k1\.[0-9a-f-]{36}\.[A-Za-z0-9_-]{43}(?![A-Za-z0-9_-])',
 ))
 _PRIVATE_KEY = re.compile(
     r'-----BEGIN [A-Z0-9 ]*PRIVATE KEY(?: BLOCK)?-----|PuTTY-User-Key-File-'
