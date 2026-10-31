@@ -192,6 +192,9 @@ class Store:
             provenance TEXT, receipt TEXT, created REAL NOT NULL, updated REAL NOT NULL,
             PRIMARY KEY(destination, update_ref), UNIQUE(destination, stream_ref, sequence));
           CREATE TABLE IF NOT EXISTS ownership (path TEXT PRIMARY KEY, value TEXT NOT NULL);
+          CREATE TABLE IF NOT EXISTS context_metadata (
+            identity TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL,
+            updated REAL NOT NULL, PRIMARY KEY(identity,key));
         """)
         version = self.db.execute(
             "SELECT value FROM meta WHERE key='version'"
@@ -262,6 +265,33 @@ class Store:
                         (canonical({"state": "unreadable", "backup": str(backup)}),),
                     )
             self.db.execute("INSERT INTO meta VALUES ('v2_imported','1')")
+
+    def context_metadata(self, identity, key):
+        row = self.db.execute(
+            "SELECT value FROM context_metadata WHERE identity=? AND key=?",
+            (identity, key),
+        ).fetchone()
+        return json.loads(row["value"]) if row else None
+
+    def forget_context_metadata(self, identity, key):
+        self.db.execute("DELETE FROM context_metadata WHERE identity=? AND key=?", (identity, key))
+
+    def remember_context_metadata(self, identity, key, value):
+        """Keep correlation only. Questions, answers and hook bodies never enter SQLite."""
+        allowed = {"client_binding_ref", "local_context_nonce", "session_binding_ref",
+                   "binding_generation", "expires_at", "provenance", "client_request_ref",
+                   "request_digest", "intent_digest", "check_ref", "check_generation", "execution_state"}
+        if not isinstance(value, dict) or set(value) - allowed or len(canonical(value)) > 2048:
+            raise LocalError("context_metadata_invalid")
+        if not isinstance(identity, str) or len(identity) != 64 or not isinstance(key, str) or len(key) > 160:
+            raise LocalError("context_metadata_invalid")
+        with self.transaction():
+            self.db.execute("DELETE FROM context_metadata WHERE updated<?", (time.time() - METADATA_DAYS * 86400,))
+            exists = self.db.execute("SELECT 1 FROM context_metadata WHERE identity=? AND key=?", (identity, key)).fetchone()
+            if not exists and self.db.execute("SELECT COUNT(*) FROM context_metadata").fetchone()[0] >= 1000:
+                raise LocalError("context_metadata_capacity")
+            self.db.execute("INSERT OR REPLACE INTO context_metadata VALUES (?,?,?,?)",
+                            (identity, key, canonical(value), time.time()))
 
     def issues(self):
         row = self.db.execute(
@@ -416,24 +446,36 @@ class Store:
                 "UPDATE bindings SET value=? WHERE key=?", (canonical(binding), key)
             )
 
-    def turn(self, session, target, *, new=False, event_id=None):
+    def _freeze_context_locked(self, session, target):
+        """Share one immutable chat destination across reporting and context."""
+        if not isinstance(session, str) or not session:
+            raise LocalError("session_required")
         destination = stable_target(target)
+        self._prune_contexts(session)
+        prior = self.db.execute(
+            "SELECT destination FROM contexts WHERE session=?", (session,)
+        ).fetchone()
+        if prior and prior["destination"] != destination:
+            raise LocalError("fresh_context_required")
+        if (
+            prior is None
+            and self.db.execute("SELECT COUNT(*) FROM contexts").fetchone()[0]
+            >= MAX_METADATA
+        ):
+            raise LocalError("context_capacity_requires_repair")
+        self.db.execute(
+            "INSERT OR IGNORE INTO contexts VALUES (?,?)", (session, destination)
+        )
+        return destination
+
+    def freeze_context(self, session, target):
+        """Freeze or verify a chat without creating/resetting a reporting turn."""
         with self.transaction():
-            self._prune_contexts(session)
-            prior = self.db.execute(
-                "SELECT destination FROM contexts WHERE session=?", (session,)
-            ).fetchone()
-            if prior and prior["destination"] != destination:
-                raise LocalError("fresh_context_required")
-            if (
-                prior is None
-                and self.db.execute("SELECT COUNT(*) FROM contexts").fetchone()[0]
-                >= MAX_METADATA
-            ):
-                raise LocalError("context_capacity_requires_repair")
-            self.db.execute(
-                "INSERT OR IGNORE INTO contexts VALUES (?,?)", (session, destination)
-            )
+            return self._freeze_context_locked(session, target)
+
+    def turn(self, session, target, *, new=False, event_id=None):
+        with self.transaction():
+            destination = self._freeze_context_locked(session, target)
             row = self.db.execute(
                 "SELECT * FROM turns WHERE session=?", (session,)
             ).fetchone()

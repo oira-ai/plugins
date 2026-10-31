@@ -7,8 +7,8 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.11.0** is a production verification candidate. Host-directory submission and
-installed-client acceptance remain pending. The bundled CLI is still release gated; use the manual plugin instructions below. No plugin credentials are embedded;
+Package version **0.11.2** is a production verification candidate. Host-directory submission and
+installed-client acceptance remain pending. The standalone CLI 0.11.1 has testing prereleases, independently of this package. Native-host acceptance remains pending. Use the normal plugin instructions below or the setup prompt in the Oira guide. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 
 Reporting needs **Python 3.11 or later** on the machine where the coding app
@@ -20,10 +20,18 @@ This check reads only the candidate JSON on standard input (or the explicit
 reference-generation arguments). It does not read environment variables,
 credential files or authentication tokens. Secret names and URL patterns in
 its source are used to reject sensitive update text, never to fetch or send
-credentials. The coding app manages the separate Oira MCP OAuth connection;
-the plugin does not ask for an API key.
+credentials. Normal installation uses the coding app's separate Oira MCP OAuth
+connection. Authenticated Oira setup can instead prepare a prompt containing a
+permanent Oira installation key, after account ownership proof. That key remains
+in the coding agent's saved chat. The optional local MCP adapter stores it in
+the OS credential vault and needs an isolated Python environment with the pinned
+dependencies in `scripts/key-requirements.txt`. You still approve exact company
+projects through Oira; creating a key alone grants none. The two authentication
+routes are alternatives. No Oira CLI download is required for either route.
 
 ## Install
+
+In the [Oira setup guide](https://oira-oira.com/coding-agent-help), choose **Use a setup prompt** to let your local coding agent guide installation, or **Install yourself** for the normal instructions below. The prompt option needs no Oira CLI download. Native sign-in, project choice and any required new chat remain explicit.
 
 ### Claude Code
 
@@ -156,7 +164,7 @@ blockers and deferred work. If you turn on the history import, your coding
 agent reads your recent sessions in that project on your computer and sends
 the same kind of updates about them. It does not collect your session
 transcripts, tool output or source files. Native OAuth needs no API key; a
-dedicated CLI installation may use an optional Oira key, never a third-party
+dedicated CLI installation or the optional local key MCP adapter may use an Oira key, never a third-party
 model key. The reporting workflow excludes credentials and filters recognized
 secret patterns before sending an update.
 

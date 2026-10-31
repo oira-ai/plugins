@@ -1,0 +1,1133 @@
+{
+  "format": "oira.context_schemas.v1",
+  "schemas": {
+    "AgentContextAckV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "adapter_version": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Adapter Version",
+          "type": "string"
+        },
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "delivery_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Delivery Ref",
+          "type": "string"
+        },
+        "expected_revision": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_intervention_ack.v1",
+          "default": "oira.context_intervention_ack.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "observed_state": {
+          "enum": [
+            "received",
+            "displayed",
+            "agent_claimed_hold",
+            "host_boundary_held",
+            "declined",
+            "unsupported",
+            "failed"
+          ],
+          "title": "Observed State",
+          "type": "string"
+        },
+        "session_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Session Binding Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_target",
+        "session_binding_ref",
+        "binding_generation",
+        "delivery_ref",
+        "expected_revision",
+        "observed_state",
+        "adapter_id",
+        "adapter_version"
+      ],
+      "title": "AgentContextAckV1",
+      "type": "object"
+    },
+    "AgentContextCancelV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "check_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Check Ref",
+          "type": "string"
+        },
+        "expected_check_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Expected Check Generation",
+          "type": "integer"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_check_cancel.v1",
+          "default": "oira.context_check_cancel.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "session_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Session Binding Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_target",
+        "session_binding_ref",
+        "binding_generation",
+        "check_ref",
+        "expected_check_generation"
+      ],
+      "title": "AgentContextCancelV1",
+      "type": "object"
+    },
+    "AgentContextCheckRequestV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "assumptions": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "client_request_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Client Request Ref",
+          "type": "string"
+        },
+        "evidence_hints": {
+          "items": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Evidence Hints",
+          "type": "array"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_check_request.v1",
+          "default": "oira.context_check_request.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "intent_revision": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Intent Revision",
+          "type": "integer"
+        },
+        "next_step": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Step"
+        },
+        "operation_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[\\x21-\\x7e]+$",
+          "title": "Operation Ref",
+          "type": "string"
+        },
+        "purpose": {
+          "enum": [
+            "change_consistency",
+            "governing_context",
+            "prior_decisions",
+            "work_continuation"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "question": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "session_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Session Binding Ref",
+          "type": "string"
+        },
+        "wait_ms": {
+          "default": 0,
+          "maximum": 1500,
+          "minimum": 0,
+          "title": "Wait Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "expected_target",
+        "session_binding_ref",
+        "binding_generation",
+        "client_request_ref",
+        "operation_ref",
+        "intent_revision",
+        "question",
+        "purpose"
+      ],
+      "title": "AgentContextCheckRequestV1",
+      "type": "object"
+    },
+    "AgentContextCheckResponseV1": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "block_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Block Generation",
+          "type": "integer"
+        },
+        "check_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Check Generation",
+          "type": "integer"
+        },
+        "check_ref": {
+          "title": "Check Ref",
+          "type": "string"
+        },
+        "client_request_ref": {
+          "title": "Client Request Ref",
+          "type": "string"
+        },
+        "control_capability": {
+          "const": "cooperative_only",
+          "default": "cooperative_only",
+          "title": "Control Capability",
+          "type": "string"
+        },
+        "duplicate_intent": {
+          "default": false,
+          "title": "Duplicate Intent",
+          "type": "boolean"
+        },
+        "execution_state": {
+          "enum": [
+            "queued",
+            "running",
+            "waiting_resolution",
+            "completed",
+            "cancelled",
+            "expired",
+            "failed"
+          ],
+          "title": "Execution State",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "format": {
+          "const": "oira.context_check_response.v1",
+          "default": "oira.context_check_response.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "intent_revision": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Intent Revision",
+          "type": "integer"
+        },
+        "ok": {
+          "const": true,
+          "default": true,
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "operation_blocked": {
+          "title": "Operation Blocked",
+          "type": "boolean"
+        },
+        "operation_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[\\x21-\\x7e]+$",
+          "title": "Operation Ref",
+          "type": "string"
+        },
+        "poll_after_ms": {
+          "anyOf": [
+            {
+              "maximum": 60000,
+              "minimum": 250,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Poll After Ms"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "recheck_required": {
+          "default": false,
+          "title": "Recheck Required",
+          "type": "boolean"
+        },
+        "release_state": {
+          "default": "no_result",
+          "enum": [
+            "no_result",
+            "current",
+            "stale",
+            "unavailable",
+            "presentation_expired"
+          ],
+          "title": "Release State",
+          "type": "string"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result"
+        },
+        "result_revision": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Result Revision",
+          "type": "integer"
+        },
+        "result_status": {
+          "anyOf": [
+            {
+              "enum": [
+                "resolved",
+                "resolved_with_alternatives",
+                "incomplete",
+                "blocked"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Status"
+        },
+        "session_binding_ref": {
+          "title": "Session Binding Ref",
+          "type": "string"
+        },
+        "submitted_client_request_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Submitted Client Request Ref"
+        },
+        "superseded": {
+          "default": false,
+          "title": "Superseded",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "check_ref",
+        "client_request_ref",
+        "session_binding_ref",
+        "binding_generation",
+        "operation_ref",
+        "intent_revision",
+        "check_generation",
+        "block_generation",
+        "execution_state",
+        "operation_blocked",
+        "expires_at"
+      ],
+      "title": "AgentContextCheckResponseV1",
+      "type": "object"
+    },
+    "AgentContextInterventionsPageV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_interventions_page.v1",
+          "default": "oira.context_interventions_page.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "limit": {
+          "default": 10,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "session_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Session Binding Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_target",
+        "session_binding_ref",
+        "binding_generation"
+      ],
+      "title": "AgentContextInterventionsPageV1",
+      "type": "object"
+    },
+    "AgentContextRevokeBindingV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_session_revoke.v1",
+          "default": "oira.context_session_revoke.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "session_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Session Binding Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_target",
+        "session_binding_ref",
+        "binding_generation"
+      ],
+      "title": "AgentContextRevokeBindingV1",
+      "type": "object"
+    },
+    "AgentContextSessionBindV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "adapter_version": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Adapter Version",
+          "type": "string"
+        },
+        "client_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Client Binding Ref",
+          "type": "string"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_session_bind.v1",
+          "default": "oira.context_session_bind.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "host_session_hint": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Host Session Hint"
+        },
+        "local_context_nonce": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Local Context Nonce",
+          "type": "string"
+        }
+      },
+      "required": [
+        "client_binding_ref",
+        "expected_target",
+        "local_context_nonce",
+        "adapter_id",
+        "adapter_version"
+      ],
+      "title": "AgentContextSessionBindV1",
+      "type": "object"
+    },
+    "AgentContextStatusV1": {
+      "$defs": {
+        "CodingTargetV1": {
+          "additionalProperties": false,
+          "properties": {
+            "connection_uuid": {
+              "title": "Connection Uuid",
+              "type": "string"
+            },
+            "environment": {
+              "maxLength": 2048,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "grant_generation": {
+              "minimum": 1,
+              "title": "Grant Generation",
+              "type": "integer"
+            },
+            "grant_uuid": {
+              "title": "Grant Uuid",
+              "type": "string"
+            },
+            "mapping_revision": {
+              "minimum": 1,
+              "title": "Mapping Revision",
+              "type": "integer"
+            },
+            "organization_uuid": {
+              "title": "Organization Uuid",
+              "type": "string"
+            },
+            "project_uuid": {
+              "title": "Project Uuid",
+              "type": "string"
+            },
+            "resource_authority_uuid": {
+              "title": "Resource Authority Uuid",
+              "type": "string"
+            },
+            "resource_epoch": {
+              "minimum": 1,
+              "title": "Resource Epoch",
+              "type": "integer"
+            },
+            "schema": {
+              "const": "oira_coding_target.v1",
+              "default": "oira_coding_target.v1",
+              "title": "Schema",
+              "type": "string"
+            },
+            "user_uuid": {
+              "title": "User Uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "environment",
+            "user_uuid",
+            "organization_uuid",
+            "project_uuid",
+            "connection_uuid",
+            "resource_authority_uuid",
+            "resource_epoch",
+            "grant_uuid",
+            "grant_generation",
+            "mapping_revision"
+          ],
+          "title": "CodingTargetV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "binding_generation": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Binding Generation",
+          "type": "integer"
+        },
+        "check_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Check Ref",
+          "type": "string"
+        },
+        "expected_target": {
+          "$ref": "#/$defs/CodingTargetV1"
+        },
+        "format": {
+          "const": "oira.context_check_status.v1",
+          "default": "oira.context_check_status.v1",
+          "title": "Format",
+          "type": "string"
+        },
+        "session_binding_ref": {
+          "maxLength": 36,
+          "minLength": 36,
+          "title": "Session Binding Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_target",
+        "session_binding_ref",
+        "binding_generation",
+        "check_ref"
+      ],
+      "title": "AgentContextStatusV1",
+      "type": "object"
+    }
+  }
+}

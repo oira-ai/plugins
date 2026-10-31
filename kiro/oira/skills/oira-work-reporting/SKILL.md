@@ -33,6 +33,16 @@ server receipts can use `--server-confirmed`. Mark blocked/unknown_send/
 repair_required truthfully. Never finalize early in a turn or invent an update.
 The manual package route below still requires its documented Python runtime.
 
+If `references/key-installation.json` exists, this is the standalone key MCP
+adapter, not an installed-runtime descriptor. Validate schema `oira_plugin_key.v1`
+and its app/origin/host identity. Use the installed local key server's Oira tools;
+its local command reads the key from the OS vault. Do not ask for OAuth as well,
+read the vault yourself, or ask for the raw key again. Use this skill's
+`.key-venv/bin/python` (Windows `.key-venv/Scripts/python.exe`) for canonical
+preflight. A missing/locked vault, disabled local server or mismatched identity
+needs repair; never fall back to a plaintext header. This route saves no durable
+folder target by itself and does not use the OAuth plugin's reporting hooks.
+
 For manual Python hook installations, the same helper also accepts `checkpoint
 --project-root <folder> --session-id <session> --nonce <nonce> --state <state>
 [--update-ref <reference>]`. Use the exact helper/app/environment printed in
@@ -48,11 +58,11 @@ CLI context without lifecycle hooks, begin a turn once with `reporting begin
 its returned nonce; `reporting current` recovers it. Duplicate begin with the
 same turn reference must not reset a completed checkpoint.
 
-Four Oira tools: `oira_connection_status`, `oira_submit_work_update`,
+Four reporting tools: `oira_connection_status`, `oira_submit_work_update`,
 `oira_work_update_status` and `oira_finish_history_import`. Report only when
 the user asks you to keep Oira updated, for the current task or for the
-approved project (their own instruction from "Set up Oira" is that ask, for
-the repository it names), or asks for a progress update or a handoff;
+approved project (setup alone is not a request to report installation activity or
+to enable automatic reporting), or asks for a progress update or a handoff;
 import past work only as "Import recent work" says. Codex and Claude can also
 use explicitly enabled local hooks to remind you
 to report new work facts automatically. Hook input and transcripts are never
@@ -74,12 +84,23 @@ outbound preflight on the exact payload before transmission; send only its
 accepted output. Keep unchanged retry identities and check an uncertain send
 before retrying.
 
+## Optional coordinator context (separate consent)
+
+When company-context reads are separately authorized, use the explicit bounded
+context-check workflow in [context checks](references/context-checks.md). This
+permits an explicitly composed question and assumptions, never raw chat prompts,
+transcripts, tool output, repository file bodies or history scanning. Reporting
+consent does not enable context reads or intervention reception. Existing
+reporting and its final checkpoint remain unchanged. Context checks target the
+coordinator's tracked operation only; they never schedule its workers.
+
 ## Before the first update
 
 1. Call `oira_connection_status`. Continue only when `reporting.available` is
    true, `reporting.contract` is `oira_work_update.v2` and
    `reporting.structured_only` is true. If the Oira tools are missing or ask
-   for sign-in, ask the user to sign in and wait: in the Kiro CLI, type `/mcp`, select `oira` and press Enter (or run `/mcp auth oira`); in the Kiro IDE, choose Authenticate next to `oira` in the MCP panel. They finish in the browser; then call `oira_connection_status` again. If sign-in times out or the browser cannot open the local callback, check `timeout: 300000` in the active server entry and start a fresh authentication; `references/kiro-setup.md` explains recovery. If `oira` is not listed at all, `references/kiro-setup.md` says what to check. If current structured/routing contracts are present
+   for sign-in with a standalone key adapter, use its vault/local-server repair
+   path above; do not start OAuth instead. Otherwise, ask the user to sign in and wait: in the Kiro CLI, type `/mcp`, select `oira` and press Enter (or run `/mcp auth oira`); in the Kiro IDE, choose Authenticate next to `oira` in the MCP panel. They finish in the browser; then call `oira_connection_status` again. If sign-in times out or the browser cannot open the local callback, check `timeout: 300000` in the active server entry and start a fresh authentication; `references/kiro-setup.md` explains recovery. If `oira` is not listed at all, `references/kiro-setup.md` says what to check. If current structured/routing contracts are present
    but reporting is unavailable, explain `unavailable_reason` once and send
    nothing; capture pause, stale mapping and revoked access require their own
    repair. They do not mean an older transcript edition. If the status lacks
@@ -114,7 +135,7 @@ before retrying.
    first that works for every later run; `references/local-runtime.md` has
    the shell details (quoting, WSL, PowerShell). If none works, tell the
    user that reporting needs Python 3.11 or later on this computer and send
-   nothing. Never install anything.
+   nothing. Never install missing prerequisites during routine reporting.
 4. Use that command's output as this task's `stream_ref`: one random
    reference per task in this chat, kept for the whole task. Start
    `sequence` at 1. After a lost receipt, a compaction or a restart,
@@ -304,13 +325,20 @@ the project in Oira first.
 
 ## Set up Oira (one prompt)
 
+Setup alone sends no work update and does not enable automatic reporting,
+history import, company-context reads or intervention reception. Never invent
+installation work or a test update to make setup appear complete. After a
+required native reload/new chat, the same setup request rechecks existing state
+and resumes without duplicate configuration or repeated saved choices.
+
 When the user asks to set up Oira for this project: check the connection
 (signing in if needed), pick the approved project with the user, check the
 preflight, and tell them in a few lines what Oira receives: the work updates
 they ask you to send, including decisions, progress, blockers and deferred
 work; not session transcripts, tool output or source files. Native OAuth needs
-no API key; optional Oira installation keys belong to dedicated CLI installations,
-not third-party models. The reporting workflow excludes credentials and filters
+no API key; Oira installation keys can also authenticate the optional local
+local key MCP adapter using the OS vault. They are not third-party model keys.
+Never promise to erase a key already pasted into a saved chat. The reporting workflow excludes credentials and filters
 recognized secret patterns before each update is sent.
 
 Explain the mapping in plain language: the company and Oira project are the
@@ -326,7 +354,12 @@ For an installed bundled runtime, after native sign-in and explicit target choic
 use `binding_command` from the descriptor with `--folder <absolute folder or
 worktree> --transport native_oauth --target-file <temporary expected_target JSON>
 --project-label <display label>`. This saves the existing exact binding; it does
-not enable automatic reporting. Delete the temporary file. Keep an existing
+not enable automatic reporting. Delete the temporary file.
+For an independent manual installation with updates only on request, keep the
+explicit exact target for this chat and recheck it before sending. Do not call
+an enable helper merely to save it; do not claim a durable folder binding was
+created. Explain whether the target is saved for this folder or selected only
+for this chat. Keep an existing
 key-owned binding in its original installation; changing credential ownership
 requires an explicit user-directed rebind, never a setup convenience.
 
@@ -335,7 +368,10 @@ asking again. Otherwise ask how Oira should hear about this repository's
 work: only when they
 ask (nothing more to do), or at milestones in every chat. Approving the
 connection alone is not that choice. For every chat, and only once they
-agree, Codex and Claude use "Automatic reporting hooks" below; other apps
+agree, local Codex and Claude on macOS/Linux use "Automatic reporting hooks"
+below when using the ordinary OAuth plugin/runtime route. The standalone
+key adapter uses the personal instruction route instead. On other platforms use the personal instruction route only where the
+selected host actually loads it; otherwise retain updates on request. Other apps
 add this block to their personal Kiro steering file, `~/.kiro/steering/oira-reporting.md` (`references/kiro-setup.md` gives its front matter and how to check that the selected agent loads it), keeping everything already there (create the file if it is missing), and show them the block:
 
 ```
