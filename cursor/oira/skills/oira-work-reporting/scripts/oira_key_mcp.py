@@ -293,7 +293,14 @@ def make_server(remote):
         'Context reads and history import are separate from reporting. If a capability is not exposed, '
         'report it as unavailable; do not substitute OAuth or invent a result. For setup, follow the '
         'setup-verification reference, wait for hook review and verify real local execution where '
-        'applicable, then use oira_verify_setup for a non-work acknowledgment. Never invent a work update.'
+        'applicable, then use oira_verify_setup for a non-work acknowledgment. Never invent a work update. '
+        'Setup/verification chats are excluded from work and history import, even after setup finishes. '
+        'Persist their exact session exclusion through the installed hook helper before enabling reports. '
+        'A working chat first observed midrun declares work/context before its real progress/results; '
+        'never manufacture a native start or send empty setup/start work. '
+        'A key, project grant or saved binding does not override native approval to disclose work. '
+        'On an approval refusal stop, explain it and wait for explicit human approval; never minimize, '
+        'reword or switch transport to bypass it. A setup acknowledgment is not permission or a real work receipt.'
     ), on_list_tools=list_tools, on_call_tool=call_tool)
 
 

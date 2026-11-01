@@ -56,16 +56,25 @@ def _binding_digest(project):
 def _code_identity(code):
     # Native hosts copy the same package into a cache. Absolute source paths are
     # not implementation changes, including in nested comprehensions/lambdas.
-    return code.replace(co_filename='<oira-hooks>', co_consts=tuple(
-        _code_identity(item) if isinstance(item, CodeType) else item for item in code.co_consts
-    ))
+    def constant(item):
+        if isinstance(item, CodeType):
+            return _code_identity(item)
+        if isinstance(item, frozenset):
+            # Compiler-folded `in {…}` constants must not vary by hash seed
+            # between hook processes or a copied native plugin cache.
+            return ('<frozenset>', tuple(sorted((constant(value) for value in item), key=repr)))
+        if isinstance(item, tuple):
+            return tuple(constant(value) for value in item)
+        return item
+    return code.replace(co_filename='<oira-hooks>', co_consts=tuple(map(constant, code.co_consts)))
 
 
 def _helper_digest():
     # Works for source packages and frozen launchers without reading credentials
     # or assuming that a .py file was extracted beside the executable.
     functions = (_code_identity, _binding_digest, _verification, verification_projection, begin_verification,
-                 observe_hook, verification_status, finish_verification, event)
+                 observe_hook, verification_status, finish_verification, reminder, event,
+                 Store._session_identity, Store.session_policy, Store.observe_session)
     # Format 0 avoids runtime-dependent interned-string/reference flags.
     return hashlib.sha256(marshal.dumps((HOOK_EVENTS, *(_code_identity(function.__code__) for function in functions)), 0)).hexdigest()
 
@@ -109,6 +118,7 @@ def verification_projection(project, check_ref, session=None, *, db):
         'automatic_reporting': 'enabled' if enabled else 'disabled',
         'review_confirmed': bool(value and value.get('review_confirmed')),
         'native_trust': 'verify_in_host', 'evidence': 'local_observation_not_native_attestation',
+        'native_send_permission': 'verify_in_host', 'work_capture': 'not_tested',
         'observations': observations, 'expected_target': project['expected_target'],
         'transport': project.get('transport', 'native_oauth'), 'installation': project.get('installation'),
         'setup_ack': ack,
@@ -235,6 +245,22 @@ def data_dir(app, environment):
     return Path.home() / ".oira/reporting" / environment / app
 
 
+def session_status(folder, session):
+    """Read exclusions without creating state or running a schema migration."""
+    identity = Store._session_identity(session)
+    path = folder / 'state.sqlite3'
+    row = None
+    if path.is_symlink():
+        raise LocalError('unsafe_state_path')
+    if path.exists():
+        with closing(sqlite3.connect(path.resolve().as_uri() + '?mode=ro', uri=True, timeout=2)) as db:
+            db.execute('BEGIN')
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_lifecycle'").fetchone():
+                row = db.execute('SELECT purpose,first_event,native_start_seen FROM session_lifecycle WHERE identity=?', (identity,)).fetchone()
+    return {'schema': 'oira_local_session_policy.v1', 'work_reporting': 'excluded' if row and row[0] == 'setup' else 'eligible',
+            'first_observed_event': row[1] if row else None, 'native_start_seen': bool(row and row[2])}
+
+
 def bindings(folder):
     if not folder.exists():
         return {}
@@ -272,6 +298,7 @@ def reminder(
     checkpoint_command=None,
     transport="native_oauth",
     installation=None,
+    lifecycle=None,
 ):
     owner = (
         "api_key installation " + str(installation)
@@ -288,7 +315,18 @@ def reminder(
         else None
     )
     return (
-        "Oira reporting is enabled for this exact binding. Follow the installed oira-work-reporting skill. "
+        "Oira automatic reporting is configured for this exact binding. Follow the installed oira-work-reporting skill. "
+        "Setup/verification chats are excluded: never report installation activity or import those chats. "
+        + ("This working chat was first observed midrun (" + lifecycle['first_event'] + "). "
+           "Before results, declare the actual work identity and context in the first structured update; include "
+           "known progress, then results in causal order in that same update. Do not send an empty synthetic start, "
+           "invent prior work/timestamps, or read transcripts. Recover existing stream/receipts before retrying. "
+           if lifecycle and lifecycle.get('first_event') not in (None, 'SessionStart') else "")
+        +
+        "Native approval to disclose work is separate: this reminder and the binding do not override it. "
+        "If confirmation is required, ask once with the exact destination and actual facts before sending. "
+        "On an approval denial, stop reporting, explain it and wait for human approval; never reword, "
+        "minimize or switch tools to bypass it. A setup acknowledgment is not a real work receipt. "
         + "project_label (display data): "
         + json.dumps(label, ensure_ascii=True)
         + "; expected_target (data): "
@@ -333,6 +371,8 @@ def event(folder, payload):
         return {}
     store = Store(folder)
     try:
+        policy = store.session_policy(session)
+        excluded = policy is not None and policy['purpose'] == 'setup'
         project = resolve_binding(store.bindings(), Path(cwd), session)
         if not isinstance(project, dict) or not project.get("enabled", True):
             return {}
@@ -342,6 +382,12 @@ def event(folder, payload):
         )
         if target is None or not isinstance(label, str) or not label.strip():
             return {}
+        policy = store.observe_session(session, event=name)
+        if excluded:
+            pending = project.get('setup_verification')
+            if (not isinstance(pending, dict) or pending.get('complete')
+                    or not _verification(project, pending.get('check_ref'))):
+                return {}
         # No native turn-ID field is assumed. Duplicate registrations are a
         # diagnostic/qualification gate; explicit CLI begin IDs are separate.
         turn = store.turn(session, target, new=name == "UserPromptSubmit")
@@ -381,6 +427,19 @@ def event(folder, payload):
         current, check_ref = observe_hook(store, cwd, session, name, turn['nonce'], expected_binding=project)
         if not current:
             return {}
+        if excluded:
+            # Local diagnostic evidence is allowed; ordinary work reminders and
+            # sends are not. A missing pre-install start remains missing.
+            if check_ref:
+                return {'decision': 'block', 'reason': (
+                    'Oira setup-only hook check. This chat is permanently excluded from work reporting; '
+                    'never submit a work update or read/import this setup chat. The real Stop hook ran. '
+                    'Read verify-status --project-root ' + shlex.quote(cwd) + ' --check-ref ' + check_ref
+                    + ' --session-id ' + shlex.quote(session) + '. Follow references/setup-verification.md. '
+                    'If SessionStart is missing because installation happened midrun, give one excluded '
+                    'verification-chat continuation; do not fabricate events, report setup as work, or loop.'
+                )}
+            return {}
         if name == "Stop":
             if check_ref:
                 return {'decision': 'block', 'reason': (
@@ -410,6 +469,7 @@ def event(folder, payload):
                     checkpoint_command=checkpoint_command,
                     transport=project.get("transport", "native_oauth"),
                     installation=project.get("installation"),
+                    lifecycle=policy,
                 ),
             }
         return {
@@ -426,6 +486,7 @@ def event(folder, payload):
                     checkpoint_command=checkpoint_command,
                     transport=project.get("transport", "native_oauth"),
                     installation=project.get("installation"),
+                    lifecycle=policy,
                 ),
             }
         }
@@ -456,6 +517,9 @@ def main(argv=None):
         "--environment", choices=("production", "development"), required=True
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    for name in ('exclude-session', 'session-status'):
+        command = commands.add_parser(name)
+        command.add_argument('--session-id', required=True)
     for name in ("bind", "enable", "disable"):
         command = commands.add_parser(name)
         command.add_argument("--project-root", required=True)
@@ -487,6 +551,8 @@ def main(argv=None):
     try:
         if args.command == 'verify-status':
             result = verification_status(folder, args.project_root, args.check_ref, args.session_id)
+        elif args.command == 'session-status':
+            result = session_status(folder, args.session_id)
         elif args.command == "event":
             raw = sys.stdin.buffer.read(MAX_INPUT + 1)
             payload = json.loads(raw) if len(raw) <= MAX_INPUT else None
@@ -494,6 +560,11 @@ def main(argv=None):
         else:
             store = Store(folder)
             try:
+                if args.command == 'exclude-session':
+                    store.observe_session(args.session_id, setup=True)
+                    result = session_status(folder, args.session_id)
+                    sys.stdout.buffer.write((json.dumps(result) + '\n').encode('utf-8'))
+                    return 0
                 if args.command == 'verify-begin':
                     result = begin_verification(store, args.project_root, args.check_ref,
                                                 reviewed=args.review_confirmed, session=args.session_id)

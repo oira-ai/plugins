@@ -8,6 +8,13 @@ output or file content.
 
 ## Where Claude Code keeps sessions
 
+Before reading a session's conversation, use its native ID from the filename or
+technical header with the installed hook helper's `--app claude --environment
+production session-status --session-id <ID>`. Skip `work_reporting=excluded`
+entirely, including its subagents. Setup/verification chats are not work even if
+the member approved history import for the same folder. Do not read excluded
+conversation bodies to classify them.
+
 One file per session under `~/.claude/projects/`, in a folder named after the
 project path with every `/` replaced by `-` (for example `/Users/ana/web-app`
 becomes `-Users-ana-web-app`): `<session id>.jsonl`. Each line is one JSON

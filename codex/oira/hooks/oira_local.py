@@ -183,6 +183,9 @@ class Store:
           CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS bindings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS contexts (session TEXT PRIMARY KEY, destination TEXT NOT NULL);
+          CREATE TABLE IF NOT EXISTS session_lifecycle (
+            identity TEXT PRIMARY KEY, purpose TEXT NOT NULL, first_event TEXT,
+            first_observed REAL NOT NULL, native_start_seen INTEGER NOT NULL DEFAULT 0);
           CREATE TABLE IF NOT EXISTS turns (session TEXT PRIMARY KEY, destination TEXT NOT NULL,
             nonce TEXT NOT NULL, event_id TEXT, state TEXT NOT NULL, reminded INTEGER NOT NULL DEFAULT 0,
             provenance TEXT, refs TEXT, updated REAL NOT NULL);
@@ -481,6 +484,42 @@ class Store:
         """Freeze or verify a chat without creating/resetting a reporting turn."""
         with self.transaction():
             return self._freeze_context_locked(session, target)
+
+    @staticmethod
+    def _session_identity(session):
+        if not isinstance(session, str) or not session.strip() or len(session) > 255:
+            raise LocalError('session_required')
+        return hashlib.sha256(session.encode('utf-8')).hexdigest()
+
+    def session_policy(self, session):
+        row = self.db.execute('SELECT * FROM session_lifecycle WHERE identity=?',
+                              (self._session_identity(session),)).fetchone()
+        return dict(row) if row else None
+
+    def observe_session(self, session, *, event=None, setup=False):
+        """Technical lifecycle only; setup exclusions survive reloads and pruning.
+
+        First observed is not the actual start of the user's work. Never store
+        prompts, transcript paths or bodies, and never synthesize native events.
+        """
+        identity = self._session_identity(session)
+        if event not in (None, 'SessionStart', 'UserPromptSubmit', 'Stop'):
+            raise LocalError('invalid_hook_event')
+        with self.transaction():
+            prior = self.session_policy(session)
+            if prior is None:
+                if self.db.execute('SELECT COUNT(*) FROM session_lifecycle').fetchone()[0] >= MAX_METADATA:
+                    raise LocalError('context_capacity_requires_repair')
+                self.db.execute('INSERT INTO session_lifecycle VALUES (?,?,?,?,?)',
+                    (identity, 'setup' if setup else 'work', event, time.time(), int(event == 'SessionStart')))
+            else:
+                self.db.execute('UPDATE session_lifecycle SET purpose=?,first_event=COALESCE(first_event,?), '
+                                'native_start_seen=MAX(native_start_seen,?) WHERE identity=?',
+                    ('setup' if setup else prior['purpose'], event, int(event == 'SessionStart'), identity))
+            if setup:
+                # An already open reminder cannot turn installation into work.
+                self.db.execute("UPDATE turns SET state='no_material_change',updated=? WHERE session=?", (time.time(), session))
+            return self.session_policy(session)
 
     def turn(self, session, target, *, new=False, event_id=None):
         with self.transaction():
