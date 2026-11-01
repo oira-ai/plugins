@@ -1,6 +1,6 @@
 ---
 name: oira-work-reporting
-description: Keep Oira updated on the user's coding work when they ask, as structured work updates (decisions, progress, verification, blockers, questions, next steps and explicitly deferred work) for an approved project, and import the recent work of past sessions when the member approved it. Sends no transcripts, prompts, replies, tool output or files.
+description: Keep Oira updated on approved coding work and, with separate context-read consent, consult Oira about company decisions, constraints and related work when planning or resolving uncertain requirements. Report structured decisions, progress, verification, blockers, questions, next steps and deferred work; import recent past work only when approved. Sends no transcripts, prompts, replies, tool output or files.
 ---
 
 # Oira work reporting
@@ -13,6 +13,13 @@ mid-turn receipt and complete the current local final checkpoint. A receipt
 alone never finalizes a turn. Omit routine success and no-change chatter;
 explain an actionable failure once and keep coding. Respect pause, parked
 processing and separate history-import consent.
+
+Automatic reporting applies only to this chat's current enabled exact folder,
+worktree or deliberately inherited repository binding. A globally installed
+plugin, one available Oira target or a Codex sidebar project name never enrolls
+other folders. With no matching binding/reminder and no explicit current-task
+reporting request, send no work update. Context-read consent never enables
+reporting by itself.
 
 If `references/installed-runtime.json` exists in this installed skill, read it
 before selecting a preflight or binding command. It is nonsecret setup data:
@@ -33,15 +40,26 @@ server receipts can use `--server-confirmed`. Mark blocked/unknown_send/
 repair_required truthfully. Never finalize early in a turn or invent an update.
 The manual package route below still requires its documented Python runtime.
 
-If `references/key-installation.json` exists, this is the standalone key MCP
-adapter, not an installed-runtime descriptor. Validate schema `oira_plugin_key.v1`
+If `references/key-installation.json` exists, this is the vault-backed key MCP
+transport, not an installed-runtime descriptor. Validate schema `oira_plugin_key.v1`
 and its app/origin/host identity. Use the installed local key server's Oira tools;
 its local command reads the key from the OS vault. Do not ask for OAuth as well,
-read the vault yourself, or ask for the raw key again. Use this skill's
+read the vault yourself, or ask for the raw key again. A complete key plugin also
+has `references/key-plugin.json`, schema `oira_key_plugin.v1`. Validate this
+app/environment/origin, its absolute persistent plugin_root and Python path,
+and that the root contains the native manifest, skill and hook helpers.
+Compare its package_version to the actual native manifest; it records the
+prepared source version, not a live latest-directory-version assertion.
+Use that Python for preflight and the root's existing hook helper for binding
+and checkpoints. It is a native plugin with the same three reporting hooks;
+authentication does not remove lifecycle support. Native review/trust and the
+user's folder reporting choice remain required. Without that descriptor, an
+older standalone adapter uses this skill's
 `.key-venv/bin/python` (Windows `.key-venv/Scripts/python.exe`) for canonical
 preflight. A missing/locked vault, disabled local server or mismatched identity
 needs repair; never fall back to a plaintext header. This route saves no durable
-folder target by itself and does not use the OAuth plugin's reporting hooks.
+folder target by itself. Guide upgrading that older installation to the full
+key plugin if the user wants native automatic reporting or Plugins visibility.
 
 For manual Python hook installations, the same helper also accepts `checkpoint
 --project-root <folder> --session-id <session> --nonce <nonce> --state <state>
@@ -49,8 +67,11 @@ For manual Python hook installations, the same helper also accepts `checkpoint
 the hook reminder; it shares the runtime SQLite state. A final no-change check
 must complete this checkpoint before Stop, so Stop can finish immediately.
 
-Keep the binding's transport owner. A key-backed binding invokes the same four
-remote operations through the installed CLI (`report prepare/submit/status/retry`)
+Keep the binding's transport owner. A key-plugin binding invokes the same four
+reporting operations through its vault-backed MCP tools, with canonical local
+preflight, stable update references and status recovery. Do not install an Oira
+CLI or use OAuth instead. A CLI-owned key-backed binding invokes operations
+through that installed CLI (`report prepare/submit/status/retry`)
 in the binding's app/environment/installation scope. Native OAuth bindings use
 the host's MCP tools. Neither credential can substitute for the other. With a
 CLI context without lifecycle hooks, begin a turn once with `reporting begin
@@ -325,6 +346,12 @@ the project in Oira first.
 
 ## Set up Oira (one prompt)
 
+Read `references/setup-verification.md` before installation or a setup readiness
+claim. It owns source/version selection, the native “review hooks, then reply
+done” checkpoint, fresh per-session hook observations and the non-work
+`oira_verify_setup` acknowledgment. Do not mark automatic setup complete from
+inventory or user confirmation alone. First real work capture is separate.
+
 Setup alone sends no work update and does not enable automatic reporting,
 history import, company-context reads or intervention reception. Never invent
 installation work or a test update to make setup appear complete. After a
@@ -337,7 +364,7 @@ preflight, and tell them in a few lines what Oira receives: the work updates
 they ask you to send, including decisions, progress, blockers and deferred
 work; not session transcripts, tool output or source files. Native OAuth needs
 no API key; Oira installation keys can also authenticate the optional local
-local key MCP adapter using the OS vault. They are not third-party model keys.
+key MCP adapter using the OS vault. They are not third-party model keys.
 Never promise to erase a key already pasted into a saved chat. The reporting workflow excludes credentials and filters
 recognized secret patterns before each update is sent.
 
@@ -363,14 +390,23 @@ for this chat. Keep an existing
 key-owned binding in its original installation; changing credential ownership
 requires an explicit user-directed rebind, never a setup convenience.
 
+For a complete key plugin, save the exact nonsecret target using its private
+Python and `<plugin_root>/hooks/reporting_hook.py --app copilot --environment
+production bind --project-root <absolute folder> --project-label <label>
+--target-file <temporary target JSON> --transport api_key --installation
+<key-installation.json host_uuid>`. Delete the target file. This saves the
+folder target without enabling automatic reporting and preserves an existing
+choice for the same target/owner. Never select a different project by label.
+
 If the user already asked for automatic reporting, apply that choice without
 asking again. Otherwise ask how Oira should hear about this repository's
 work: only when they
 ask (nothing more to do), or at milestones in every chat. Approving the
 connection alone is not that choice. For every chat, and only once they
 agree, local Codex and Claude on macOS/Linux use "Automatic reporting hooks"
-below when using the ordinary OAuth plugin/runtime route. The standalone
-key adapter uses the personal instruction route instead. On other platforms use the personal instruction route only where the
+below for both the complete key plugin and the ordinary OAuth plugin/runtime.
+An older standalone key adapter needs the complete-plugin upgrade first.
+On other platforms use the personal instruction route only where the
 selected host actually loads it; otherwise retain updates on request. Other apps
 add this block to their personal Copilot instructions, `~/.copilot/copilot-instructions.md` (under `$COPILOT_HOME` when that variable is set), which the Copilot CLI reads in every chat, keeping everything already there (create the file if it is missing), and show them the block; `references/setup-and-sign-in.md` says how to confirm that the IDE surface they use loads it:
 
