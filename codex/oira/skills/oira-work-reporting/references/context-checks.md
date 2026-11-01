@@ -41,14 +41,21 @@ scopes and complete browser authorization. Keep its OAuth credentials host-owned
    "assumptions":["The existing contract remains authoritative."]}`. The local
    preflight consumes the generated server schema and the server revalidates
    all authority. An existing full closed DTO can be passed as `--request-file`.
-   Wire bounds count compact UTF-8 JSON: 16 KiB per request and 32 KiB per
+   Wire bounds count compact UTF-8 JSON: 64 KiB per request and 128 KiB per
    response, including international text. Local reporting digests retain
    their established encoding.
-   Explicit input files have a separate 64 KiB raw acquisition cap to bound
+   Explicit input files have a separate 256 KiB raw acquisition cap to bound
    parsing. Escapes and formatting within that cap are accepted when the
-   parsed request still fits the same 16 KiB compact wire bound.
+   parsed request still fits the same 64 KiB compact wire bound.
    Never put credentials in questions, files or command arguments.
-   The composed question, assumptions and next step must fit 4,000 characters.
+   The question can contain 12,000 characters; assumptions are at most sixteen
+   strings of 1,000 characters, and the next step at most 4,000 characters.
+   Their composed engine intent, including headings, must fit 16,000 characters.
+   Compose the actual question; do not attach a chat transcript or source files.
+   Optional `work_handle` is the exact `wh_...` returned by reporting or recent
+   work status. It relates this private dialogue to already matched shared work
+   and grants no access. Keep it stable for the operation. An unmatched report
+   can still be queried without manufacturing a Work Item.
    Optional evidence hints are at most sixteen explicit `record:<UUID>`,
    `domain:<UUID>`, `subject:<UUID>` or `artifact:<UUID>` references using
    lowercase canonical UUIDs. They select candidates and grant no access.
@@ -64,6 +71,23 @@ scopes and complete browser authorization. Keep its OAuth credentials host-owned
    usable only when `release_state=current`; source, permission and currentness
    can invalidate it before presentation expiry. Incomplete, pending, stale,
    unavailable and unsupported are never approval to proceed.
+   Save the request UUID, check UUID, binding/generation, operation and revision
+   in this task's notes; the same identifiers recover progress after a restart.
+   Processing may take several minutes. Follow `poll_after_ms` (normally 5–30
+   seconds), with a little jitter, while continuing independent authorized work.
+   A local wait timeout does not cancel the server job. Poll that same check on
+   resume; do not resubmit with a new UUID to get a faster answer. Submission
+   and status return quickly and do not hold the transport open for inference.
+   `discussion_ref` and `message_ref` identify the visible private conversation;
+   released results also include original artifact references. Oira shows the
+   question as your coding agent's message and makes its answer available there
+   through the same current source-permission checks.
+   Set `include_discussion_refs: true` in direct submit/status calls to opt into
+   the expanded response with discussion/artifact references and up to 128 KiB.
+   Omitted/false retains the original closed v1 response fields and 32 KiB bound
+   for older clients. This presentation option grants no execution allowance.
+   The updated CLI sets it for composed questions; a full explicit request DTO
+   keeps its exact supplied bytes.
 7. Hold the affected operation cooperatively while a consequential check is
    blocked or unavailable. Unrelated operations retain their own identity.
    `oira_context_interventions` / `context interventions` is a bounded scoped
@@ -83,6 +107,54 @@ scopes and complete browser authorization. Keep its OAuth credentials host-owned
    --check-generation <generation>` cancels the exact job. It does not clear an
    independent conflict block. `oira_revoke_context_session` / `context revoke`
    revokes the exact logical binding without claiming process interruption.
+
+## Direct MCP example
+
+Use the host's actual MCP tool calls. In the example below `target` is the
+complete frozen `expected_target` from approved connection status; `binding`
+and `check` are the actual tool responses. Create fresh UUIDs for this task
+once and retain them across lost-response retries. Replace the sample work
+handle with your real report handle, or omit it when no report exists.
+
+```javascript
+const binding = await oira_bind_context_session({request: {
+  expected_target: target,
+  client_binding_ref: "c7565194-34de-43fe-858e-534096fd20af",
+  local_context_nonce: "432297a1-4b54-4755-a3d8-0ec626669e97",
+  adapter_id: "codex", adapter_version: "0.12.0"
+}});
+const check = await oira_check_context({request: {
+  expected_target: target,
+  session_binding_ref: binding.session_binding_ref,
+  binding_generation: binding.binding_generation,
+  client_request_ref: "f5ccf613-9482-4dfb-92f9-e6c89f749709",
+  operation_ref: "portal-api-contract", intent_revision: 1,
+  purpose: "change_consistency",
+  work_handle: "wh_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+  question: "Before implementing the portal API, which accepted company decisions, product constraints and related team work govern its data contract? Validate the assumptions and identify conflicts or missing evidence.",
+  assumptions: ["The producer contract remains authoritative.",
+    "A change in timestamp units may affect another team's consumer."],
+  next_step: "Implement the API mapping after checking the governing contract.",
+  wait_ms: 0, include_discussion_refs: true
+}});
+// After check.poll_after_ms, read the SAME check. This starts no reasoning.
+const status = await oira_context_check_status({request: {
+  expected_target: target,
+  session_binding_ref: binding.session_binding_ref,
+  binding_generation: binding.binding_generation,
+  check_ref: check.check_ref, include_discussion_refs: true
+}});
+```
+
+Consume `status.result` only when `release_state` is `current`. Read its status,
+facts/assessment, evidence, accepted baselines, alternatives, coverage,
+degradation and conflicts together. `incomplete` means the evidence cannot
+settle the question; `blocked` requires the existing decision-owner route.
+Record what changed in the implementation plan and cite the relevant returned
+references in your work facts. At a dependent milestone, use the same operation
+and purpose with a higher revision and a new request UUID for a deliberately
+updated question. A server can spend several minutes processing; never turn a
+poll timeout, source gap or delayed reply into approval.
 
 All commands accept the existing app/environment/folder/session selectors.
 `--request-file` accepts only an explicit bounded closed DTO. The existing
