@@ -7,7 +7,7 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.11.4** is a production verification candidate. Host-directory submission and
+Package version **0.11.5** is a production verification candidate. Host-directory submission and
 installed-client acceptance remain pending. The standalone CLI 0.11.1 has testing prereleases, independently of this package. Native-host acceptance remains pending. Use the normal plugin instructions below or the setup prompt in the Oira guide. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 

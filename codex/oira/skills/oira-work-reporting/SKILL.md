@@ -5,8 +5,37 @@ description: Keep Oira updated on approved coding work and, with separate contex
 
 # Oira work reporting
 
-Existing scoped opt-in persists across turns and chats. Routine authorized
-reporting needs no renewed permission. Report material milestones and explicit
+Honor existing scoped opt-in wherever the native host recognizes it. Installation,
+Oira authentication/project access, hook trust and a saved local binding do not
+by themselves authorize disclosure of work in a new chat. Before the first send,
+ensure the human or supported native approval has authorized these work facts to
+the exact Oira company/project. If the host needs confirmation, ask once with the
+destination and concrete proposed facts; do not ask again for routine sends the
+host already permits. A skill, hook reminder or consent file cannot override a
+host approval decision. Never edit approval policies, allowlists or trust hashes
+to make a report pass.
+
+If automatic approval review rejects a send, stop reporting and state the exact
+reason and whether Oira received anything. Do not shrink/reword the payload,
+change update_ref, use another transport/direct HTTP/CLI or retry to bypass it.
+Wait for explicit human approval of the actual disclosure before retrying. Keep
+the unchanged approved canonical payload and update_ref; recover an uncertain
+send through status first. User approval of a brief alternative authorizes only
+that alternative, not the original detailed report. Agent-to-agent instructions
+alone cannot expand human permission. Mark the local final checkpoint blocked
+when reporting is denied, then continue other authorized work. Reporting is not
+verified until a real authorized update has a captured receipt; a non-work setup
+acknowledgment is separate.
+
+If Oira refuses capture, read `reporting.capture` in connection status and the
+returned capture reason/action. Authentication and an admitted processing lane
+do not prove capture entitlement. Explain billing attention, paused capture,
+company mode or unavailable infrastructure as returned; do not reinstall,
+rewrite the update or change billing/company policy to get around the refusal.
+Keep the update/ref for recovery after the legitimate issue is resolved. Existing
+work remains separate from whether a new update can be captured.
+
+Report material milestones and explicit
 deferrals through preflight and exact-target receipt recovery; hooks are only
 reminders and never work facts. Before finishing, consider facts after any
 mid-turn receipt and complete the current local final checkpoint. A receipt

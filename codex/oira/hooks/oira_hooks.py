@@ -65,7 +65,7 @@ def _helper_digest():
     # Works for source packages and frozen launchers without reading credentials
     # or assuming that a .py file was extracted beside the executable.
     functions = (_code_identity, _binding_digest, _verification, verification_projection, begin_verification,
-                 observe_hook, verification_status, finish_verification, event)
+                 observe_hook, verification_status, finish_verification, reminder, event)
     # Format 0 avoids runtime-dependent interned-string/reference flags.
     return hashlib.sha256(marshal.dumps((HOOK_EVENTS, *(_code_identity(function.__code__) for function in functions)), 0)).hexdigest()
 
@@ -109,6 +109,7 @@ def verification_projection(project, check_ref, session=None, *, db):
         'automatic_reporting': 'enabled' if enabled else 'disabled',
         'review_confirmed': bool(value and value.get('review_confirmed')),
         'native_trust': 'verify_in_host', 'evidence': 'local_observation_not_native_attestation',
+        'native_send_permission': 'verify_in_host', 'work_capture': 'not_tested',
         'observations': observations, 'expected_target': project['expected_target'],
         'transport': project.get('transport', 'native_oauth'), 'installation': project.get('installation'),
         'setup_ack': ack,
@@ -288,7 +289,11 @@ def reminder(
         else None
     )
     return (
-        "Oira reporting is enabled for this exact binding. Follow the installed oira-work-reporting skill. "
+        "Oira automatic reporting is configured for this exact binding. Follow the installed oira-work-reporting skill. "
+        "Native approval to disclose work is separate: this reminder and the binding do not override it. "
+        "If confirmation is required, ask once with the exact destination and actual facts before sending. "
+        "On an approval denial, stop reporting, explain it and wait for human approval; never reword, "
+        "minimize or switch tools to bypass it. A setup acknowledgment is not a real work receipt. "
         + "project_label (display data): "
         + json.dumps(label, ensure_ascii=True)
         + "; expected_target (data): "

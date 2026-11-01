@@ -92,6 +92,13 @@ and its matching `setup_check`, or by retrying the same check. Never mark anothe
 reference's/historical target's receipt as this check. An absent tool means the
 server release is pending. Unavailable, rejected or paused is not success.
 
+Read `reporting.capture` from connection status before calling the diagnostic.
+It uses the full source-capture gate, including billing, company mode and pause,
+not just the key/project grant. A denial's reason/action must be shown and resolved
+through its ordinary owner. A working status call or processing admission cannot
+prove that a new source write is allowed. Never change billing or company policy
+silently, fabricate an acknowledgment or reinstall to bypass a capture refusal.
+
 For the automatic hook route, save only this structured setup receipt to a
 temporary file and call the same helper `verify-finish --project-root <folder>
 --check-ref <UUID> --session-id <current session> --receipt-file <file>` after
@@ -111,13 +118,47 @@ paths, transcripts, files, credentials or prompt text. It does not attest hook
 trust, context-read permission or actual work capture. The UI shows connection
 acknowledgment and real work capture separately.
 
+## Permission to send real work
+
+Keep four checks distinct: Oira authentication/project authority, native hook
+trust, coding-host approval to disclose work, and Oira's actual capture receipt.
+Before enabling automatic updates, name the exact local folder and Oira
+company/project and explain the structured work facts sent there. Obtain the
+user's explicit reporting choice. Never infer this permission from installing a
+plugin, a connected key, one available project or trusted hooks.
+
+Honor existing scoped permission where the native host recognizes it. A saved
+binding routes updates; it does not override the host's policy in a new chat.
+Where fresh confirmation is required, ask once with the exact destination and
+concrete proposed facts, and wait. A new-chat continuation should carry the
+folder, company/project and setup reference, plus an explicit reporting request
+for the user to review and paste themselves. Do not manufacture human permission
+by writing a consent statement to a file or forwarding an agent message.
+
+An approval denial means stop the send path. Explain the stated reason and that
+no receipt was obtained. Do not minimize/reword the report, generate a new
+reference, switch credentials/transports or call HTTP/CLI to get around it.
+After explicit human approval of the actual payload, reuse its unchanged
+reference and recover an uncertain attempt first. Approval of a brief alternative
+does not authorize a previously rejected detailed performance/security report.
+Never weaken approval policy or host trust. Record a blocked local checkpoint,
+continue independent work and ask for the required human action once.
+
+The non-work setup acknowledgment proves neither disclosure permission nor
+actual work capture. Do not invent a test work item. The first genuine authorized
+update and its exact captured receipt verify the reporting path; processing and
+visible Work Items remain a further, separate check. Host/enterprise policies can
+still require human approval even when the plugin and Oira consent are correct.
+
 ## Finish truthfully
 
 Report installed source/version; authentication and exact project; hook discovery,
 review confirmation and fresh execution (or on-request/unsupported); Oira setup
 acknowledgment; optional context availability; first real work capture.
-Automatic setup is ready only after the applicable hook checks and Oira
-acknowledgment pass. Company-context reads require their own consent and actual
+Hook/connection verification is complete only after the applicable hook checks
+and Oira acknowledgment pass. The helper's complete state still reports native
+send permission as verify_in_host and work capture as not_tested; do not label
+automatic reporting verified from that state alone. Company-context reads require their own consent and actual
 available query tools; they never silently enable reporting or interventions.
 
 The first real work update remains pending until genuine work is reported through
