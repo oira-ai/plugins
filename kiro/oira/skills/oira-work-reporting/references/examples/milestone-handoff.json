@@ -1,0 +1,24 @@
+{
+  "schema": "oira_work_update.v2",
+  "project_label": "platform",
+  "update_ref": "44d3cecc-080e-4bcc-8b0a-d5081114ef86",
+  "stream_ref": "cdd1c65f-762b-4455-9cf6-0e4032a72bde",
+  "sequence": 1,
+  "reporter_version": "0.12.1",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [{
+    "work_ref": "report-recovery",
+    "operation": "declare",
+    "title": "Keep work reporting available after server restarts",
+    "intended_outcome": "Recover interrupted reporting without losing or duplicating work milestones.",
+    "activity": "mixed",
+    "facts": [
+      {"fact_ref": "scope", "kind": "commitment", "status": "accepted", "statement": "Keep session reporting available across server restarts without sending duplicate work updates.", "basis": "user_statement_paraphrase", "confidence": "1"},
+      {"fact_ref": "recovery", "kind": "decision", "status": "accepted", "statement": "Reconnect for each operation; check a lost write response by its update reference to avoid duplicate milestones.", "basis": "agent_report", "confidence": "1"},
+      {"fact_ref": "transport", "kind": "implemented_change", "status": "accepted", "statement": "Key-backed transports open a fresh server connection per operation, so an interrupted stream does not disable later status checks.", "basis": "agent_report", "confidence": "1"},
+      {"fact_ref": "roundtrip", "kind": "verification", "status": "tested", "statement": "Local MCP round-trip tests recover discovery and status after connection failure; each failed submit is attempted once.", "basis": "agent_report", "confidence": "1"},
+      {"fact_ref": "release", "kind": "next_step", "status": "proposed", "statement": "Publish the reviewed packages, then verify a normal work milestone reaches the approved project.", "basis": "agent_report", "confidence": "1"}
+    ],
+    "details": [{"detail_ref": "write-safety", "kind": "decision", "description": "A disconnected response may follow successful capture; status recovery must precede any unchanged resend.", "temporal_status": "current", "supporting_fact_refs": ["recovery", "transport"]}]
+  }]
+}

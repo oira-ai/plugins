@@ -229,6 +229,17 @@ handoff. Never per prompt, per tool call or on a timer. No new material fact
 means no send. Reporting never blocks, delays or hides the coding work; if a
 send fails, say so in one line and carry on.
 
+Make each milestone useful to a teammate who has not read this chat. State the
+concrete change and its consequence, a decision and its reason, a check and its
+result, or the remaining action and condition. Use short, complete sentences;
+usually one sentence per fact, with 3–6 new facts for a substantial milestone.
+These are work summaries authored from observed facts, not copies or summaries
+of the conversation. Do not pad a report to meet a count. Worktree creation,
+checkpoint bookkeeping and Oira delivery attempts alone are not work progress.
+Keep reporting failures in the local delivery status, not the product's work facts.
+At final handoff, send the actual result and remaining limitation when authorized;
+an earlier plan or test milestone does not tell teammates what finally shipped.
+
 Before a milestone or a final handoff, check the conversation for work the
 user explicitly put off. Each postponed outcome is its own declared work even
 when nothing was committed for it.
@@ -289,6 +300,16 @@ A receipt with `capture: captured` means Oira stored the facts. Matching them
 to Work Items happens next; `oira_work_update_status` shows it per work, and
 for each relation a work stated whether Oira `recorded` it, is still judging
 it (`pending`) or judged that it does not hold (`not_recorded`).
+
+## Recover a lost response
+
+A closed transport or a local `unknown_send` checkpoint proves neither capture
+nor failure. On the next available connection, check the original `update_ref`
+with the same frozen target before attempting another send. If captured, retain
+its handles and continue with only new facts. Resend unchanged only when status
+explicitly permits it. Never replace an uncertain update with a new reference,
+repeat an already captured milestone, or claim local bookkeeping reached Oira.
+A reporting outage never changes the actual stage of the coding work.
 
 ## Work from another chat
 

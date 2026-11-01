@@ -317,6 +317,8 @@ def reminder(
     return (
         "Oira automatic reporting is configured for this exact binding. Follow the installed oira-work-reporting skill. "
         "Setup/verification chats are excluded: never report installation activity or import those chats. "
+        "Report concise useful facts: what changed and why, a decision and its reason, checks and results, "
+        "and remaining actions. At final handoff include the actual outcome; bookkeeping is not work progress. "
         + ("This working chat was first observed midrun (" + lifecycle['first_event'] + "). "
            "Before results, declare the actual work identity and context in the first structured update; include "
            "known progress, then results in causal order in that same update. Do not send an empty synthetic start, "
