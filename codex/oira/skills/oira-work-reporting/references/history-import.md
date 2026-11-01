@@ -8,6 +8,13 @@ output or file content.
 
 ## Where Codex keeps sessions
 
+Before reading a session's conversation, use its native ID from the filename or
+technical header with the installed hook helper's `--app codex --environment
+production session-status --session-id <ID>`. Skip `work_reporting=excluded`
+entirely, including its helper threads. Setup/verification chats are not work,
+even when they share this folder or the member approved a history window. Do not
+read excluded conversation bodies to decide whether they contain work.
+
 One file per session under `$CODEX_HOME/sessions` (by default
 `~/.codex/sessions`), in dated folders:
 `YYYY/MM/DD/rollout-<timestamp>-<id>.jsonl`. Each line is one JSON record.

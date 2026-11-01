@@ -146,6 +146,15 @@ coordinator's tracked operation only; they never schedule its workers.
 
 ## Before the first update
 
+Setup/verification chats are never work or history-import sources. Follow
+`references/setup-verification.md`: persist their exact local session exclusion
+before enabling hooks, and keep it after completion. A hook reminder cannot
+override that exclusion. Use another working chat for subsequent coding.
+For work first seen midrun, use the real declaration/context before progress
+and results in the first canonical update; never invent native start events,
+earlier facts/times, or an extra empty start report. Recover an existing stream
+and receipt before resuming. No transcript import is needed for current work.
+
 1. Call `oira_connection_status`. Continue only when `reporting.available` is
    true, `reporting.contract` is `oira_work_update.v2` and
    `reporting.structured_only` is true. If the Oira tools are missing or ask
