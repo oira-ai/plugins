@@ -411,7 +411,7 @@ class Store:
             prior = self.db.execute(
                 "SELECT value FROM bindings WHERE key=?", (key,)
             ).fetchone()
-            if enabled is None and prior:
+            if prior:
                 previous = json.loads(prior["value"])
                 if (
                     validate_target(previous.get("expected_target"))
@@ -420,7 +420,14 @@ class Store:
                     and previous.get("transport", "native_oauth") == transport
                     and previous.get("installation") == installation
                 ):
-                    binding["enabled"] = previous.get("enabled", True)
+                    if enabled is None:
+                        binding["enabled"] = previous.get("enabled", True)
+                    if (previous["expected_target"] == target
+                            and previous.get("enabled", True) and binding["enabled"]
+                            and isinstance(previous.get("setup_verification"), dict)):
+                        # Repeating the exact setup is resumable; a changed
+                        # target epoch, owner or reporting choice is a new check.
+                        binding["setup_verification"] = previous["setup_verification"]
             self.db.execute(
                 "INSERT OR REPLACE INTO bindings VALUES (?,?)",
                 (key, canonical(binding)),
@@ -442,6 +449,8 @@ class Store:
             if enabled and validate_target(binding.get("expected_target")) is None:
                 raise LocalError("binding_repair_required")
             binding["enabled"] = bool(enabled)
+            if not enabled:
+                binding.pop("setup_verification", None)
             self.db.execute(
                 "UPDATE bindings SET value=? WHERE key=?", (canonical(binding), key)
             )

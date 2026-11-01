@@ -13,15 +13,22 @@ import logging
 import os
 from pathlib import Path
 import re
+import shlex
+import subprocess
 import sys
 import tempfile
 from uuid import UUID
+from urllib.parse import urlsplit
 
 ORIGIN = 'https://oira-oira.com'
 APP = 'codex'
+ENVIRONMENT = 'production'
+PLUGIN = 'oira'
+LOOPBACK_HOSTS = ''.split(',')
 SCHEMA = 'oira_plugin_key.v1'
 TOOLS = frozenset({
     'oira_connection_status', 'oira_submit_work_update', 'oira_work_update_status',
+    'oira_verify_setup',
     'oira_finish_history_import', 'oira_bind_context_session', 'oira_revoke_context_session',
     'oira_check_context', 'oira_context_check_status', 'oira_cancel_context_check',
     'oira_context_interventions', 'oira_ack_context_intervention',
@@ -70,6 +77,16 @@ def vault():
 
 def service():
     return f'oira.plugin-key.v1:{ORIGIN}:{APP}'
+
+
+def valid_environment():
+    parts = urlsplit(ORIGIN)
+    return bool(APP in {'codex', 'claude', 'kiro', 'copilot', 'cursor'}
+                and ENVIRONMENT in {'production', 'development'}
+                and parts.hostname and not parts.username and not parts.password
+                and not parts.path and not parts.query and not parts.fragment
+                and (parts.scheme == 'https' or ENVIRONMENT == 'development'
+                     and parts.scheme == 'http' and parts.hostname in LOOPBACK_HOSTS))
 
 
 def metadata_path():
@@ -128,6 +145,93 @@ def load_secret(path, store):
         raise KeySetupError('authentication_required') from None
 
 
+def prepare_plugin():
+    """Keep the complete native plugin; replace only its transport and interpreter.
+
+    Run from a private, persistent copy of the official package before native
+    installation. No vault access, host settings, hook trust or project grants.
+    """
+    if APP not in {'codex', 'claude'}:
+        raise KeySetupError('native_key_plugin_unsupported')
+    root = Path(__file__).resolve().parents[3]
+    name = PLUGIN
+    manifest = root / ('.codex-plugin' if APP == 'codex' else '.claude-plugin') / 'plugin.json'
+    package = json.loads(manifest.read_text(encoding='utf-8'))
+    if root.name != name or package.get('name') != name:
+        raise KeySetupError('complete_plugin_required')
+    version = package.get('version')
+    if not isinstance(version, str) or len(version) > 100 or not re.fullmatch(r'\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?', version):
+        raise KeySetupError('package_version_invalid')
+    python = Path(sys.executable).absolute()
+    if python.parent.resolve().is_relative_to(root):
+        # A host copies the plugin into its cache. Never copy a whole venv or
+        # depend on its relocated executable/shebangs.
+        raise KeySetupError('venv_must_be_outside_plugin')
+    wrapper = root / 'hooks/reporting_hook.py'
+    def plain_path(path):
+        return not any(part.is_symlink() for part in (path, *path.parents) if part.is_relative_to(root.parent))
+
+    for required in (wrapper, root / 'hooks/oira_hooks.py', root / 'hooks/oira_local.py'):
+        if not plain_path(required) or not required.is_file():
+            raise KeySetupError('complete_plugin_required')
+    mcp = root / '.mcp.json'
+    hooks = root / 'hooks/hooks.json'
+    descriptor = metadata_path().with_name('key-plugin.json')
+    market = root.parent / ('.agents/plugins/marketplace.json' if APP == 'codex' else '.claude-plugin/marketplace.json')
+    source_server = 'oira' if APP == 'claude' else name
+    expected_mcp = {'mcpServers': {source_server: {'type': 'http', 'url': ORIGIN + '/mcp'}}}
+    variable = 'PLUGIN_ROOT' if APP == 'codex' else 'CLAUDE_PLUGIN_ROOT'
+    original_command = 'python3 "${' + variable + '}/hooks/reporting_hook.py" --app ' + APP + ' --environment ' + ENVIRONMENT + ' event'
+    original_hooks = {'hooks': {event: [{'hooks': [{'type': 'command', 'command': original_command, 'timeout': 5}]}]
+                                for event in ('SessionStart', 'UserPromptSubmit', 'Stop')}}
+    argv = [str(python), str(wrapper), '--app', APP, '--environment', ENVIRONMENT, 'event']
+    command = subprocess.list2cmdline(argv) if os.name == 'nt' else shlex.join(argv)
+    prepared_hooks = {'hooks': {event: [{'hooks': [{'type': 'command', 'command': command, 'timeout': 5}]}]
+                                for event in original_hooks['hooks']}}
+    prepared_mcp = {'mcpServers': {name + '-key': {'command': str(python), 'args': [str(Path(__file__).resolve()), 'serve']}}}
+    info = {'schema': 'oira_key_plugin.v1', 'app': APP, 'environment': ENVIRONMENT,
+            'origin': ORIGIN, 'plugin_root': str(root), 'python': str(python)}
+    previous_info = dict(info)
+    info['package_version'] = version
+    entry = {'name': name, 'source': {'source': 'local', 'path': './' + name},
+             'policy': {'installation': 'AVAILABLE', 'authentication': 'ON_INSTALL'}, 'category': 'Productivity'}
+    if APP == 'claude':
+        entry = {'name': name, 'source': './' + name}
+    marketplace = {'name': name + '-key', 'plugins': [entry]}
+    if APP == 'claude':
+        marketplace['owner'] = {'name': 'Oira-Oira'}
+    changes = ((mcp, expected_mcp, prepared_mcp), (hooks, original_hooks, prepared_hooks),
+               (descriptor, previous_info, info), (market, None, marketplace))
+    # Validate every file before any write. Repeated preparation is idempotent;
+    # foreign edits or another app/environment are a repair, never overwritten.
+    for path, original, prepared in changes:
+        if not plain_path(path):
+            raise KeySetupError('plugin_configuration_conflict')
+        if path.exists():
+            current = json.loads(path.read_text(encoding='utf-8'))
+            if path == descriptor and isinstance(current, dict) and current != prepared:
+                prior = dict(current)
+                old_version = prior.pop('package_version', None)
+                if prior == previous_info and (old_version is None or isinstance(old_version, str)
+                        and len(old_version) <= 100 and re.fullmatch(r'\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?', old_version)):
+                    current = previous_info
+            if current != prepared and (original is None or current != original):
+                raise KeySetupError('plugin_configuration_conflict')
+    for path, _, prepared in changes:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fd, temporary = tempfile.mkstemp(prefix='.oira-config-', dir=path.parent)
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as file:
+                json.dump(prepared, file, indent=2)
+                file.write('\n')
+            os.replace(temporary, path)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+    return {'prepared': True, **info, 'marketplace': name + '-key',
+            'marketplace_root': str(root.parent), 'native_installation': 'required', 'hook_trust': 'required'}
+
+
 @asynccontextmanager
 async def remote_session(secret):
     import httpx2
@@ -179,7 +283,18 @@ def make_server(remote):
             # their repr or traceback into model-visible tool output.
             return CallToolResult(is_error=True, content=[TextContent(type='text', text='oira_transport_unavailable')])
 
-    return Server('oira-key', on_list_tools=list_tools, on_call_tool=call_tool)
+    return Server('oira-key', instructions=(
+        'Use the installed Oira skill and this vault-backed transport. Check oira_connection_status first; '
+        'freeze an explicitly approved oira_coding_target.v1 expected_target and pass it on every operation. '
+        'Report material work facts only within the user\'s saved reporting choice, through canonical local '
+        'preflight and stable update-ref/status recovery. Never send transcripts, prompts, tool output, files '
+        'or credentials. With separate company-context consent and available context tools, consult Oira '
+        'for accepted decisions, constraints and related work before making unsupported assumptions. '
+        'Context reads and history import are separate from reporting. If a capability is not exposed, '
+        'report it as unavailable; do not substitute OAuth or invent a result. For setup, follow the '
+        'setup-verification reference, wait for hook review and verify real local execution where '
+        'applicable, then use oira_verify_setup for a non-work acknowledgment. Never invent a work update.'
+    ), on_list_tools=list_tools, on_call_tool=call_tool)
 
 
 async def serve():
@@ -193,15 +308,17 @@ async def serve():
 
 def main():
     parser = Parser(description=__doc__)
-    parser.add_argument('action', choices=('login', 'serve', 'forget-local'))
+    parser.add_argument('action', choices=('login', 'serve', 'forget-local', 'prepare-plugin'))
     parser.add_argument('--stdin', action='store_true')
     # SDK/HTTP debug logging must not expose credentials or request bodies.
     logging.disable(logging.CRITICAL)
     try:
         args = parser.parse_args()
-        if not ORIGIN.startswith('https://') or APP not in {'codex', 'claude', 'kiro', 'copilot', 'cursor'}:
+        if not valid_environment():
             raise KeySetupError('unrendered_package')
-        if args.action == 'login':
+        if args.action == 'prepare-plugin':
+            print(json.dumps(prepare_plugin()))
+        elif args.action == 'login':
             if not args.stdin and not sys.stdin.isatty():
                 raise KeySetupError('interactive_secret_input_required')
             secret = (sys.stdin.readline(512).strip() if args.stdin and not sys.stdin.isatty()

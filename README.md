@@ -7,7 +7,7 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.11.2** is a production verification candidate. Host-directory submission and
+Package version **0.11.4** is a production verification candidate. Host-directory submission and
 installed-client acceptance remain pending. The standalone CLI 0.11.1 has testing prereleases, independently of this package. Native-host acceptance remains pending. Use the normal plugin instructions below or the setup prompt in the Oira guide. No plugin credentials are embedded;
 OAuth approval happens through Oira when a user connects the plugin.
 
@@ -27,7 +27,11 @@ in the coding agent's saved chat. The optional local MCP adapter stores it in
 the OS credential vault and needs an isolated Python environment with the pinned
 dependencies in `scripts/key-requirements.txt`. You still approve exact company
 projects through Oira; creating a key alone grants none. The two authentication
-routes are alternatives. No Oira CLI download is required for either route.
+routes are alternatives. For Codex and Claude Code, key setup installs the
+complete native plugin, including its reporting hooks; the Python environment
+stays outside the plugin cache. Hook review and the choice to report automatically
+are part of setup. Company-context queries also need separate permission and an
+available Oira context service. No Oira CLI download is required for either route.
 
 ## Install
 
@@ -162,7 +166,7 @@ removes only the Oira entries after you agree.
 Oira receives only work updates you authorize, including decisions, progress,
 blockers and deferred work. If you turn on the history import, your coding
 agent reads your recent sessions in that project on your computer and sends
-the same kind of updates about them. It does not collect your session
+the same kind of updates about them. Setup can also send a non-work connection check containing only its random check reference and the approved project target. It does not collect your session
 transcripts, tool output or source files. Native OAuth needs no API key; a
 dedicated CLI installation or the optional local key MCP adapter may use an Oira key, never a third-party
 model key. The reporting workflow excludes credentials and filters recognized
