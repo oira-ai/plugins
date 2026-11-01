@@ -250,6 +250,11 @@
           "title": "Format",
           "type": "string"
         },
+        "include_discussion_refs": {
+          "default": false,
+          "title": "Include Discussion Refs",
+          "type": "boolean"
+        },
         "session_binding_ref": {
           "maxLength": 36,
           "minLength": 36,
@@ -344,7 +349,7 @@
       "properties": {
         "assumptions": {
           "items": {
-            "maxLength": 240,
+            "maxLength": 1000,
             "minLength": 1,
             "type": "string"
           },
@@ -383,6 +388,11 @@
           "title": "Format",
           "type": "string"
         },
+        "include_discussion_refs": {
+          "default": false,
+          "title": "Include Discussion Refs",
+          "type": "boolean"
+        },
         "intent_revision": {
           "maximum": 2147483647,
           "minimum": 1,
@@ -392,7 +402,7 @@
         "next_step": {
           "anyOf": [
             {
-              "maxLength": 1000,
+              "maxLength": 4000,
               "minLength": 1,
               "type": "string"
             },
@@ -421,7 +431,7 @@
           "type": "string"
         },
         "question": {
-          "maxLength": 2000,
+          "maxLength": 12000,
           "minLength": 1,
           "title": "Question",
           "type": "string"
@@ -438,6 +448,20 @@
           "minimum": 0,
           "title": "Wait Ms",
           "type": "integer"
+        },
+        "work_handle": {
+          "anyOf": [
+            {
+              "maxLength": 32,
+              "pattern": "^wh_[a-zA-Z0-9_-]{1,29}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Work Handle"
         }
       },
       "required": [
@@ -488,6 +512,18 @@
           "title": "Control Capability",
           "type": "string"
         },
+        "discussion_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Discussion Ref"
+        },
         "duplicate_intent": {
           "default": false,
           "title": "Duplicate Intent",
@@ -522,6 +558,18 @@
           "minimum": 1,
           "title": "Intent Revision",
           "type": "integer"
+        },
+        "message_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message Ref"
         },
         "ok": {
           "const": true,
@@ -592,6 +640,18 @@
           "default": null,
           "title": "Result"
         },
+        "result_document_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Document Ref"
+        },
         "result_revision": {
           "default": 0,
           "minimum": 0,
@@ -616,6 +676,18 @@
           "default": null,
           "title": "Result Status"
         },
+        "result_version_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Version Ref"
+        },
         "session_binding_ref": {
           "title": "Session Binding Ref",
           "type": "string"
@@ -636,6 +708,18 @@
           "default": false,
           "title": "Superseded",
           "type": "boolean"
+        },
+        "work_handle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Work Handle"
         }
       },
       "required": [
@@ -1112,6 +1196,11 @@
           "default": "oira.context_check_status.v1",
           "title": "Format",
           "type": "string"
+        },
+        "include_discussion_refs": {
+          "default": false,
+          "title": "Include Discussion Refs",
+          "type": "boolean"
         },
         "session_binding_ref": {
           "maxLength": 36,
