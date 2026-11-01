@@ -260,7 +260,7 @@ async def login(secret):
 
 def make_server(session_factory):
     from mcp.server import Server
-    from mcp.types import CallToolResult, TextContent, ListToolsResult
+    from mcp.types import CallToolResult, TextContent
 
     async def list_tools(context, params):
         try:

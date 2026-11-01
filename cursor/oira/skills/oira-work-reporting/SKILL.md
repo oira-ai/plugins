@@ -301,6 +301,14 @@ to Work Items happens next; `oira_work_update_status` shows it per work, and
 for each relation a work stated whether Oira `recorded` it, is still judging
 it (`pending`) or judged that it does not hold (`not_recorded`).
 
+Inspect each work's returned processing state before claiming it is available
+in Oira. Queued, processing or parked means stored but not finished; failed or
+unresolved must not be presented as successfully processed. At the next material
+milestone or reconnection, check those original update references once with the
+same target. Do not wait on a timer, block the coding work, or resend captured
+facts to repair server processing. If the user needs a status, keep it to one
+accurate line. Capture and assignment do not prove search or dossier readiness.
+
 ## Recover a lost response
 
 A closed transport or a local `unknown_send` checkpoint proves neither capture
