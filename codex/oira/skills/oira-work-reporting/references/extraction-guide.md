@@ -175,6 +175,16 @@ include file contents.
 - `relation_hints` propose how this work relates to a reference
   (`depends_on`, `blocks`, `related`, `duplicate`...). Oira decides whether
   the relation holds.
+- Preserve the reason as a short work fact, for example “The client parser
+  depends on the API's UTC timestamp contract.” Cite that fact in the reference
+  and hint. `depends_on` with `primary_to_target` means this work needs the
+  target; `blocks` means this work prevents the target from proceeding. Do not
+  send both as interchangeable labels. The complete `related-work.json` example
+  shows an exact same-stream target; another chat requires an actual returned
+  handle already known in the authorized task, never a guessed UUID or title.
+- Shared code coordinates and recent work help Oira find candidates when no
+  exact target is known. Leave the relation absent when the facts do not support
+  it; a candidate match is not a dependency, identity or access grant.
 
 ## Continuity and corrections
 

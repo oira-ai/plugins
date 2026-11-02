@@ -1,0 +1,35 @@
+{
+  "schema": "oira_work_update.v2",
+  "project_label": "platform",
+  "update_ref": "87accf89-8e49-4be1-a420-73b0cb8e11b1",
+  "stream_ref": "8e3baedb-e67e-4488-83db-9f88cdb0b203",
+  "sequence": 1,
+  "reporter_version": "0.12.1",
+  "privacy_policy_version": "oira_outbound_filter.v1",
+  "works": [
+    {
+      "work_ref": "api-contract",
+      "operation": "declare",
+      "title": "Define the event timestamp contract",
+      "intended_outcome": "Give clients a stable UTC timestamp representation.",
+      "activity": "execution",
+      "facts": [
+        {"fact_ref": "goal", "kind": "commitment", "status": "accepted", "statement": "Define the event API's timestamp representation so every client interprets the same instant.", "basis": "user_statement_paraphrase", "confidence": "1"},
+        {"fact_ref": "utc", "kind": "decision", "status": "accepted", "statement": "Return ISO 8601 timestamps in UTC to remove ambiguity between client time zones.", "basis": "agent_report", "confidence": "1"}
+      ]
+    },
+    {
+      "work_ref": "client-parser",
+      "operation": "declare",
+      "title": "Parse event timestamps in the client",
+      "intended_outcome": "Render API event times in the viewer's local time zone.",
+      "activity": "planning",
+      "facts": [
+        {"fact_ref": "goal", "kind": "commitment", "status": "accepted", "statement": "Implement the client parser against the agreed event timestamp contract.", "basis": "user_statement_paraphrase", "confidence": "1"},
+        {"fact_ref": "prerequisite", "kind": "decision", "status": "accepted", "statement": "The client parser depends on the API's UTC timestamp contract before it can reliably convert event times for display.", "basis": "agent_report", "confidence": "1"}
+      ],
+      "references": [{"reference_ref": "api", "reference_kind": "work_item", "target": {"kind": "work_ref", "value": "api-contract"}, "supporting_fact_refs": ["prerequisite"]}],
+      "relation_hints": [{"relation_kind": "depends_on", "target_reference_ref": "api", "direction": "primary_to_target", "supporting_fact_refs": ["prerequisite"]}]
+    }
+  ]
+}

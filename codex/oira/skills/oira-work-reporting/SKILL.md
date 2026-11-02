@@ -274,6 +274,11 @@ short:
   overwritten.
 - `code` holds the repository remote without credentials, the branch, the
   full SHAs of commits this work created and its pull request numbers.
+- When a fact states a dependency, blocker, conflict or follow-up, keep that
+  short fact and its known work reference or returned handle. Add a supported
+  `relation_hints` entry as the extraction guide describes. A shared repository,
+  branch or similar title is only a discovery signal; never invent a link or
+  read unrelated chats to find one. Oira judges relations from authorized facts.
 
 Never put in an update: prompts, replies, transcripts or summaries of the
 conversation, tool output or logs, file contents, hidden reasoning, local
