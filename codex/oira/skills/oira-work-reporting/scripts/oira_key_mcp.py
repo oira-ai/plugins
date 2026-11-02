@@ -26,6 +26,9 @@ ENVIRONMENT = 'production'
 PLUGIN = 'oira'
 LOOPBACK_HOSTS = ''.split(',')
 SCHEMA = 'oira_plugin_key.v1'
+DEFAULT_TIMEOUT_SECONDS = 30
+CONTEXT_TIMEOUT_SECONDS = 180
+CONTEXT_LONG_READ_TOOLS = frozenset({'oira_check_context', 'oira_context_check_status'})
 TOOLS = frozenset({
     'oira_connection_status', 'oira_submit_work_update', 'oira_work_update_status',
     'oira_verify_setup',
@@ -233,14 +236,14 @@ def prepare_plugin():
 
 
 @asynccontextmanager
-async def remote_session(secret):
+async def remote_session(secret, *, timeout_seconds=DEFAULT_TIMEOUT_SECONDS):
     import httpx2
     from mcp import ClientSession
     from mcp.client.streamable_http import streamable_http_client
     async with httpx2.AsyncClient(headers={'Authorization': 'Bearer ' + secret},
-                                  timeout=30, follow_redirects=False) as http:
+                                  timeout=timeout_seconds, follow_redirects=False) as http:
         async with streamable_http_client(ORIGIN + '/mcp', http_client=http) as streams:
-            async with ClientSession(streams[0], streams[1], read_timeout_seconds=30) as remote:
+            async with ClientSession(streams[0], streams[1], read_timeout_seconds=timeout_seconds) as remote:
                 await remote.initialize()
                 yield remote
 
@@ -287,7 +290,9 @@ def make_server(session_factory):
             # cleanup; no dead session or cross-task anyio cancel scope is kept.
             # Never replay a mutation on failure: its response may be lost
             # after capture. The caller recovers the same update_ref by status.
-            async with session_factory() as remote:
+            timeout = (CONTEXT_TIMEOUT_SECONDS if params.name in CONTEXT_LONG_READ_TOOLS
+                       else DEFAULT_TIMEOUT_SECONDS)
+            async with session_factory(timeout_seconds=timeout) as remote:
                 return await remote.call_tool(params.name, params.arguments or {})
         except Exception:
             # Transport exceptions may contain headers/URLs/input. Never put
@@ -318,7 +323,7 @@ def make_server(session_factory):
 async def serve():
     from mcp.server.stdio import stdio_server
     secret = load_secret(metadata_path(), vault())
-    server = make_server(lambda: remote_session(secret))
+    server = make_server(lambda **kwargs: remote_session(secret, **kwargs))
     async with stdio_server() as (read, write):
         await server.run(read, write, server.create_initialization_options())
 
