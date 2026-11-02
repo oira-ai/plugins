@@ -258,15 +258,20 @@ async def login(secret):
     return save_secret(secret, metadata_path(), vault())
 
 
-def make_server(remote):
+def make_server(session_factory):
     from mcp.server import Server
-    from mcp.types import CallToolResult, TextContent, ListToolsResult
+    from mcp.types import CallToolResult, TextContent
 
     async def list_tools(context, params):
         try:
-            result = await remote.list_tools()
+            async with session_factory() as remote:
+                result = await remote.list_tools()
         except Exception:
-            return ListToolsResult(tools=[])
+            # An outage is not a successful discovery of zero capabilities.
+            # Keep the local server alive so discovery can be tried again.
+            from mcp.shared.exceptions import MCPError
+            from mcp.types import INTERNAL_ERROR
+            raise MCPError(INTERNAL_ERROR, 'oira_transport_unavailable') from None
         # A bounded allowlist prevents an unrelated remote tool becoming part
         # of this integration. Preserve the server's canonical DTOs unchanged.
         result.tools = [tool for tool in result.tools if tool.name in TOOLS]
@@ -277,7 +282,13 @@ def make_server(remote):
         if params.name not in TOOLS:
             return CallToolResult(is_error=True, content=[TextContent(type='text', text='operation_unavailable')])
         try:
-            return await remote.call_tool(params.name, params.arguments or {})
+            # Deployments and idle HTTP expiry can close the upstream stream.
+            # Each operation owns its connection in this task, including its
+            # cleanup; no dead session or cross-task anyio cancel scope is kept.
+            # Never replay a mutation on failure: its response may be lost
+            # after capture. The caller recovers the same update_ref by status.
+            async with session_factory() as remote:
+                return await remote.call_tool(params.name, params.arguments or {})
         except Exception:
             # Transport exceptions may contain headers/URLs/input. Never put
             # their repr or traceback into model-visible tool output.
@@ -307,10 +318,9 @@ def make_server(remote):
 async def serve():
     from mcp.server.stdio import stdio_server
     secret = load_secret(metadata_path(), vault())
-    async with remote_session(secret) as remote:
-        server = make_server(remote)
-        async with stdio_server() as (read, write):
-            await server.run(read, write, server.create_initialization_options())
+    server = make_server(lambda: remote_session(secret))
+    async with stdio_server() as (read, write):
+        await server.run(read, write, server.create_initialization_options())
 
 
 def main():

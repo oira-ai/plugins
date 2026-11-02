@@ -34,6 +34,34 @@ and never claim the list of work is complete.
 
 ## Facts
 
+Write for a teammate deciding what to do next. Prefer one short, complete
+sentence per fact: **specific action + consequence**, or **decision + reason**.
+Aim for about 120–200 characters when sufficient; keep a needed condition or
+limitation rather than cutting it to fit. Send only new material facts, usually
+3–6 at a substantial milestone, not one fact per file/tool and not a long essay.
+Missing information stays absent. The existing typed facts and implementation
+details are the work brief; no transcript or extra conversation-summary field
+is needed.
+
+| Weak | Useful |
+| --- | --- |
+| Optimized permissions. | Batch delivery lookups per projection to remove repeated SQL while retaining a fresh permission check. |
+| Decided on retries. | Retry reads on a fresh connection; check status before resending a write because its first response may be lost. |
+| Tests passed. | Fourteen PostgreSQL freshness tests passed on the candidate revision, including revocation from another connection. |
+| Deployment done. | Release abc123 reached all app services; public health checks passed. |
+| Will finish later. | Next: compare warm projection timings before requesting release approval. |
+
+A decision records the choice, reason and affected scope; use a `decision`
+implementation detail for an additional consequence or assumption, citing its
+`supporting_fact_refs`. A verification states the check, actual result and
+environment/revision when known; use `version_refs` for exact coordinates.
+Unknown deployment, unresolved alternatives and inferred explanations stay
+explicit. “Accepted” means reported as adopted, not independently proved true.
+Report the final shipped result or remaining condition after an earlier test
+milestone. Do not substitute worktree setup, local checkpoints or Oira transport
+diagnostics for the user's work. Delivery diagnostics belong in local receipt
+state and a short user-facing status line.
+
 | kind | allowed status | meaning |
 | --- | --- | --- |
 | `decision` | proposed, accepted | A choice about the work. `accepted` only when the user or the work actually settled it. |
@@ -147,6 +175,16 @@ include file contents.
 - `relation_hints` propose how this work relates to a reference
   (`depends_on`, `blocks`, `related`, `duplicate`...). Oira decides whether
   the relation holds.
+- Preserve the reason as a short work fact, for example “The client parser
+  depends on the API's UTC timestamp contract.” Cite that fact in the reference
+  and hint. `depends_on` with `primary_to_target` means this work needs the
+  target; `blocks` means this work prevents the target from proceeding. Do not
+  send both as interchangeable labels. The complete `related-work.json` example
+  shows an exact same-stream target; another chat requires an actual returned
+  handle already known in the authorized task, never a guessed UUID or title.
+- Shared code coordinates and recent work help Oira find candidates when no
+  exact target is known. Leave the relation absent when the facts do not support
+  it; a candidate match is not a dependency, identity or access grant.
 
 ## Continuity and corrections
 
