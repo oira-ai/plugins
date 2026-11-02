@@ -1,5 +1,11 @@
 # Explicit company-context checks
 
+The official key adapter allows up to 180 seconds per context submit or status
+call, including reading a completed result under fresh permissions. A native
+host can impose a shorter deadline. Keep the original request/check identity
+after a transport timeout; poll that same request instead of submitting a new
+question. Other key-backed operations keep their 30-second allowance.
+
 Use this only after separate `memory_context:read` consent, and
 `agent_interventions:receive` for scoped interventions. Existing reporting and
 history-import consent grant neither. Valid OAuth scopes do not make them
