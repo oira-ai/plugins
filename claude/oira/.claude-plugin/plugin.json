@@ -1,7 +1,7 @@
 {
   "name": "oira",
   "displayName": "Oira",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Report structured work updates to approved Oira projects, with optional automatic milestone reminders for local Codex and Claude sessions. No transcripts, tool output or files are sent.",
   "author": {
     "name": "Oira-Oira",

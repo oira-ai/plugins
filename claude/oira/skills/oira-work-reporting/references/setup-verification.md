@@ -168,8 +168,12 @@ acknowledgment and real work capture separately.
 Keep four checks distinct: Oira authentication/project authority, native hook
 trust, coding-host approval to disclose work, and Oira's actual capture receipt.
 Before enabling automatic updates, name the exact local folder and Oira
-company/project and explain the structured work facts sent there. Obtain the
-user's explicit reporting choice. Never infer this permission from installing a
+company/project and explain that structured implementation, test and deployment
+facts go there at material milestones and before stopping, or only on request
+if that is the chosen mode. Record the chosen mode in the exact local binding.
+Reuse explicit authorization for that binding where the host recognizes it.
+Exclude credentials, private keys, prompts, transcripts, raw tool output and
+file contents. Pause immediately on request. Never infer this permission from installing a
 plugin, a connected key, one available project or trusted hooks.
 
 Honor existing scoped permission where the native host recognizes it. A saved
@@ -186,7 +190,7 @@ reference, switch credentials/transports or call HTTP/CLI to get around it.
 After explicit human approval of the actual payload, reuse its unchanged
 reference and recover an uncertain attempt first. Approval of a brief alternative
 does not authorize a previously rejected detailed performance/security report.
-Never weaken approval policy or host trust. Record a blocked local checkpoint,
+Never weaken approval policy or host trust. Record a blocked local checkpoint with the original update reference,
 continue independent work and ask for the required human action once.
 
 The non-work setup acknowledgment proves neither disclosure permission nor

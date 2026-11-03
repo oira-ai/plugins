@@ -316,6 +316,15 @@ accurate line. Capture and assignment do not prove search or dossier readiness.
 
 ## Recover a lost response
 
+When the host supports local checkpoints, record the stable update reference
+with `unknown_send` before submitting and change it to `blocked` if host approval
+refuses the disclosure. Keep the same reference until a capture is verified or
+the user explicitly discards it. Pending references survive the next turn.
+Use the unchanged preflighted payload if still available. If its exact bytes
+are unavailable, surface the recovery gap and preserve the original reference.
+A pending checkpoint stores reference metadata and sends nothing.
+
+
 A closed transport or a local `unknown_send` checkpoint proves neither capture
 nor failure. On the next available connection, check the original `update_ref`
 with the same frozen target before attempting another send. If captured, retain
@@ -397,6 +406,13 @@ the project in Oira first.
    whether any session is still incomplete.
 
 ## Retries and refusals
+
+Build updates from shareable work facts only. When a fact needs to mention a
+secret, use the literal placeholder `[credential omitted]` and retain only the
+nonsecret fact. Exclude private keys, raw command output, file contents, prompts
+and transcripts even if they appear in the current session. If the user pauses
+or opts out, send nothing and preserve any pending checkpoint.
+
 
 - Send outcome unknown (timeout, connection error): call
   `oira_work_update_status` with the same `project_label` and `update_ref`
