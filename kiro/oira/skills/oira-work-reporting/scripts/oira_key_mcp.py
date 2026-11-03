@@ -27,7 +27,7 @@ PLUGIN = 'oira'
 LOOPBACK_HOSTS = ''.split(',')
 SCHEMA = 'oira_plugin_key.v1'
 DEFAULT_TIMEOUT_SECONDS = 30
-CONTEXT_TIMEOUT_SECONDS = 180
+CONTEXT_TIMEOUT_SECONDS = 360
 CONTEXT_LONG_READ_TOOLS = frozenset({'oira_check_context', 'oira_context_check_status'})
 TOOLS = frozenset({
     'oira_connection_status', 'oira_submit_work_update', 'oira_work_update_status',

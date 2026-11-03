@@ -6,7 +6,7 @@
         "connection_status:read",
         "work_updates:write"
       ],
-      "timeout": 300000
+      "timeout": 360000
     }
   }
 }
