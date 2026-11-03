@@ -337,7 +337,8 @@ class Store:
         )
         old = list(
             self.db.execute(
-                "SELECT session FROM turns WHERE updated<? AND session!=?",
+                "SELECT session FROM turns WHERE updated<? AND session!=? "
+                "AND NOT (state IN ('blocked','unknown_send','repair_required') AND COALESCE(refs,'[]')<>'[]')",
                 (time.time() - days * 86400, session),
             )
         )
@@ -531,9 +532,13 @@ class Store:
             # hooks cannot claim duplicate identity until a host field is qualified.
             if row is None or new and (event_id is None or row["event_id"] != event_id):
                 nonce = str(uuid4())
+                pending = row and row["state"] in {"blocked", "unknown_send", "repair_required"} and row["refs"] not in (None, "[]")
                 self.db.execute(
-                    "INSERT OR REPLACE INTO turns VALUES (?,?,?,?,?,0,NULL,NULL,?)",
-                    (session, destination, nonce, event_id, "open", time.time()),
+                    "INSERT OR REPLACE INTO turns VALUES (?,?,?,?,?,0,?,?,?)",
+                    (session, destination, nonce, event_id,
+                     row["state"] if pending else "open",
+                     row["provenance"] if pending else None,
+                     row["refs"] if pending else None, time.time()),
                 )
             return dict(
                 self.db.execute(
@@ -564,10 +569,23 @@ class Store:
             raise LocalError("invalid_checkpoint")
         if provenance not in {"host_reported", "server_confirmed"}:
             raise LocalError("invalid_provenance")
+        try:
+            if len(refs) > 32 or any(str(UUID(ref, version=4)) != ref for ref in refs):
+                raise ValueError()
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise LocalError("invalid_update_reference") from exc
         destination = stable_target(target)
         if state == "captured_finalized" and not refs:
             raise LocalError("capture_receipt_required")
         with self.transaction():
+            prior = self.db.execute(
+                "SELECT state,refs FROM turns WHERE session=? AND nonce=? AND destination=?",
+                (session, nonce, destination),
+            ).fetchone()
+            if prior and prior["state"] in {"blocked", "unknown_send", "repair_required"}:
+                pending_refs = set(json.loads(prior["refs"] or "[]"))
+                if pending_refs and (state == "no_material_change" or not pending_refs.issubset(refs)):
+                    raise LocalError("pending_update_requires_disposition")
             if provenance == "server_confirmed":
                 for ref in refs:
                     row = self.db.execute(

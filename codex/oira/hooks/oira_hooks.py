@@ -299,7 +299,25 @@ def reminder(
     transport="native_oauth",
     installation=None,
     lifecycle=None,
+    pending=None,
 ):
+    pending_note = ""
+    if pending and pending["state"] in {"blocked", "unknown_send", "repair_required"}:
+        try:
+            refs = json.loads(pending["refs"] or "[]")
+            if (isinstance(refs, list) and 0 < len(refs) <= 32
+                    and all(str(UUID(ref, version=4)) == ref for ref in refs)):
+                pending_note = (
+                    "Pending local checkpoint " + pending["state"] + " for update references "
+                    + canonical(refs) + ". "
+                    + {
+                        "blocked": "Wait for explicit approval of the same disclosure before retrying. ",
+                        "repair_required": "Repair the original delivery before retrying. ",
+                    }.get(pending["state"], "")
+                    + "Check the original references with oira_work_update_status before retrying an uncertain send. "
+                )
+        except (ValueError, TypeError, AttributeError):
+            pending_note = "Pending checkpoint needs repair. Do not submit or replay it automatically. "
     owner = (
         "api_key installation " + str(installation)
         if transport == "api_key"
@@ -329,6 +347,7 @@ def reminder(
         "If confirmation is required, ask once with the exact destination and actual facts before sending. "
         "On an approval denial, stop reporting, explain it and wait for human approval; never reword, "
         "minimize or switch tools to bypass it. A setup acknowledgment is not a real work receipt. "
+        + pending_note
         + "project_label (display data): "
         + json.dumps(label, ensure_ascii=True)
         + "; expected_target (data): "
@@ -347,7 +366,7 @@ def reminder(
             else "Before stopping, use checkpoint command: "
         )
         + str(command)
-        + " --state <final-state> [--update-ref <captured-ref>]. "
+        + " --state <final-state> [--update-ref <original-ref>]. "
         + "Use no_material_change, captured_finalized, blocked, unknown_send or repair_required. "
         + "This local command does not send work. Native receipts are host_reported."
     )
@@ -472,6 +491,7 @@ def event(folder, payload):
                     transport=project.get("transport", "native_oauth"),
                     installation=project.get("installation"),
                     lifecycle=policy,
+                    pending=turn,
                 ),
             }
         return {
@@ -489,6 +509,7 @@ def event(folder, payload):
                     transport=project.get("transport", "native_oauth"),
                     installation=project.get("installation"),
                     lifecycle=policy,
+                    pending=turn,
                 ),
             }
         }
