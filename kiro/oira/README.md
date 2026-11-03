@@ -72,7 +72,7 @@ The `oauthScopes` are required; without them Kiro requests its default
 OpenID scopes, which Oira refuses. Add no headers or credentials. The Kiro
 IDE's MCP Servers panel edits the same file.
 
-Keep `"timeout": 300000` in the entry. It allows five minutes for browser
+Keep `"timeout": 360000` in the entry. It allows six minutes for browser
 sign-in; the IDE's 60-second default can stop its local callback before
 you finish approval. A workspace or custom-agent server entry takes
 precedence, so include the timeout there too when it defines `oira`.
@@ -121,7 +121,7 @@ reported when you ask.
 
 Repeat step 1 (it pulls the latest published package and copies it over the
 installed skill). If you installed before the 12 October timeout fix, add
-`"timeout": 300000` inside your active `oira` MCP entry as in step 2;
+`"timeout": 360000` inside your active `oira` MCP entry as in step 2;
 updating the skill alone does not update that setting. Start a new chat
 afterwards.
 
@@ -132,7 +132,7 @@ afterwards.
   `skill://` resource as in step 2. An administrator's MCP registry can
   also block the server.
 - Sign-in times out after 60000ms, then the browser cannot open the callback:
-  check `"timeout": 300000` in the active `oira` entry (including workspace
+  check `"timeout": 360000` in the active `oira` entry (including workspace
   or custom-agent overrides). In the IDE, reconnect in the MCP panel and
   choose Authenticate again; finish approval in the new tab within five
   minutes. In the CLI, use `/mcp cancel-auth oira`, then `/mcp auth oira`.

@@ -83,7 +83,10 @@ scopes and complete browser authorization. Keep its OAuth credentials host-owned
    seconds), with a little jitter, while continuing independent authorized work.
    A local wait timeout does not cancel the server job. Poll that same check on
    resume; do not resubmit with a new UUID to get a faster answer. Submission
-   and status return quickly and do not hold the transport open for inference.
+   acknowledges durable acceptance without waiting for inference. Retrieving a
+   completed result can take longer while Oira validates current source access.
+   A transport timeout does not establish whether a submit was captured; recover
+   through status with the original request/check identity before any retry.
    `discussion_ref` and `message_ref` identify the visible private conversation;
    released results also include original artifact references. Oira shows the
    question as your coding agent's message and makes its answer available there
