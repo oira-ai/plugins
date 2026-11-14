@@ -7,9 +7,17 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.11.5** is a production verification candidate. Host-directory submission and
-installed-client acceptance remain pending. The standalone CLI 0.11.1 has testing prereleases, independently of this package. Native-host acceptance remains pending. Use the normal plugin instructions below or the setup prompt in the Oira guide. No plugin credentials are embedded;
-OAuth approval happens through Oira when a user connects the plugin.
+Package version **0.12.5** starts or resumes browser-approved history imports
+inside the setup workflow, using the selected date window. Codex and Claude
+receive their own hook guidance: Codex requires native hook trust; Claude Code
+loads hooks from the enabled plugin automatically. Native host qualification
+and directory acceptance remain pending. The standalone CLI 0.11.1 testing
+preview is versioned separately. No credentials are embedded; users authorize
+projects through Oira.
+
+The consent page's suggested permissions and 30-day history default require the
+matching Oira application release. Publishing this package does not deploy that
+application. Existing consent and additional coding-host permissions still apply.
 
 Reporting needs **Python 3.11 or later** on the machine where the coding app
 runs: before every update the plugin runs a small local check
@@ -29,8 +37,8 @@ dependencies in `scripts/key-requirements.txt`. You still approve exact company
 projects through Oira; creating a key alone grants none. The two authentication
 routes are alternatives. For Codex and Claude Code, key setup installs the
 complete native plugin, including its reporting hooks; the Python environment
-stays outside the plugin cache. Hook review and the choice to report automatically
-are part of setup. Company-context queries also need separate permission and an
+stays outside the plugin cache. The choice to report automatically is part of setup. Codex also requires native
+hook review; Claude Code hooks load with the enabled plugin. Company-context queries also need separate permission and an
 available Oira context service. No Oira CLI download is required for either route.
 
 ## Install
