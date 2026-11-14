@@ -363,6 +363,19 @@ project's recent sessions. Otherwise, and for any other project, read no
 past session; if the user asks for an import, tell them to turn it on for
 the project in Oira first.
 
+During setup, recheck the exact target after browser approval and start or resume
+an approved import before finishing setup. Do not wait for another request or
+a future coding chat. The returned `window_from`/`window_to` preserve the user's
+chosen period; `max_days` is a plan cap, not a request to import that many days.
+Browser defaults authorize nothing until approved. Respect any additional host
+permission for local history access or disclosure: ask once with the approved
+destination/date window using the available native question tool and wait when
+required. Do not ask the user to choose the approved timeframe again. Keep setup
+sessions excluded and treat a pending hook verification separately from import.
+If access/tools are unavailable, explain the blocker and retain the exact target
+and approved window in the continuation. Completed, not-requested and unsupported
+imports must not read past sessions.
+
 1. Read `references/history-import.md` for where this app keeps its sessions
    and how to read them here. Use only this project's sessions with work
    between `window_from` and `window_to` (never more than `max_days` back).
@@ -450,8 +463,8 @@ or opts out, send nothing and preserve any pending checkpoint.
 ## Set up Oira (one prompt)
 
 Read `references/setup-verification.md` before installation or a setup readiness
-claim. It owns source/version selection, the native “review hooks, then reply
-done” checkpoint, fresh per-session hook observations and the non-work
+claim. It owns source/version selection, each host's actual hook review/loading
+checkpoint, fresh per-session hook observations and the non-work
 `oira_verify_setup` acknowledgment. Do not mark automatic setup complete from
 inventory or user confirmation alone. First real work capture is separate.
 
@@ -460,6 +473,8 @@ history import, company-context reads or intervention reception. Never invent
 installation work or a test update to make setup appear complete. After a
 required native reload/new chat, the same setup request rechecks existing state
 and resumes without duplicate configuration or repeated saved choices.
+Separately approved browser history choices must be acted on during this setup
+using "Import recent work" above, even though the setup chat itself is excluded.
 
 When the user asks to set up Oira for this project: check the connection
 (signing in if needed), pick the approved project with the user, check the

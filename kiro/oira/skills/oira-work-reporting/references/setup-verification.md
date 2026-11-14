@@ -72,26 +72,39 @@ in a repository. Do not enroll other folders because a plugin is global.
    registered native hook command, including its cached package path; do not mix
    Python runtimes. These commands must actually be supported; an old runtime
    without them needs an explicit update/repair.
-3. Ask the user to open native **Hooks**, review/trust the exact Oira
-   SessionStart, UserPromptSubmit and Stop definitions, then reply **done**.
-   Wait. In Codex CLI use `/hooks`; guide the current native UI otherwise.
-   Never write trust hashes, bypass review or approve it on the user's behalf.
-   Reuse existing trust only after verifying the exact definitions are unchanged.
+3. Follow the actual host's loading/review flow:
+   - **Codex only:** ask the user to review/trust the exact Oira SessionStart,
+     UserPromptSubmit and Stop definitions in the available native Hooks UI
+     (CLI: `/hooks`), then reply **done**. Wait. Never write trust hashes, bypass
+     review or approve it on the user's behalf. Reuse existing trust only after
+     verifying the exact definitions are unchanged.
+   - **Claude Code only:** hooks load automatically from an enabled plugin.
+     There is no Codex Settings / Hooks enable/trust action. Inspect the installed
+     definitions and effective configuration; `/hooks`, when available, is a
+     read-only viewer. Check `disableAllHooks` and managed policy without changing
+     policy. Once the user authorized automatic reporting and you reviewed the
+     enabled configuration, continue without asking for a **done** reply. Guide
+     only an actual workspace/plugin trust prompt or required reload shown by
+     this host, and wait for that real user action when needed.
+   Official references: [Codex hooks](https://learn.chatgpt.com/docs/hooks) and
+   [Claude Code hooks](https://code.claude.com/docs/en/hooks).
 4. If native loading requires a reload/new chat, guide that action; do not restart
    the app yourself. Give the continuation prompt with this check reference and
    folder. The existing enabled binding/check survives the new chat. A fresh
    SessionStart and the next UserPromptSubmit must come from the real host.
    The continuation must explicitly say this is a verification-only chat and
    run `exclude-session` for its actual new session ID before any work path.
-5. After the user's confirmation, repeat `verify-begin` with the same arguments
-   and `--review-confirmed`. This records the user's confirmation, not a native
-   trust attestation. Read `verify-status --project-root <folder> --check-ref
+5. After the applicable review in step 3, repeat `verify-begin` with the same arguments
+   and `--review-confirmed`. For Codex this records the user's review confirmation;
+   for Claude it records the local configuration review after automatic-reporting
+   authorization. Neither is a native trust attestation. Read `verify-status --project-root <folder> --check-ref
    <UUID> --session-id <current native session from the hook reminder>`.
    Status is read-only: it neither creates state nor simulates a hook. Require
    all three observations for this fresh check in the same current session and
    current turn. A reload of that session requires fresh prompt/Stop observations.
    Inspect native trust/discovery through supported tools or UI when accessible;
-   if trust cannot be independently read, label it user-confirmed explicitly.
+   Label Codex trust user-confirmed when it cannot be independently read; for
+   Claude report configured loading and observed execution separately.
 6. Stop executes after a response. Its first invocation in each resumed verification
    session after review confirmation
    can request one bounded continuation to finish setup, even after an ordinary
@@ -104,6 +117,19 @@ in a repository. Do not enroll other folders because a plugin is global.
 For updates only on request, hooks are not required. For other/unqualified hosts,
 verify the supported personal-instruction route and state that native automatic
 hooks were not verified. Do not run Codex/Claude helper commands on those hosts.
+
+## Resume browser-selected history
+
+After browser authentication and project approval, call `oira_connection_status`
+for the exact selected target again. For `history_import[project_label].state`
+`requested`, `in_progress` or `incomplete`, start/resume "Import recent work" in
+the installed skill now, before ending setup. Use `window_from` and `window_to`;
+`max_days` is only the plan limit. Do not ask for a new history request or reset
+the period. If the host requires additional permission, use its native question
+tool with the approved target/window and wait. Honor denial. Only prior approved
+project work is eligible; exclude setup/verification sessions before reading
+bodies. Pending hook verification does not cancel import. Finish/recover through
+the normal history tools and state the actual counts or precise blocker.
 
 ## Installation during ongoing work
 
