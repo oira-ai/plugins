@@ -347,7 +347,8 @@ the project in Oira first.
 During setup, recheck the exact target after browser approval and start or resume
 an approved import before finishing setup. Do not wait for another request or
 a future coding chat. The returned `window_from`/`window_to` preserve the user's
-chosen period; `max_days` is a plan cap, not a request to import that many days.
+chosen period; `max_days` is a compatibility calendar bound, not a billing cap
+or a request to import that many days. Never shorten the approved window.
 Browser defaults authorize nothing until approved. Respect any additional host
 permission for local history access or disclosure: ask once with the approved
 destination/date window using the available native question tool and wait when
@@ -359,7 +360,11 @@ imports must not read past sessions.
 
 1. Read `references/history-import.md` for where this app keeps its sessions
    and how to read them here. Use only this project's sessions with work
-   between `window_from` and `window_to` (never more than `max_days` back).
+   between `window_from` and `window_to`. Process every eligible session in
+   resumable batches, using `session_batch_size` when returned. A batch size
+   limits one pass, not the total import. Keep a local continuation of remaining
+   session IDs and stream sequence positions, without copying conversation
+   bodies, so interruption resumes the same approved window.
 2. Report each past session in its own stream: its `stream_ref` is the
    output of `prepare_work_update.py --history-stream <session id>` (the same
    session always gets the same reference), `sequence` starts at 1, every
@@ -391,9 +396,15 @@ imports must not read past sessions.
    A session's deferred work is never skipped: send what is missing.
 5. Run the preflight and send as in "Send". `history_window_mismatch` names
    facts dated outside the window: leave those facts out.
-   `history_import_session_limit` or `history_import_not_requested`: stop
-   sending.
-6. When every session is sent, call `oira_finish_history_import` with the
+   A 409 `history_session_already_imported` means this session is already
+   complete: skip it and continue the remaining sessions, keeping its original
+   stream identity. `history_import_not_requested` means stop sending and
+   recheck the exact target's status; do not reopen or widen consent locally.
+   A temporary failure preserves the remaining batches and original retry
+   identities; recover it as in "Recover a lost response" and the returned
+   retry guidance. Never treat a partial batch as a completed import.
+6. When every batch is processed and each eligible session is either captured
+   or confirmed already complete, call `oira_finish_history_import` with the
    `project_label`. `state: incomplete` counts the sessions whose last update
    never arrived (`incomplete_sessions`): resume them as in step 4 and finish
    again. Tell the user how many sessions and updates Oira received, and
