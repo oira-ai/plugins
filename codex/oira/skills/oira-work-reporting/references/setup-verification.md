@@ -189,6 +189,17 @@ paths, transcripts, files, credentials or prompt text. It does not attest hook
 trust, context-read permission or actual work capture. The UI shows connection
 acknowledgment and real work capture separately.
 
+After reading fresh `oira_connection_status(expected_target=...)`, save its
+`context.available` observation with the same exact local binding: append
+`--context-reads available` or `--context-reads unavailable` to the existing
+helper's `bind`/`enable` command (or the bundled `projects bind` command).
+Do this only with a package that supports the option; upgrade older packages
+normally instead of claiming the reminder was installed. This local Boolean
+controls a short consultation reminder, not server permission. A changed target
+or grant clears it. Every actual consultation still rechecks current consent.
+No hook contacts Oira, composes questions or reads transcripts. Hosts without
+these hooks use the skill's consultation triggers directly.
+
 ## Permission to send real work
 
 Keep four checks distinct: Oira authentication/project authority, native hook

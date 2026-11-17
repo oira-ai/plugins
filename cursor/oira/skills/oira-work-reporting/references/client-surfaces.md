@@ -8,8 +8,8 @@ Cursor's terminal is that app, with its own Oira package.
 
 | Surface | How Oira gets there | What to check when tools are missing |
 | --- | --- | --- |
-| Cursor editor, Agent | the local plugin under `~/.cursor/plugins/local/oira`, or the skill in `~/.cursor/skills` plus `~/.cursor/mcp.json` | Customize shows the skill and `oira` enabled with four tools; Agent mode selected |
-| Cursor CLI (`agent`, any OS) | the skill in `~/.cursor/skills` plus `~/.cursor/mcp.json` (the CLI reads the editor's configuration; plugin discovery is not relied on) | `agent mcp list` shows `oira` enabled; `agent mcp list-tools oira` lists four tools |
+| Cursor editor, Agent | the local plugin under `~/.cursor/plugins/local/oira`, or the skill in `~/.cursor/skills` plus `~/.cursor/mcp.json` | Customize shows the skill and `oira` enabled with tools; Agent mode selected |
+| Cursor CLI (`agent`, any OS) | the skill in `~/.cursor/skills` plus `~/.cursor/mcp.json` (the CLI reads the editor's configuration; plugin discovery is not relied on) | `agent mcp list` shows `oira` enabled; `agent mcp list-tools oira` lists tools |
 | JetBrains IDE, Cursor through AI Assistant (ACP) | the skill and `.cursor/mcp.json` (project or personal) readable by the registry-launched Cursor runtime; dashboard Team MCP servers are not read there | the Oira tools inside the Cursor-driven conversation, not only the IDE's MCP list; sign-in completed from that conversation |
 
 Not supported: Cloud Agents, self-hosted workers, remote SSH or container

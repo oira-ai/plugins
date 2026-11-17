@@ -8,7 +8,7 @@ in the IDE's terminal is that app, with its own Oira package.
 
 | Surface | How Oira gets there | What to check when tools are missing |
 | --- | --- | --- |
-| Copilot CLI (terminal, any OS) | plugin `oira@oira`, or the skill in `~/.copilot/skills` plus `~/.copilot/mcp-config.json` | `/mcp show oira` lists four tools; `/skills list` shows the skill; `/instructions` lists the personal file |
+| Copilot CLI (terminal, any OS) | plugin `oira@oira`, or the skill in `~/.copilot/skills` plus `~/.copilot/mcp-config.json` | `/mcp show oira` lists tools; `/skills list` shows the skill; `/instructions` lists the personal file |
 | VS Code, current Agent Host session | the CLI-installed plugin is discovered automatically; or Chat: Install Plugin From Source; portable `.mcp.json` and `~/.copilot/mcp-config.json` are read natively | Agent Plugins → Installed shows Oira; Configure Tools lists `oira` |
 | VS Code, local extension-host session | same plugin or the skill in `~/.copilot/skills` plus `.vscode/mcp.json` (`servers` form) or MCP: Add Server | Configure Tools lists `oira`; the plugin and `/plugin` inventories are separate |
 | JetBrains IDE, Copilot plugin (current, CLI-backed) | its Customizations/MCP UI and the format it writes, or the plugin inventory of the Copilot CLI it launches | the MCP tools panel shows `oira`; a 2025.2 or later IDE is required |
