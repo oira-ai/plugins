@@ -232,7 +232,8 @@ def prepare_plugin():
             if os.path.exists(temporary):
                 os.unlink(temporary)
     return {'prepared': True, **info, 'marketplace': name + '-key',
-            'marketplace_root': str(root.parent), 'native_installation': 'required', 'hook_trust': 'required'}
+            'marketplace_root': str(root.parent), 'native_installation': 'required',
+            'hook_trust': 'required' if APP == 'codex' else 'host_managed'}
 
 
 @asynccontextmanager

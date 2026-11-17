@@ -389,8 +389,11 @@ class Store:
         transport="native_oauth",
         installation=None,
         enabled=None,
+        context_reads_available=None,
     ):
         stable_target(target)
+        if context_reads_available is not None and type(context_reads_available) is not bool:
+            raise LocalError('invalid_context_read_observation')
         if (
             not isinstance(label, str)
             or not label.strip()
@@ -410,6 +413,7 @@ class Store:
             transport=transport,
             installation=installation,
             enabled=bool(enabled),
+            context_reads_available=context_reads_available is True,
         )
         with self.transaction():
             prior = self.db.execute(
@@ -426,6 +430,8 @@ class Store:
                 ):
                     if enabled is None:
                         binding["enabled"] = previous.get("enabled", True)
+                    if context_reads_available is None and previous['expected_target'] == target:
+                        binding['context_reads_available'] = previous.get('context_reads_available') is True
                     if (previous["expected_target"] == target
                             and previous.get("enabled", True) and binding["enabled"]
                             and isinstance(previous.get("setup_verification"), dict)):

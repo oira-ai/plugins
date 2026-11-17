@@ -4,7 +4,9 @@
     "oira": {
       "url": "https://oira-oira.com/mcp",
       "oauthScopes": [
+        "agent_interventions:receive",
         "connection_status:read",
+        "memory_context:read",
         "work_updates:write"
       ],
       "timeout": 360000

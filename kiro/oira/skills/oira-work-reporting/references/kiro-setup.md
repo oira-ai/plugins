@@ -20,7 +20,19 @@ sign-in; it does not revoke the connection in Oira (see "Removal").
 
 The `/mcp` commands above belong to Kiro CLI. In the IDE use the MCP panel;
 typing those commands into IDE chat may only ask the agent to discuss them.
-Keep the two `oauthScopes` in the server entry. Removing them does not bypass
+Keep the packaged `oauthScopes` in the server entry. They request reporting,
+company-context reads and intervention reception; the browser still records
+the member's separate choices. Updating the file does not expand an existing
+grant: re-authenticate through the normal browser flow for newly selected
+permissions. Scope precedence depends on the CLI harness/version: V2 prefers
+`oauth.oauthScopes`; V3 before 3.4.0 ignores nested scope fields; V3 from 3.4.0
+prefers top-level `oauthScopes`, then falls back to `oauth.oauthScopes` and
+`oauth.scopes`. When merging the packaged Oira entry, keep its top-level
+`oauthScopes` as the sole scope list and remove only redundant nested scope
+fields, preserving other OAuth properties and other servers. Check the actual
+host version rather than assuming one precedence rule applies to every surface.
+See [Kiro's scopes reference](https://kiro.dev/docs/mcp/configuration/#scopes).
+Removing scopes does not bypass
 Dynamic Client Registration. If the log says registration was rejected
 with `Oira registers PKCE public clients only`, sign-in failed at the server
 before consent; reconnect after the Oira server fix instead of adding a
@@ -54,7 +66,7 @@ stop. Do not work around it.
 | Piece | Location |
 | --- | --- |
 | Skill (this folder) | `~/.kiro/skills/oira-work-reporting/` (user) or `.kiro/skills/oira-work-reporting/` (workspace); workspace wins on a name clash |
-| MCP server entry | `~/.kiro/settings/mcp.json` (user) or `.kiro/settings/mcp.json` (workspace), key `oira`, `url` plus `oauthScopes` `connection_status:read` and `work_updates:write`, and `timeout: 360000` (milliseconds); or inside the selected agent's own `mcpServers` |
+| MCP server entry | `~/.kiro/settings/mcp.json` (user) or `.kiro/settings/mcp.json` (workspace), key `oira`, with the packaged URL, four requested scopes and `timeout: 360000` (milliseconds); or inside the selected agent's own `mcpServers` |
 | Personal reporting instruction | `~/.kiro/steering/oira-reporting.md` |
 | Custom agents | `~/.kiro/agents/` (global) and `.kiro/agents/` (workspace), JSON or Markdown with YAML front matter |
 

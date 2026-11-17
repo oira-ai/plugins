@@ -7,6 +7,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -22,6 +25,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -31,14 +37,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -54,6 +69,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -89,6 +107,7 @@
           "type": "string"
         },
         "binding_generation": {
+          "description": "The generation returned with that same session binding.",
           "maximum": 2147483647,
           "minimum": 1,
           "title": "Binding Generation",
@@ -97,6 +116,7 @@
         "delivery_ref": {
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Delivery Ref",
           "type": "string"
         },
@@ -107,7 +127,8 @@
           "type": "integer"
         },
         "expected_target": {
-          "$ref": "#/$defs/CodingTargetV1"
+          "$ref": "#/$defs/CodingTargetV1",
+          "description": "Copy the complete explicitly approved target object unchanged from connection status; never reconstruct its UUIDs."
         },
         "format": {
           "const": "oira.context_intervention_ack.v1",
@@ -129,8 +150,10 @@
           "type": "string"
         },
         "session_binding_ref": {
+          "description": "The exact session_binding_ref returned by the successful context binding, including on status calls and rechecks.",
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Session Binding Ref",
           "type": "string"
         }
@@ -154,6 +177,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -169,6 +195,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -178,14 +207,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -201,6 +239,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -224,6 +265,7 @@
       "additionalProperties": false,
       "properties": {
         "binding_generation": {
+          "description": "The generation returned with that same session binding.",
           "maximum": 2147483647,
           "minimum": 1,
           "title": "Binding Generation",
@@ -232,6 +274,7 @@
         "check_ref": {
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Check Ref",
           "type": "string"
         },
@@ -242,7 +285,8 @@
           "type": "integer"
         },
         "expected_target": {
-          "$ref": "#/$defs/CodingTargetV1"
+          "$ref": "#/$defs/CodingTargetV1",
+          "description": "Copy the complete explicitly approved target object unchanged from connection status; never reconstruct its UUIDs."
         },
         "format": {
           "const": "oira.context_check_cancel.v1",
@@ -256,8 +300,10 @@
           "type": "boolean"
         },
         "session_binding_ref": {
+          "description": "The exact session_binding_ref returned by the successful context binding, including on status calls and rechecks.",
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Session Binding Ref",
           "type": "string"
         }
@@ -278,6 +324,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -293,6 +342,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -302,14 +354,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -325,6 +386,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -348,6 +412,7 @@
       "additionalProperties": false,
       "properties": {
         "assumptions": {
+          "description": "The uncertain premises Oira should check against company evidence. Include them for new checks and rechecks, even when the question mentions them.",
           "items": {
             "maxLength": 1000,
             "minLength": 1,
@@ -358,6 +423,7 @@
           "type": "array"
         },
         "binding_generation": {
+          "description": "The generation returned with that same session binding.",
           "maximum": 2147483647,
           "minimum": 1,
           "title": "Binding Generation",
@@ -366,13 +432,16 @@
         "client_request_ref": {
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Client Request Ref",
           "type": "string"
         },
         "evidence_hints": {
+          "description": "Optional exact record/domain/subject/artifact UUID references already known to the caller. Omit when unknown; put search topics in question.",
           "items": {
             "maxLength": 255,
             "minLength": 1,
+            "pattern": "^(record|domain|subject|artifact):[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
             "type": "string"
           },
           "maxItems": 16,
@@ -380,7 +449,8 @@
           "type": "array"
         },
         "expected_target": {
-          "$ref": "#/$defs/CodingTargetV1"
+          "$ref": "#/$defs/CodingTargetV1",
+          "description": "Copy the complete explicitly approved target object unchanged from connection status; never reconstruct its UUIDs."
         },
         "format": {
           "const": "oira.context_check_request.v1",
@@ -411,6 +481,7 @@
             }
           ],
           "default": null,
+          "description": "The immediate action or decision that depends on this answer. Include it for new checks and rechecks so Oira can identify consequential gaps.",
           "title": "Next Step"
         },
         "operation_ref": {
@@ -431,14 +502,17 @@
           "type": "string"
         },
         "question": {
+          "description": "A focused question stating the intended outcome and relevant scope; put uncertain premises and the next decision in their separate fields too.",
           "maxLength": 12000,
           "minLength": 1,
           "title": "Question",
           "type": "string"
         },
         "session_binding_ref": {
+          "description": "The exact session_binding_ref returned by the successful context binding, including on status calls and rechecks.",
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Session Binding Ref",
           "type": "string"
         },
@@ -744,6 +818,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -759,6 +836,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -768,14 +848,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -791,6 +880,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -814,6 +906,7 @@
       "additionalProperties": false,
       "properties": {
         "binding_generation": {
+          "description": "The generation returned with that same session binding.",
           "maximum": 2147483647,
           "minimum": 1,
           "title": "Binding Generation",
@@ -833,7 +926,8 @@
           "title": "Cursor"
         },
         "expected_target": {
-          "$ref": "#/$defs/CodingTargetV1"
+          "$ref": "#/$defs/CodingTargetV1",
+          "description": "Copy the complete explicitly approved target object unchanged from connection status; never reconstruct its UUIDs."
         },
         "format": {
           "const": "oira.context_interventions_page.v1",
@@ -849,8 +943,10 @@
           "type": "integer"
         },
         "session_binding_ref": {
+          "description": "The exact session_binding_ref returned by the successful context binding, including on status calls and rechecks.",
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Session Binding Ref",
           "type": "string"
         }
@@ -869,6 +965,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -884,6 +983,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -893,14 +995,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -916,6 +1027,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -939,13 +1053,15 @@
       "additionalProperties": false,
       "properties": {
         "binding_generation": {
+          "description": "The generation returned with that same session binding.",
           "maximum": 2147483647,
           "minimum": 1,
           "title": "Binding Generation",
           "type": "integer"
         },
         "expected_target": {
-          "$ref": "#/$defs/CodingTargetV1"
+          "$ref": "#/$defs/CodingTargetV1",
+          "description": "Copy the complete explicitly approved target object unchanged from connection status; never reconstruct its UUIDs."
         },
         "format": {
           "const": "oira.context_session_revoke.v1",
@@ -954,8 +1070,10 @@
           "type": "string"
         },
         "session_binding_ref": {
+          "description": "The exact session_binding_ref returned by the successful context binding, including on status calls and rechecks.",
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Session Binding Ref",
           "type": "string"
         }
@@ -974,6 +1092,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -989,6 +1110,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -998,14 +1122,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -1021,6 +1154,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -1058,6 +1194,7 @@
         "client_binding_ref": {
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Client Binding Ref",
           "type": "string"
         },
@@ -1087,6 +1224,7 @@
         "local_context_nonce": {
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Local Context Nonce",
           "type": "string"
         }
@@ -1107,6 +1245,9 @@
           "additionalProperties": false,
           "properties": {
             "connection_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Connection Uuid",
               "type": "string"
             },
@@ -1122,6 +1263,9 @@
               "type": "integer"
             },
             "grant_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Grant Uuid",
               "type": "string"
             },
@@ -1131,14 +1275,23 @@
               "type": "integer"
             },
             "organization_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Organization Uuid",
               "type": "string"
             },
             "project_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Project Uuid",
               "type": "string"
             },
             "resource_authority_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "Resource Authority Uuid",
               "type": "string"
             },
@@ -1154,6 +1307,9 @@
               "type": "string"
             },
             "user_uuid": {
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
               "title": "User Uuid",
               "type": "string"
             }
@@ -1177,6 +1333,7 @@
       "additionalProperties": false,
       "properties": {
         "binding_generation": {
+          "description": "The generation returned with that same session binding.",
           "maximum": 2147483647,
           "minimum": 1,
           "title": "Binding Generation",
@@ -1185,11 +1342,13 @@
         "check_ref": {
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Check Ref",
           "type": "string"
         },
         "expected_target": {
-          "$ref": "#/$defs/CodingTargetV1"
+          "$ref": "#/$defs/CodingTargetV1",
+          "description": "Copy the complete explicitly approved target object unchanged from connection status; never reconstruct its UUIDs."
         },
         "format": {
           "const": "oira.context_check_status.v1",
@@ -1203,8 +1362,10 @@
           "type": "boolean"
         },
         "session_binding_ref": {
+          "description": "The exact session_binding_ref returned by the successful context binding, including on status calls and rechecks.",
           "maxLength": 36,
           "minLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
           "title": "Session Binding Ref",
           "type": "string"
         }
@@ -1217,6 +1378,36 @@
       ],
       "title": "AgentContextStatusV1",
       "type": "object"
+    }
+  },
+  "tools": {
+    "oira_ack_context_intervention": {
+      "description": "Acknowledge what this agent observed or did with a scoped Oira intervention. Never claim a native boundary hold or that acknowledgment resolves the underlying conflict.",
+      "request_schema": "AgentContextAckV1"
+    },
+    "oira_bind_context_session": {
+      "description": "Bind this coding chat to its explicitly approved exact company/project before asking Oira for context. Requires separate context-read or intervention consent; grants no new access.",
+      "request_schema": "AgentContextSessionBindV1"
+    },
+    "oira_cancel_context_check": {
+      "description": "Cancel the exact Oira context check and generation. Does not resolve or clear an independent conflict blocking the tracked operation.",
+      "request_schema": "AgentContextCancelV1"
+    },
+    "oira_check_context": {
+      "description": "Ask Oira a bounded question composed for company DNA, accepted decisions, constraints or related work before planning or a consequential milestone. Supply the approved target/binding, question, assumptions and next step; optionally use an existing reporting work_handle. Returns a durable background check, never an immediate approval. Poll that same check using poll_after_ms. Set include_discussion_refs=true in submit/status for the expanded answer and visible private discussion references. Separate context-read consent required. Never attach transcripts, files or credentials.",
+      "request_schema": "AgentContextCheckRequestV1"
+    },
+    "oira_context_check_status": {
+      "description": "Read progress and the evidence-backed result of an existing Oira company-context check without starting new reasoning. Only a current released result is usable; respect missing coverage, conflicts and the returned poll delay.",
+      "request_schema": "AgentContextStatusV1"
+    },
+    "oira_context_interventions": {
+      "description": "Read scoped conflict and recheck notices for this bound operation after separate intervention consent. A notice is advisory and does not prove native execution stopped.",
+      "request_schema": "AgentContextInterventionsPageV1"
+    },
+    "oira_revoke_context_session": {
+      "description": "Revoke the exact logical Oira context binding. Does not stop a native process or clear an unresolved operation conflict.",
+      "request_schema": "AgentContextRevokeBindingV1"
     }
   }
 }

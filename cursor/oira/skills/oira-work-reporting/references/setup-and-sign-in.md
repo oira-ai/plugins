@@ -12,7 +12,7 @@ Cursor's own account (`agent login`, `CURSOR_API_KEY`, the editor sign-in)
 is not an Oira sign-in. Oira has its own OAuth: in the editor, Cursor
 Settings → MCP (or Customize → MCP) shows `oira` with a login or
 authenticate action that opens the browser; in the CLI, `agent mcp login
-oira` does the same and `agent mcp list-tools oira` lists its four tools
+oira` does the same and `agent mcp list-tools oira` lists its tools
 afterwards. When the sign-in used the wrong Oira account, sign in again
 from the same surface and ask the user to disconnect the old connection in
 Oira.

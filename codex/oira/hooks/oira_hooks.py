@@ -300,6 +300,7 @@ def reminder(
     installation=None,
     lifecycle=None,
     pending=None,
+    context_reads_available=False,
 ):
     pending_note = ""
     if pending and pending["state"] in {"blocked", "unknown_send", "repair_required"}:
@@ -337,6 +338,10 @@ def reminder(
         "Setup/verification chats are excluded: never report installation activity or import those chats. "
         "Report concise useful facts: what changed and why, a decision and its reason, checks and results, "
         "and remaining actions. At final handoff include the actual outcome; bookkeeping is not work progress. "
+        + ("Company-context reads were available for this exact target at setup. Recheck current availability, "
+           "then consult Oira when uncertain company requirements or a consequential shared decision affect "
+           "this work; reuse a pending check and consume its current result. Skip trivial or already-covered "
+           "changes. This local reminder grants no read permission. " if context_reads_available is True else "")
         + ("This working chat was first observed midrun (" + lifecycle['first_event'] + "). "
            "Before results, declare the actual work identity and context in the first structured update; include "
            "known progress, then results in causal order in that same update. Do not send an empty synthetic start, "
@@ -466,7 +471,10 @@ def event(folder, payload):
                 return {'decision': 'block', 'reason': (
                     'Oira setup final hook check: the Stop hook just ran. Follow the installed setup-verification reference. '
                     'Run the same helper verify-status --project-root <this folder> --check-ref ' + check_ref
-                    + ' --session-id ' + shlex.quote(session) + '. Confirm native hook review and all three fresh events '
+                    + ' --session-id ' + shlex.quote(session) + '. '
+                    + ('Confirm Codex native hook review ' if folder.name == 'codex' else
+                       'Confirm Claude loaded the enabled plugin hooks under its current policy ')
+                    + 'and all three fresh events '
                     'in this session before calling oira_verify_setup with this check_ref and the exact target. '
                     'If an event is missing, explain the pending reload/check once; do not fabricate it or loop. '
                     'Setup itself creates no work update. Complete the current checkpoint truthfully: '
@@ -492,6 +500,7 @@ def event(folder, payload):
                     installation=project.get("installation"),
                     lifecycle=policy,
                     pending=turn,
+                    context_reads_available=project.get('context_reads_available') is True,
                 ),
             }
         return {
@@ -510,6 +519,7 @@ def event(folder, payload):
                     installation=project.get("installation"),
                     lifecycle=policy,
                     pending=turn,
+                    context_reads_available=project.get('context_reads_available') is True,
                 ),
             }
         }
@@ -553,6 +563,7 @@ def main(argv=None):
             command.add_argument("--target-file", required=True)
             command.add_argument("--transport", choices=("native_oauth", "api_key"), default="native_oauth")
             command.add_argument("--installation")
+            command.add_argument('--context-reads', choices=('available', 'unavailable'))
     checkpoint = commands.add_parser("checkpoint")
     checkpoint.add_argument("--project-root", required=True)
     checkpoint.add_argument("--session-id", required=True)
@@ -635,6 +646,8 @@ def main(argv=None):
                         transport=args.transport,
                         installation=args.installation,
                         enabled=True if args.command == "enable" else None,
+                        context_reads_available=(args.context_reads == 'available'
+                            if args.context_reads is not None else None),
                     )
                 else:
                     store.set_enabled(key, False)
@@ -643,6 +656,12 @@ def main(argv=None):
                 }
             finally:
                 store.close()
+    except LocalError as exc:
+        # Name this actionable receipt condition without exposing local paths,
+        # payloads or arbitrary exception text. The pending journal is unchanged.
+        code = (exc.code if exc.code == "pending_update_requires_disposition"
+                else "configuration_unavailable")
+        result = {} if args.command == "event" else {"error": code}
     except (
         OSError,
         ValueError,
@@ -651,7 +670,6 @@ def main(argv=None):
         AttributeError,
         UnicodeError,
         RecursionError,
-        LocalError,
         sqlite3.Error,
     ):
         result = (

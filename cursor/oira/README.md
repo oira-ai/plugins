@@ -9,7 +9,7 @@ sends prompts, replies, transcripts, tool output or files, and it needs no
 API key. Oira is a remote MCP server; this package is the Oira skill plus
 its address.
 
-This is the Cursor package, version **0.12.5**, in the Agent Plugins 1.0
+This is the Cursor package, version **0.12.6**, in the Agent Plugins 1.0
 layout: `plugin.json`, `mcp.json` (the remote server) and
 `skills/oira-work-reporting/` (`SKILL.md`, `references/` including
 `setup-and-sign-in.md` and `client-surfaces.md`, and
@@ -82,7 +82,7 @@ CLI, from the project folder:
     agent mcp login oira
     agent mcp list-tools oira
 
-The tool list must show the four `oira_*` tools. JetBrains: AI Chat → add
+The tool list must show the `oira_*` tools. JetBrains: AI Chat → add
 the Cursor agent from the registry, select it, then sign in to Oira from
 that conversation the same way (the agent runs the CLI's ACP mode and reads
 the `.cursor/mcp.json` files above). Your Cursor account login is not an
@@ -111,7 +111,7 @@ Current work is reported when you ask.
 ## If something is off
 
 - The Oira tools are missing: the MCP list (Settings → MCP, or
-  `agent mcp list`) must show `oira` enabled with four tools. A disabled
+  `agent mcp list`) must show `oira` enabled with tools. A disabled
   server, a workspace allowlist of your team, or a stale project
   `.cursor/mcp.json` entry hides or overrides it. Oira never asks you to use
   `--approve-mcps` or to loosen team controls.

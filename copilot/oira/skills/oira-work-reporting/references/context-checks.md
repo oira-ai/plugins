@@ -13,6 +13,65 @@ defaults. `oira context enable` points to existing account/connection consent;
 it never grants access locally. The native host must request the relevant
 scopes and complete browser authorization. Keep its OAuth credentials host-owned.
 
+## Questions that help the next decision
+
+Include the intended outcome, relevant project or product scope, uncertain
+assumptions and next decision. Use an existing returned work handle when useful.
+Ask for accepted decisions and their evidence separately from proposals and
+recent observations. Oira may return related work, constraints and conflicts;
+absence of evidence is not proof that a requirement or dependency does not exist.
+
+| Situation | Useful composed question | How to use the result |
+| --- | --- | --- |
+| Changing an API used by another team | Which accepted contracts and active consumer work govern this response format? I assume timestamps remain UTC; the next decision is whether a versioned endpoint is needed. | Preserve supported contracts; investigate uncovered consumers before changing the shared interface. |
+| Catching up imported work while live updates continue | Which accepted latency, ordering and recovery requirements govern history imports and live updates in this project? The next decision is admission and retry behavior. | Separate product requirements from measured capacity; test the chosen policy locally. |
+| Resuming a partly completed feature | What related work, accepted scope changes and unresolved decisions affect this outcome since the prior milestone? | Reconcile the plan and avoid duplicate or conflicting implementation. |
+| Preparing a release | What accepted release constraints and unresolved dependencies apply to this change? | Treat the answer as evidence; deployment still needs the user's authorization. |
+
+Do not ask Oira to approve every edit, run a local test or repeat facts already
+settled by a current answer. It is not a substitute for inspecting code or logs.
+
+## Reading an incomplete result
+
+When reporting a consultation result, use a short evidence-to-action statement:
+what the current answer establishes (with its reference), its missing coverage,
+and the next action that follows. For example: "The accepted contract requires
+UTC timestamps [returned reference]. Consumer migration requirements were not
+covered, so the format change remains on hold. I will inspect the existing
+serialization and its callers next." Do not turn a missing dependency into
+speculative implementation options, new fields, a compatibility plan or a
+requirements checklist. Only propose those when the task and evidence support
+that decision. With no callable tool or denied consent, simply identify that
+limitation, the dependent decision on hold and any useful independent inspection.
+When a complete current answer resolves the dependency, act on it within the
+user's existing authorization instead of asking for the same decision again.
+
+Only `release_state=current` permits using the returned evidence. Also inspect
+the answer status, coverage and degradation codes; current does not mean complete.
+
+- `bounded_canonical_selection`, `bounded_catalog_selection` or
+  `bounded_plan_execution`: the query covered a bounded subset. Retain useful
+  cited evidence, identify the missing scope and deliberately narrow a follow-up
+  if that scope is needed for the decision. Do not claim an exhaustive search.
+- A capacity/deadline or temporarily-unavailable response means processing or
+  verification could not finish now. Follow the returned retry/poll guidance;
+  it says nothing about whether the company has evidence. Poll a pending check
+  with the same IDs, including after a local restart.
+- `no_matching_evidence`: this permitted query found no matching evidence.
+  State the gap; do not translate it into "nothing exists" or invent approval.
+- Stale, withheld or revoked results cannot be used. Follow the typed recovery
+  action under the original target; never widen access or switch credentials.
+- A failed terminal job needs its returned recovery action. Repeated status
+  reads do not restart it. A deliberate new question/recheck uses a higher intent
+  revision for the same operation, without disguising a failed original attempt.
+
+For a conflict or uncovered consequential dependency, hold that affected step
+and continue unrelated authorized work. A human decision must come from the
+existing decision owner. Displaying or acknowledging an intervention is not a
+resolution and never proves that the host stopped execution.
+
+## Durable check workflow
+
 1. Freeze this chat's exact `oira_coding_target.v1` from its existing explicit
    project/folder/session binding. Never select company by label, cwd, repo
    name or list order. Reconnect, fork, target-generation change or a fresh

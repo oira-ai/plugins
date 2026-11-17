@@ -7,17 +7,22 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.12.5** starts or resumes browser-approved history imports
-inside the setup workflow, using the selected date window. Codex and Claude
-receive their own hook guidance: Codex requires native hook trust; Claude Code
-loads hooks from the enabled plugin automatically. Native host qualification
-and directory acceptance remain pending. The standalone CLI 0.11.1 testing
-preview is versioned separately. No credentials are embedded; users authorize
-projects through Oira.
+Package version **0.12.6** exposes company-context tools in the manual host
+recipes and gives agents concrete guidance for consulting company evidence,
+resuming pending checks and recognizing incomplete answers. Context reads still
+need their own permission. Existing installations may need normal browser
+reauthorization to add the newly requested scopes.
 
-The consent page's suggested permissions and 30-day history default require the
-matching Oira application release. Publishing this package does not deploy that
-application. Existing consent and additional coding-host permissions still apply.
+Setup starts or resumes browser-approved history imports using the selected
+period. Codex requires native hook trust; Claude Code loads hooks from the
+enabled plugin automatically. Native host qualification and directory acceptance
+remain pending. The standalone CLI 0.11.1 testing preview is versioned separately.
+No credentials are embedded; users authorize projects through Oira.
+
+Consent already suggests optional permissions and 30 days of history. Repeated
+custom-period catch-up and queue/recovery improvements require the matching
+application release. Publishing this package does not deploy the application.
+Existing consent and additional coding-host permissions still apply.
 
 Reporting needs **Python 3.11 or later** on the machine where the coding app
 runs: before every update the plugin runs a small local check

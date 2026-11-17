@@ -8,7 +8,7 @@ put off) for the project you approve. It never sends prompts, replies,
 transcripts, tool output or files, and it needs no API key. Oira is a remote
 MCP server; this package is the Oira skill plus its address.
 
-This is the Copilot package, version **0.12.5**, in the Agent Plugins 1.0
+This is the Copilot package, version **0.12.6**, in the Agent Plugins 1.0
 layout: `plugin.json`, `mcp.json` (the remote server) and
 `skills/oira-work-reporting/` (`SKILL.md`, `references/` including
 `setup-and-sign-in.md` and `client-surfaces.md`, and
@@ -69,6 +69,8 @@ installed it with.
    - Copilot CLI: merge into `~/.copilot/mcp-config.json` (or
      `$COPILOT_HOME/mcp-config.json`), keeping every other server:
 
+     <!-- BEGIN GENERATED MCP TOOLS -->
+
          {
            "mcpServers": {
              "oira": {
@@ -78,16 +80,27 @@ installed it with.
                  "oira_connection_status",
                  "oira_submit_work_update",
                  "oira_work_update_status",
-                 "oira_finish_history_import"
+                 "oira_finish_history_import",
+                 "oira_verify_setup",
+                 "oira_bind_context_session",
+                 "oira_revoke_context_session",
+                 "oira_check_context",
+                 "oira_context_check_status",
+                 "oira_cancel_context_check",
+                 "oira_context_interventions",
+                 "oira_ack_context_intervention"
                ]
              }
            }
          }
 
-     (`copilot mcp add --transport http --tools "oira_connection_status,oira_submit_work_update,oira_work_update_status,oira_finish_history_import" oira https://oira-oira.com/mcp`
-     writes the same entry; `tools` is required for remote servers, and
-     without `--tools` the CLI would allow every tool.) A portable project
-     `.mcp.json` takes the same `mcpServers` entry.
+     `copilot mcp add --transport http --tools "oira_connection_status,oira_submit_work_update,oira_work_update_status,oira_finish_history_import,oira_verify_setup,oira_bind_context_session,oira_revoke_context_session,oira_check_context,oira_context_check_status,oira_cancel_context_check,oira_context_interventions,oira_ack_context_intervention" oira https://oira-oira.com/mcp` writes the same entry.
+     This list exposes the Oira tools; host approval and separate company-context
+     consent still apply. It enables no automatic tool approval.
+
+     <!-- END GENERATED MCP TOOLS -->
+
+     A portable project `.mcp.json` takes the same `mcpServers` entry.
    - VS Code: **MCP: Add Server**, or `.vscode/mcp.json` with
      `{"servers": {"oira": {"type": "http", "url": "https://oira-oira.com/mcp"}}}`,
      or a portable `.mcp.json` with the `mcpServers` form above.
@@ -109,7 +122,7 @@ dynamic client registration with PKCE and the scopes it advertises.
 ## Sign in and set up
 
 Start a new chat in your project. In the CLI, run `/mcp auth oira` and
-finish in the browser (`/mcp show oira` lists its four tools). In an IDE,
+finish in the browser (`/mcp show oira` lists its tools). In an IDE,
 use the Start or Authenticate action next to `oira` in the MCP server
 list. Your GitHub login is not an Oira sign-in. Then send:
 
@@ -134,7 +147,7 @@ Current work is reported when you ask.
 ## If something is off
 
 - The Oira tools are missing: `/mcp show oira` (CLI) or the MCP server list
-  (IDE) must show the server and its four tools; a disabled server, a
+  (IDE) must show the server and its tools; a disabled server, a
   policy or allowlist of your organization, or workspace trust can hide
   it. Enable it or ask your administrator; Oira never asks you to disable
   those controls.

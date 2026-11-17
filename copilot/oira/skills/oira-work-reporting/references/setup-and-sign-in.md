@@ -13,7 +13,7 @@ permission is involved.
 Copilot's own login (`/login`, or the IDE's GitHub account) is not an Oira
 sign-in. Oira has its own OAuth: in the Copilot CLI, `/mcp auth oira`
 opens the browser (or open `/mcp`, select `oira` and choose its auth
-action); `/mcp show oira` lists the server with its four tools afterwards.
+action); `/mcp show oira` lists the server with its tools afterwards.
 In VS Code, JetBrains and Visual Studio, the MCP server list (Configure
 Tools, or the tools icon in chat) has a Start or Authenticate action next
 to `oira`. When the sign-in used the wrong Oira account, sign in again from
@@ -30,7 +30,7 @@ control, to approve every tool, or to lower workspace trust.
 | --- | --- |
 | Plugin (CLI and VS Code) | installed by `copilot plugin install oira@oira` into `~/.copilot/installed-plugins/oira/oira/` (or `_direct/...` for a direct source); VS Code lists it under Agent Plugins → Installed |
 | Skill by hand | `~/.copilot/skills/oira-work-reporting/` (CLI, VS Code, Visual Studio 2026 18.5+; `%USERPROFILE%\.copilot\skills\...` on Windows) or `.github/skills/oira-work-reporting/` in one project |
-| MCP server by hand | CLI: `~/.copilot/mcp-config.json` (`$COPILOT_HOME/mcp-config.json` when set), `mcpServers` form with `type: http` and the four tool names in `tools`; VS Code: `.vscode/mcp.json` (`servers` form) or portable `.mcp.json` (`mcpServers` form); JetBrains and Visual Studio: their MCP editor (`servers` form, `url` only) |
+| MCP server by hand | CLI: `~/.copilot/mcp-config.json` (`$COPILOT_HOME/mcp-config.json` when set), `mcpServers` form with `type: http` and the packaged tool names in `tools`; VS Code: `.vscode/mcp.json` (`servers` form) or portable `.mcp.json` (`mcpServers` form); JetBrains and Visual Studio: their MCP editor (`servers` form, `url` only) |
 | Personal reporting instruction | `~/.copilot/copilot-instructions.md` (`$COPILOT_HOME/copilot-instructions.md` when set) |
 
 Skill folders need `SKILL.md`, `references/` and `scripts/`: if
