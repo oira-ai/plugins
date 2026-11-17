@@ -124,7 +124,8 @@ After browser authentication and project approval, call `oira_connection_status`
 for the exact selected target again. For `history_import[project_label].state`
 `requested`, `in_progress` or `incomplete`, start/resume "Import recent work" in
 the installed skill now, before ending setup. Use `window_from` and `window_to`;
-`max_days` is only the plan limit. Do not ask for a new history request or reset
+`max_days` is a compatibility calendar bound, not a billing cap or the
+selected import period. Do not ask for a new history request or reset
 the period. If the host requires additional permission, use its native question
 tool with the approved target/window and wait. Honor denial. Only prior approved
 project work is eligible; exclude setup/verification sessions before reading
