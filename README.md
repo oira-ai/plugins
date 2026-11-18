@@ -7,7 +7,7 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.12.6** exposes company-context tools in the manual host
+Package version **0.12.7** exposes company-context tools in the manual host
 recipes and gives agents concrete guidance for consulting company evidence,
 resuming pending checks and recognizing incomplete answers. Context reads still
 need their own permission. Existing installations may need normal browser

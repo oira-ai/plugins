@@ -1,6 +1,6 @@
 ---
 name: oira-work-reporting
-description: Keep Oira updated on approved coding work and, with separate context-read consent, consult Oira about company decisions, constraints and related work when planning or resolving uncertain requirements. Report structured decisions, progress, verification, blockers, questions, next steps and deferred work; import recent past work only when approved. Sends no transcripts, prompts, replies, tool output or files.
+description: Keep Oira updated on approved coding work and, with separate context-read consent, consult Oira about company decisions, constraints and related work at task start and when planning or resolving uncertain requirements. Report structured decisions, progress, verification, blockers, questions, next steps and deferred work; import recent past work only when approved. Sends no transcripts, prompts, replies, tool output or files.
 ---
 
 # Oira work reporting
@@ -52,6 +52,24 @@ If the required context tool is absent, say it is unavailable; connection status
 alone does not make the tool callable. Do not ask for confirmation the user has
 already given, or claim the check can run after finding no callable tool.
 
+At the first substantive task in a working session, check the exact bound project's
+current context-read availability. With separate consent, bind the session and
+submit one `work_continuation` check as soon as the intended outcome is known.
+Use a short, agent-authored question describing the task. Include a Slack thread
+permalink or Linear issue link the member identified as its starting point when
+available, or the existing matched work handle for an explicitly continued task.
+Ask for a brief of relevant past and ongoing work across teammates and agents,
+dependencies, accepted human decisions and reversals, verified commits and open
+questions, with source references. Cite Work Item notes with their editor and
+revision when they inform the task. Separate proposals from decisions and code
+commits from releases. Retrieve the result with the same check reference and
+use its current cited evidence before making dependent decisions. An empty or
+partial result should identify the missing context. Reuse a current check for
+the same task across prompts. If the agent first learns the starting thread or
+issue by opening it after that check, use its permalink in the next intent
+revision of the same operation. Use this workflow on the first task turn in hosts
+without a qualified session-start hook. Hooks only remind the agent locally.
+
 When the member has enabled company-context reads for this installation,
 actively consult Oira where company constraints affect a plan or consequential
 milestone. Identify the intended outcome, uncertain assumptions and next step;
@@ -63,8 +81,7 @@ the affected milestone starts. Do not issue a check on every tool call.
 
 Consult for uncertain product requirements, shared API/data contracts, ownership,
 deployment constraints or related work that may conflict with the change. Recheck
-when a material assumption changes or the user requests it. Skip a trivial edit
-or an unchanged assumption already covered by a current answer. Ask a focused
+when a material assumption changes or the user requests it. Reuse a current answer for a trivial follow-up or an unchanged assumption. Ask a focused
 question that can change the next decision; the question examples and result
 handling in the context-check reference explain what evidence to request.
 
