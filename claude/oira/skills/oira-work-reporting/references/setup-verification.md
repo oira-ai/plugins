@@ -52,7 +52,8 @@ compatible on-request reporting/authentication. A key installation uses the
 complete vault-backed native package where supported, not a duplicate skill.
 
 Use a persistent user-folder install outside the code repository. Only the
-explicit current folder/project binding enables reporting. For Kiro/custom
+explicit current folder binding, or the repository binding chosen under
+[Git worktrees](#git-worktrees), enables reporting. For Kiro/custom
 profiles or another host requiring project-local assets, preserve configuration
 and add only the personal generated paths to Git's local info/exclude. Change
 shared .gitignore only deliberately; verify ignored files and never put a key
@@ -62,8 +63,9 @@ in a repository. Do not enroll other folders because a plugin is global.
 
 1. Exclude this setup session as above. Verify the complete plugin is installed/enabled, its three hook definitions
    are discovered, the selected vault/native OAuth transport works, the exact
-   target is authorized, and canonical local preflight passes. Save the exact
-   enabled binding using the existing documented helper. Hooks remain local,
+   target is authorized, and canonical local preflight passes. Ask the
+   [Git worktrees](#git-worktrees) question, then save the exact enabled
+   binding using the existing documented helper. Hooks remain local,
    credential-free and network-free.
 2. Generate one fresh UUID `check_ref`. Use the installed helper, private Python
    or validated current runtime: `--app claude --environment production
@@ -117,6 +119,33 @@ in a repository. Do not enroll other folders because a plugin is global.
 For updates only on request, hooks are not required. For other/unqualified hosts,
 verify the supported personal-instruction route and state that native automatic
 hooks were not verified. Do not run Codex/Claude helper commands on those hosts.
+
+## Git worktrees
+
+An exact folder binding routes only that folder and its subfolders. A linked
+Git worktree (Claude Code desktop `.claude/worktrees/*`, Codex worktrees,
+`git worktree add`) has its own `.git` file, so its chats stay unbound unless
+a repository binding exists. When the project folder is in a Git repository
+and the user chooses automatic reporting, ask once whether it should also
+cover this repository's git worktrees. Default to yes when this host creates
+chat worktrees (Claude Code desktop, the Codex app) or `git worktree list`
+shows others; otherwise default to the exact folder. An existing folder-only
+binding has not answered this question: ask it on a repeated setup or update.
+
+On yes, add `--inherit-repository` to the helper's `enable` command. It saves
+one `repository:<common Git directory>` binding that the main checkout and
+every linked worktree resolve to. An exact folder binding still takes
+precedence where one exists, and a nested independent repository never
+inherits it. Outside a Git checkout the helper refuses with
+`git_repository_required`. On no, keep the exact folder binding. Name the
+covered checkouts in the reporting authorization.
+
+Confirm with `session-status --session-id <id> --project-root <folder>`. Its
+`binding` object names `binding_key`, `scope` and `automatic_reporting` for
+that folder; check an existing worktree the same way. `verify-status` returns
+the same object. `automatic_reporting: unbound` with `unbound_reason:
+other_checkout_bound` means another checkout of this repository is bound but
+this one is not: tell the user rather than report from it.
 
 ## Resume browser-selected history
 
@@ -205,8 +234,9 @@ these hooks use the skill's consultation triggers directly.
 
 Keep four checks distinct: Oira authentication/project authority, native hook
 trust, coding-host approval to disclose work, and Oira's actual capture receipt.
-Before enabling automatic updates, name the exact local folder and Oira
-company/project and explain that structured implementation, test and deployment
+Before enabling automatic updates, name the exact local folder (and, for a
+repository binding, its git worktrees) and Oira company/project and explain
+that structured implementation, test and deployment
 facts go there at material milestones and before stopping, or only on request
 if that is the chosen mode. Record the chosen mode in the exact local binding.
 Reuse explicit authorization for that binding where the host recognizes it.
@@ -239,7 +269,8 @@ still require human approval even when the plugin and Oira consent are correct.
 
 ## Finish truthfully
 
-Report installed source/version; authentication and exact project; hook discovery,
+Report installed source/version; authentication and exact project; binding
+scope (exact folder, or repository with its git worktrees); hook discovery,
 review confirmation and fresh execution (or on-request/unsupported); Oira setup
 acknowledgment; optional context availability; first real work capture.
 Hook/connection verification is complete only after the applicable hook checks

@@ -573,8 +573,13 @@ Do not enable another project or infer its label from its folder. This saves
 only a personal exact folder/worktree binding under `~/.oira/reporting/`,
 separate for each app and environment. Delete the temporary file afterwards.
 An explicit `--session-id` choice takes precedence over the most specific
-folder binding. Cross-worktree defaults require deliberate `--inherit-repository`;
-nested repositories never silently inherit their parent's choice. It never
+folder binding. A linked Git worktree is a separate folder: setup asks once
+whether to also cover this repository's git worktrees (setup verification,
+"Git worktrees"), and only that explicit choice appends `--inherit-repository`.
+It saves one `repository:` binding for the main checkout and every linked
+worktree; nested repositories never silently inherit their parent's choice.
+`session-status --session-id <id> --project-root <folder>` names the binding
+that routes a folder, or `unbound` when none does. It never
 edits the repository or another user's settings. To stop, use the same command
 with `disable --project-root "<root>"` and omit `--project-label` and `--target-file`.
 Label-only v1 bindings require explicit setup again; they never acquire authority through a matching name.
