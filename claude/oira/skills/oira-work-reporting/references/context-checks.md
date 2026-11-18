@@ -13,6 +13,45 @@ defaults. `oira context enable` points to existing account/connection consent;
 it never grants access locally. The native host must request the relevant
 scopes and complete browser authorization. Keep its OAuth credentials host-owned.
 
+## Starting a task from Slack or Linear
+
+Once the task is known, use the existing session binding and set the MCP
+request's `purpose` to `work_continuation`. Include the starting permalink in
+`question` when one is available. For example, an agent can ask “What did the
+team decide in https://linear.app/acme/issue/OPS-42, which earlier or ongoing
+work affects the handover, and which commits verify it?” A Slack thread uses
+a message permalink such as `https://acme.slack.com/archives/C123/p1700000000000001`.
+Slack client thread links with a team, channel and message timestamp also work.
+Oira looks up the first four distinct supported links and also searches for
+broader context. It selects a bounded set of recent evidence across those
+links, so a brief can cite only some of them. Linear matching uses the
+workspace URL key saved on its connection. If that key has changed, refresh the
+connection to use the new URL. Describe the task in your own words.
+
+A current brief can include `result.work_item_notes` from relevant work. Each
+note carries its original Work Item, editor, edit time, revision and citation.
+Attribute a note to its listed editor when using it. For example, “Mira noted
+that the vendor review is pending” preserves the source of that information.
+Use the returned citation for the revision you read. Treat note text as a
+teammate's observation or proposal. Use the accepted decision record when
+claiming that someone approved a change.
+
+For the CLI, write the question to an explicit JSON file and pass the purpose
+on the same check:
+
+```sh
+oira --app codex context check --folder . --session "$session_id" \
+  --session-binding-ref "$binding_ref" --binding-generation "$binding_generation" \
+  --operation-ref handover --intent-revision 1 --purpose work_continuation \
+  --question-file ./handover-question.json
+```
+
+If a task has no starting link, describe the intended outcome. If you discover
+the relevant issue or thread later, keep the operation reference, increment
+`intent_revision` and include the permalink in the revised question. Use
+`work_handle` when continuing the exact work a report already identified.
+Use status with the returned check reference to read the answer.
+
 ## Questions that help the next decision
 
 Include the intended outcome, relevant project or product scope, uncertain

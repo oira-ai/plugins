@@ -1240,6 +1240,17 @@ _WEBHOOK_HOSTS = (
     ('outlook.office.com', '/webhook'),
 )
 _OPAQUE = re.compile(r'[A-Za-z0-9+/=_-]{32,}')
+# These specific link coordinates join several ordinary IDs with the same slash
+# characters used by base64. Scan their segments individually for opaque blobs.
+# Everything after the coordinate (including slugs and query values) stays intact.
+_WORK_LINK_COORDINATE = re.compile(
+    r'\bhttps://(?:'
+    r'(?:[a-z0-9-]+\.)+slack\.com/archives/[CDG][A-Z0-9]{1,32}/p[0-9]{16}'
+    r'|app\.slack\.com/client/T[A-Z0-9]{1,32}/[CDG][A-Z0-9]{1,32}'
+    r'(?:/(?:thread/[CDG][A-Z0-9]{1,32}-[0-9]{10}\.[0-9]{6}|p[0-9]{16}))?'
+    r'|linear\.app/[a-zA-Z0-9_-]+/issue/[a-zA-Z][a-zA-Z0-9_]*-[0-9]+'
+    r')(?=/|[?#.,;:)|>\]\s]|$)'
+)
 _LOCAL_PATH = (
     re.compile(
         r'(?<![A-Za-z0-9_.-])/(?:Users|home|root)/[^\s"\'`/]+'
@@ -1347,7 +1358,8 @@ def scan_text(value: str) -> set:
         codes |= _url_findings(match.group(0))
     if _BARE_CREDENTIALS.search(text):
         codes.add('secret.credential_url')
-    if any(_opaque(match.group(0)) for match in _OPAQUE.finditer(text)):
+    opaque_text = _WORK_LINK_COORDINATE.sub(lambda m: m.group(0).replace('/', ' '), text)
+    if any(_opaque(match.group(0)) for match in _OPAQUE.finditer(opaque_text)):
         codes.add('secret.opaque_blob')
     if any(pattern.search(text) for pattern in _LOCAL_PATH):
         codes.add('privacy.local_path')

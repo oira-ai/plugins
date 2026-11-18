@@ -339,7 +339,7 @@ def reminder(
         "Report concise useful facts: what changed and why, a decision and its reason, checks and results, "
         "and remaining actions. At final handoff include the actual outcome; bookkeeping is not work progress. "
         + ("Company-context reads were available for this exact target at setup. Recheck current availability, "
-           "then consult Oira when uncertain company requirements or a consequential shared decision affect "
+           "then ask for task-start context at the first substantive task, including related work, human decisions and code evidence. Consult again when consequential changes affect "
            "this work; reuse a pending check and consume its current result. Skip trivial or already-covered "
            "changes. This local reminder grants no read permission. " if context_reads_available is True else "")
         + ("This working chat was first observed midrun (" + lifecycle['first_event'] + "). "
