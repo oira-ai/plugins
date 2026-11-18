@@ -15,7 +15,8 @@ context-only consultation.
 - **Import approved history or configure Oira:** read the same reporting
   workflow and its host-specific setup/history references. Setup chats are
   excluded from reporting and history. Preserve the selected permissions and
-  history window; installation is not additional consent.
+  history window; installation is not additional consent. A linked Git
+  worktree reports only through a chosen repository binding; setup asks once.
 - **Consult company context:** follow the workflow below. Context-read consent
   does not enable reporting, and reporting consent does not enable context.
 

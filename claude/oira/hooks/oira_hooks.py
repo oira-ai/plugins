@@ -19,6 +19,7 @@ try:
     from .local import (
         Store,
         LocalError,
+        binding_coverage,
         binding_key,
         canonical,
         repository as repository,
@@ -31,6 +32,7 @@ except ImportError:
     from oira_local import (
         Store,
         LocalError,
+        binding_coverage,
         binding_key,
         canonical,
         resolve_binding,
@@ -207,8 +209,11 @@ def verification_status(folder, root, check_ref, session=None):
         db.execute('BEGIN')  # One read-only snapshot for bindings and current turns.
         projects = {key: json.loads(value) for key, value in db.execute('SELECT key,value FROM bindings')}
         project = resolve_binding(projects, Path(root), session)
-        return (verification_projection(project, check_ref, session, db=db) if project else
-                {'schema': 'oira_hook_verification.v1', 'check_ref': check_ref, 'state': 'not_configured'})
+        result = (verification_projection(project, check_ref, session, db=db) if project else
+                  {'schema': 'oira_hook_verification.v1', 'check_ref': check_ref, 'state': 'not_configured'})
+        # Name the routing binding so an unbound worktree is visible, not silent.
+        result['binding'] = binding_coverage(projects, root, session)
+        return result
 
 
 def finish_verification(store, root, check_ref, session, receipt):
@@ -245,20 +250,30 @@ def data_dir(app, environment):
     return Path.home() / ".oira/reporting" / environment / app
 
 
-def session_status(folder, session):
-    """Read exclusions without creating state or running a schema migration."""
+def session_status(folder, session, root=None):
+    """Read exclusions without creating state or running a schema migration.
+
+    With a project root, also name the binding that routes that folder.
+    """
     identity = Store._session_identity(session)
     path = folder / 'state.sqlite3'
     row = None
+    projects = {}
     if path.is_symlink():
         raise LocalError('unsafe_state_path')
     if path.exists():
         with closing(sqlite3.connect(path.resolve().as_uri() + '?mode=ro', uri=True, timeout=2)) as db:
             db.execute('BEGIN')
-            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='session_lifecycle'").fetchone():
+            tables = {name for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if 'session_lifecycle' in tables:
                 row = db.execute('SELECT purpose,first_event,native_start_seen FROM session_lifecycle WHERE identity=?', (identity,)).fetchone()
-    return {'schema': 'oira_local_session_policy.v1', 'work_reporting': 'excluded' if row and row[0] == 'setup' else 'eligible',
-            'first_observed_event': row[1] if row else None, 'native_start_seen': bool(row and row[2])}
+            if root is not None and 'bindings' in tables:
+                projects = {key: json.loads(value) for key, value in db.execute('SELECT key,value FROM bindings')}
+    result = {'schema': 'oira_local_session_policy.v1', 'work_reporting': 'excluded' if row and row[0] == 'setup' else 'eligible',
+              'first_observed_event': row[1] if row else None, 'native_start_seen': bool(row and row[2])}
+    if root is not None:
+        result['binding'] = binding_coverage(projects, root, session)
+    return result
 
 
 def bindings(folder):
@@ -553,6 +568,9 @@ def main(argv=None):
     for name in ('exclude-session', 'session-status'):
         command = commands.add_parser(name)
         command.add_argument('--session-id', required=True)
+        if name == 'session-status':
+            # Optional: also name the binding that routes this folder.
+            command.add_argument('--project-root')
     for name in ("bind", "enable", "disable"):
         command = commands.add_parser(name)
         command.add_argument("--project-root", required=True)
@@ -586,7 +604,7 @@ def main(argv=None):
         if args.command == 'verify-status':
             result = verification_status(folder, args.project_root, args.check_ref, args.session_id)
         elif args.command == 'session-status':
-            result = session_status(folder, args.session_id)
+            result = session_status(folder, args.session_id, args.project_root)
         elif args.command == "event":
             raw = sys.stdin.buffer.read(MAX_INPUT + 1)
             payload = json.loads(raw) if len(raw) <= MAX_INPUT else None
@@ -654,12 +672,14 @@ def main(argv=None):
                 result = {"binding_saved": True, "automatic_reporting": "enabled" if binding["enabled"] else "disabled"} if args.command == "bind" else {
                     "automatic_reporting": "enabled" if args.command == "enable" else "disabled"
                 }
+                # Name the saved key: folder:<path> or repository:<common Git dir>.
+                result["binding_key"] = key
             finally:
                 store.close()
     except LocalError as exc:
         # Name this actionable receipt condition without exposing local paths,
         # payloads or arbitrary exception text. The pending journal is unchanged.
-        code = (exc.code if exc.code == "pending_update_requires_disposition"
+        code = (exc.code if exc.code in {"pending_update_requires_disposition", "git_repository_required"}
                 else "configuration_unavailable")
         result = {} if args.command == "event" else {"error": code}
     except (

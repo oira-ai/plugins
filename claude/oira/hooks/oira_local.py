@@ -135,14 +135,70 @@ def resolve_binding(projects, cwd, session):
     return projects.get(resolve_binding_key(projects, cwd, session))
 
 
-def binding_key(path, *, session=None, inherit=False):
-    return (
-        "session:" + session
-        if session
-        else "repository:" + repository(path)
-        if inherit
-        else "folder:" + str(Path(path).resolve(strict=True))
+def _git_marker(path):
+    return next(
+        (parent / ".git" for parent in (path, *path.parents) if (parent / ".git").exists()),
+        None,
     )
+
+
+def _linked_worktree(marker):
+    if not marker.is_file():
+        return False
+    value = marker.read_text(encoding="utf-8").strip()
+    return value.startswith("gitdir: ") and (marker.parent / value[8:] / "commondir").is_file()
+
+
+def binding_coverage(projects, cwd, session=None):
+    """Name the binding that routes this folder, or say why none does.
+
+    Read-only and local: an unbound linked worktree of a repository whose other
+    checkout is bound is reported instead of staying silent. It never widens
+    routing; only an explicit repository binding covers linked worktrees.
+    """
+    path = Path(cwd).resolve(strict=True)
+    key = resolve_binding_key(projects, path, session)
+    marker = _git_marker(path)
+    result = {
+        "schema": "oira_binding_coverage.v1",
+        "binding_key": key,
+        "scope": key.split(":", 1)[0] if key else None,
+        "checkout": "none" if marker is None
+        else "linked_worktree" if _linked_worktree(marker) else "repository",
+        "automatic_reporting": "unbound" if key is None
+        else "enabled" if projects[key].get("enabled", True) else "disabled",
+    }
+    if key is None and marker is not None:
+        common = repository(marker.parent)
+        result["repository_key"] = "repository:" + common
+        others = []
+        for other in projects:
+            if other.startswith("folder:"):
+                try:
+                    if repository(other[7:]) == common:
+                        others.append(other)
+                except (OSError, UnicodeError, LocalError):
+                    continue  # A moved or unreadable checkout cannot be compared.
+        if others:
+            result.update(
+                unbound_reason="other_checkout_bound",
+                bound_checkouts=sorted(others),
+                next="Rerun Oira setup in this repository and choose to cover its git worktrees; "
+                     "it saves the binding with enable --inherit-repository.",
+            )
+    return result
+
+
+def binding_key(path, *, session=None, inherit=False):
+    if session:
+        return "session:" + session
+    path = Path(path).resolve(strict=True)
+    if not inherit:
+        return "folder:" + str(path)
+    if _git_marker(path) is None:
+        # Routing reads a repository binding only inside a Git checkout.
+        raise LocalError("git_repository_required")
+    return "repository:" + repository(path)
 
 
 def receipt_metadata(receipt):
