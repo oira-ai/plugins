@@ -712,6 +712,7 @@
             }
           ],
           "default": null,
+          "description": "Current authorized result. Optional citation_hints pairs evidence revision_uuid values with an evidence_hint such as record:<UUID> for a separate exact follow-up.",
           "title": "Result"
         },
         "result_document_ref": {

@@ -101,8 +101,22 @@ the answer status, coverage and degradation codes; current does not mean complet
 - Stale, withheld or revoked results cannot be used. Follow the typed recovery
   action under the original target; never widen access or switch credentials.
 - A failed terminal job needs its returned recovery action. Repeated status
-  reads do not restart it. A deliberate new question/recheck uses a higher intent
-  revision for the same operation, without disguising a failed original attempt.
+  reads do not restart it. Rechecking the same operation uses a higher intent
+  revision and preserves the original failed attempt.
+
+Keep any `result.citation_hints` from the first current release with the
+operation's notes. Each entry pairs a cited `revision_uuid` with an
+`evidence_hint` such as `record:<UUID>`. A later stale or withheld poll
+supplies no new hints. The saved hint selects the record for a fresh authorized
+read of its current revision and grants no access to the earlier revision.
+
+For an exact follow-up, use a new `operation_ref`, a fresh request UUID,
+intent revision 1, a purpose suited to the question and the returned
+`evidence_hint` in `evidence_hints`. For example, use `prior_decisions` to
+check a specific decision again. Keep the original `work_continuation`
+operation for broader discovery. Leave its `evidence_hints` empty so Oira can
+use its continuation anchors. If a citation has no hint, describe the topic in
+the question.
 
 For a conflict or uncovered consequential dependency, hold that affected step
 and continue unrelated authorized work. A human decision must come from the
@@ -134,7 +148,8 @@ resolution and never proves that the host stopped execution.
    shared change, or after an explicit recheck request, compose one bounded
    question and assumptions about the tracked operation. Use the same
    `operation_ref`, immutable purpose and increasing `intent_revision` for
-   deliberate rechecks. Do not read session-history files, attach raw hook
+   deliberate rechecks. Changing purpose requires a new `operation_ref` and
+   intent revision 1. Do not read session-history files, attach raw hook
    events or infer a question from captured prompts. No check on every token,
    tool call or timer. Prefetch by submitting once and polling that check.
 4. Call `oira_check_context(request=...)`. A typical bundled command is

@@ -7,7 +7,7 @@ already do. This repository is the plugin marketplace for the Oira plugin in
 Claude Code, Codex and GitHub Copilot, and the package source for Kiro and
 Cursor.
 
-Package version **0.12.8** exposes company-context tools in the manual host
+Package version **0.12.9** exposes company-context tools in the manual host
 recipes and gives agents concrete guidance for consulting company evidence,
 resuming pending checks and recognizing incomplete answers. Context reads still
 need their own permission. Existing installations may need normal browser
@@ -45,6 +45,12 @@ complete native plugin, including its reporting hooks; the Python environment
 stays outside the plugin cache. The choice to report automatically is part of setup. Codex also requires native
 hook review; Claude Code hooks load with the enabled plugin. Company-context queries also need separate permission and an
 available Oira context service. No Oira CLI download is required for either route.
+
+When a current company-context answer includes citation hints, ask your agent
+to save them with the operation's notes. A saved hint can select the same
+record in a separate follow-up under current access. Keep broad work
+continuation questions free of exact selectors so Oira can discover relevant
+work.
 
 ## Install
 
